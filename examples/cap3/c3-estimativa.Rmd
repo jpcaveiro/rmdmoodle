@@ -1,0 +1,195 @@
+---
+title: "c3-estimativa"
+author: "JP Cruz - A Freitas"
+date: "04/maio/2022"
+output: html_document
+---
+
+# código
+
+
+
+Objetivo: Cap3 Estimativa (comprimento de folhas de *acácia longifolia*)
+
+
+**Configuração do que se vê no HTML de verificação**
+
+
+```{r echo=T, results=F}
+VAR         = 1  # Só mostra a variante escolhida em VAR
+VARCOUNT    = 6  # total de variantes
+SHOWCODE    = T  # Mostra o código R (no HTML de verificação)
+SHOWRESULTS = F  # Mostra o output do R (no HTML de verificação)
+SET.SEED    = 10 # set.seed(SET.SEED)
+```
+
+
+
+```{r echo=SHOWCODE, results=SHOWRESULTS}
+set.seed(SET.SEED)
+
+# A usar na questão "O investigador decidiu aumentar a dimensão para 20 elementos"
+NN = 20 
+
+
+# Melhorar
+# Esta lista não está, a ser usada para nada que o aluno possa usar
+# (seria para o QQPlot mas os qqplot ficam demasiado mal)
+# O uso é na alínea 3
+ALTBIG = list(
+  rnorm(NN, 4.5, 0.2),
+  rnorm(NN, 2, 0.1),
+  rnorm(NN, 3, 0.15),
+  rexp(NN, 0.2),
+  rexp(NN, 0.4),
+  rexp(NN, 0.6)
+)
+
+
+SW = "Shapiro-Wilk"
+KS = "K.-S. c/ corr Lilliefors"
+
+#Alínea 4
+FOLHADIM           = c(  10,   50,   40,  20,  60,  70)
+R_BEST_NORMAL_TEST = c( SW,    KS,   KS,  SW,  KS,  KS)
+R_WORST_NORMAL_TEST= c( KS,    SW,   SW,  KS,  SW,  SW)
+
+BEM = "a dist. Normal modela bem"
+MAL = "a dist. Normal não modela bem"
+
+R_NORMAL_PVALUE    = c(0.01, 0.02, 0.03, 0.1, 0.2, 0.3)
+R_ADJUST_CORRECT    = c(MAL,  MAL,  MAL, BEM, BEM, BEM)
+R_ADJUST_INCORRECT  = c(BEM,  BEM,  BEM, MAL, MAL, MAL)
+
+
+ALT = list(
+  round(ALTBIG[[1]][1:4],2),
+  round(ALTBIG[[2]][1:4],2),
+  round(ALTBIG[[3]][1:4],2),
+  round(ALTBIG[[4]][1:4],2),
+  round(ALTBIG[[5]][1:4],2),
+  round(ALTBIG[[6]][1:4],2)
+) 
+
+
+```
+
+
+# Enredo (da variante `r VAR`)
+
+
+Considere a seguinte amostra do comprimento de folhas de *acácia longifolia*:
+x1=`r ALT[[VAR]][1]`; x2=`r ALT[[VAR]][2]`; x3=`r ALT[[VAR]][3]`; x4=`r ALT[[VAR]][4]`
+
+
+
+# Alínea estimativa e estimador da média - alinea01 (da variante `r VAR`)
+
+```{r echo=SHOWCODE, results=SHOWRESULTS}
+R_MEDIA_ALT = sapply(ALT,mean)
+cat(sort(R_MEDIA_ALT))
+```
+
+
+Com base na amostra, a estimativa do valor esperado (média populacional) do comprimento das folhas de *acácia longifólia* é 
+{:NUMERICAL:=`r R_MEDIA_ALT[[VAR]]`:0.001} (3 casas decimais).
+
+
+
+Na resposta anterior, foi usado \( \bar X \) como 
+{:MULTICHOICE_S:= estimador \~ estimativa \~ um número \~ parâmetro } 
+da média 
+{:MULTICHOICE_S:= populacional \~ da amostra \~ pontual }.
+
+
+
+# Alínea estimativa e estimador do desvio-padrão - alinea02 (da variante `r VAR`)
+
+```{r echo=SHOWCODE, results=SHOWRESULTS}
+R_SD_ALT = sapply(ALT,sd)
+cat(sort(R_SD_ALT))
+```
+
+
+Com base na amostra, uma estimativa do desvio padrão populacional do comprimento das folhas de *acácia longifólia* é {:NUMERICAL:=`r R_SD_ALT[[VAR]]`:0.001} (3 casas decimais).
+
+
+Na resposta anterior, foi calculado o desvio padrão corrigido amostral recorrendo a uma estatística que representa um 
+{:MULTICHOICE_S:= estimador \~ estimativa \~ parâmetro } 
+para o desvio padrão 
+{:MULTICHOICE_S:= populacional \~ corrigido \~ não corrigido }.
+
+
+# Alínea Teste de Ajustamento - alinea03  (da variante `r VAR`)
+
+```{r  echo=SHOWCODE, results=SHOWRESULTS}
+R_SHAPIRO_ALT = sapply(ALTBIG, function(v){ r=shapiro.test(v); round(r$p.value,3) })
+cat(R_SHAPIRO_ALT,'\n')
+
+ALPHA_SHAPIRO = c(5, 1, 5, 10, 1, 1)
+
+R_SHAPIRO_CORRETA = c("a distribuição normal modela bem",
+                      "a distribuição normal modela bem",
+                      "a distribuição normal modela bem",
+                      "a distribuição normal não modela bem",
+                      "a distribuição normal modela bem",
+                      "a distribuição normal não modela bem")
+
+R_SHAPIRO_INCORRETA = c("a distribuição normal não modela bem",
+                        "a distribuição normal não modela bem",
+                        "a distribuição normal não modela bem",
+                        "a distribuição normal modela bem",
+                        "a distribuição normal não modela bem",
+                        "a distribuição normal modela bem")
+                        
+                        
+                        
+  
+```
+
+
+
+O investigador decidiu aumentar a dimensão para 20 elementos amostrais para averiguar 
+se a distribuição normal se ajusta aos dados amostrais:
+
+```{r, echo=F}
+cat( round(ALTBIG[[VAR]],2),sep=';  ')
+```
+
+
+Foi efetuado o teste de hipóteses {:MULTICHOICE_S:= Shapiro-Wilk \~%50% KS c/ correção Lilliefors \~ QQPlot Normal}, por ser mais apropriado à dimensão, tendo sido encontrado o valor-p `r R_SHAPIRO_ALT[VAR]`. 
+
+
+Assim, ao nível de significância de `r ALPHA_SHAPIRO[VAR]`%, conclui-se que
+{:MULTICHOICE_S:= `r R_SHAPIRO_CORRETA[VAR]` \~%-25% `r R_SHAPIRO_INCORRETA[VAR]` }
+o comprimento das folhas de *acácia longifólia*  (desconta 25% do valor da questão se errar).
+
+
+# Alínea Teste de Ajustamento - alinea04 (da variante `r VAR`)
+
+
+
+Para averiguar se a distribuição normal se ajusta aos dados amostrais, o investigador decidiu aumentar a dimensão para `r FOLHADIM[VAR]` elementos. 
+
+Foi efetuado o teste de hipóteses {:MULTICHOICE_S:= `r R_BEST_NORMAL_TEST[VAR]` \~ `r R_WORST_NORMAL_TEST[VAR]` \~ QQPlot Normal }, por ser mais apropriado à dimensão, tendo sido encontrado que o valor-p é `r R_NORMAL_PVALUE[VAR]`. 
+
+
+Assim, ao nível de significância de 5%, conclui-se que
+{:MULTICHOICE_S:= `r R_ADJUST_CORRECT[VAR]` \~%-25% `r R_ADJUST_INCORRECT[VAR]` }
+o comprimento das folhas de acácia longifólia  (desconta 25% do valor da questão se errar).
+
+
+# qq plots não usados --- a discutir a sua utilidade - alinea05 (da variante `r VAR`)
+
+
+```{r echo=SHOWCODE, results=SHOWRESULTS}
+# ENSAIO não usado 
+for (i in 1:VARCOUNT) {
+  qqnorm( ALTBIG[[i]] )
+  qqline( ALTBIG[[i]] )
+}  
+```
+
+
+
+
