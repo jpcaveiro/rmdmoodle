@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>moodle questions &#8212; rmdmoodle  documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Development &#8212; rmdmoodle  documentation</title><meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/pydoctheme.css?digest=2d3badd06fe70b34b68db01f99471ce1624ffe4a" />
@@ -19,8 +19,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Development" href="devel.html" />
-    <link rel="prev" title="rmdmoodle documentation" href="index.html" /><link rel="shortcut icon" type="image/png" href="_static/py.svg" />
+    <link rel="prev" title="moodle questions" href="moodle.html" /><link rel="shortcut icon" type="image/png" href="_static/py.svg" />
             <script type="text/javascript" src="_static/copybutton.js"></script>
             <script type="text/javascript" src="_static/menu.js"></script> 
   </head>
@@ -51,8 +50,9 @@
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">moodle questions</a><ul>
-<li><a class="reference internal" href="#moodle-import-process">moodle import process</a></li>
+<li><a class="reference internal" href="#">Development</a><ul>
+<li><a class="reference internal" href="#build-package-rmdmoodle">build package rmdmoodle</a></li>
+<li><a class="reference internal" href="#documentation-with-sphinxdoc">documentation with <cite>sphinxdoc</cite></a></li>
 </ul>
 </li>
 </ul>
@@ -60,13 +60,8 @@
   </div>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="index.html"
-                          title="previous chapter"><cite>rmdmoodle</cite> documentation</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="devel.html"
-                          title="next chapter">Development</a></p>
+    <p class="topless"><a href="moodle.html"
+                          title="previous chapter">moodle questions</a></p>
   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
@@ -89,10 +84,7 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="devel.html" title="Development"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="index.html" title="rmdmoodle documentation"
+          <a href="moodle.html" title="moodle questions"
              accesskey="P">previous</a> |</li>
           <li><img src="_static/py.svg" alt="python logo" style="vertical-align: middle; margin-top: -1px"/></li>
           <li><a href="https://www.python.org/">Python</a> &#187;</li>
@@ -105,7 +97,7 @@
               <a href="index.html">rmdmoodle  documentation</a> &#187;
               
           </li>
-        <li class="nav-item nav-item-this"><a href="">moodle questions</a></li>
+        <li class="nav-item nav-item-this"><a href="">Development</a></li>
                 <li class="right">
                     
 
@@ -128,53 +120,66 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <section id="moodle-questions">
-<h1>moodle questions<a class="headerlink" href="#moodle-questions" title="Permalink to this heading">¶</a></h1>
-<p>O modo matemática a usar no ficheiro Rmd é com  <code class="docutils literal notranslate"><span class="pre">\(\bar</span> <span class="pre">x\)</span></code></p>
-<p>Resultado numérico arredondado a 4 casas decimais:</p>
-<p><code class="docutils literal notranslate"><span class="pre">{2:NUMERICAL:=`r</span> <span class="pre">round(var,4)`:0.001}</span></code></p>
-<p>Utilização de shortanswer:</p>
-<p><code class="docutils literal notranslate"><span class="pre">{2:SHORTANSWER_S:=alguma</span> <span class="pre">palavra</span> <span class="pre">ou</span> <span class="pre">frase</span> <span class="pre">correta=outra</span> <span class="pre">correta~esta</span> <span class="pre">é</span> <span class="pre">errada~esta</span> <span class="pre">é</span> <span class="pre">outra</span> <span class="pre">errada}</span></code></p>
+  <section id="development">
+<h1>Development<a class="headerlink" href="#development" title="Permalink to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<section id="build-package-rmdmoodle">
+<h2>build package rmdmoodle<a class="headerlink" href="#build-package-rmdmoodle" title="Permalink to this heading">¶</a></h2>
+<p>Learn how to create a package:</p>
 <ul class="simple">
-<li><p>não usar LaTeX na shortanswer.</p></li>
-<li><p>o moodle permite facilmente que o professor corrija e adapte a classificação lendo cada resposta de cada aluno.</p></li>
+<li><p><a class="reference external" href="https://r-pkgs.org/">https://r-pkgs.org/</a></p></li>
+<li><p><a class="reference external" href="https://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/">https://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/</a></p></li>
+<li><p><a class="reference external" href="https://www.cytel.com/blog/creating-r-package-template-guide">https://www.cytel.com/blog/creating-r-package-template-guide</a></p></li>
+<li><p>RTools 42: [para que serve?](<a class="reference external" href="https://cran.rstudio.com/bin/windows/Rtools/rtools42/rtools.html">https://cran.rstudio.com/bin/windows/Rtools/rtools42/rtools.html</a>)</p></li>
+<li><p>exemplo de package aceite no Journal of Statistical Software: <a class="reference external" href="https://github.com/ozancinar/poolr">https://github.com/ozancinar/poolr</a></p></li>
+<li><p>[roxygen2](<a class="reference external" href="https://roxygen2.r-lib.org/">https://roxygen2.r-lib.org/</a>): para gerar documentação com base em linhas junto das funções em R</p></li>
+<li><p>python, if needed, inside R with <a class="reference external" href="http://cran.nexr.com/web/packages/reticulate/vignettes/introduction.html">reticulate</a></p></li>
 </ul>
-<p>Colocar código r deve ser com três plicas e a letra r:</p>
-<pre>
-```r
-> x = matrix( c(A,B,C,D),nrow=2)
-```
-</pre>
-<section id="moodle-import-process">
-<h2>moodle import process<a class="headerlink" href="#moodle-import-process" title="Permalink to this heading">¶</a></h2>
-<p>To create an exam, using this package, one must <strong>stricly</strong>  follow an easy structure :doc:<code class="docutils literal notranslate"><span class="pre">moodle</span></code>.</p>
-<ol class="arabic simple">
-<li><p>In moodle, create category “imported” (“importados”)</p></li>
-</ol>
-<p>Move moodle Category “imported” to the top (for ease of use).</p>
-<p>(“É útil que a categoria “importados” surja no topo:”)</p>
-<p>a. Colocar como subcategoria de outra que seja vísivel no topo
-b. Voltar a promover</p>
-<p><strong>import to moodle</strong></p>
-<p><img alt="image" src="_images/formato-xml-moodle.png" /></p>
-<ol class="arabic simple" start="2">
-<li><p>No processo de importar abrir “Geral” =&gt; “Para em erros = Não”</p></li>
-</ol>
-<p><img alt="image" src="_images/dont-stop-if-error.png" /></p>
-<ol class="arabic simple" start="4">
-<li><p>Import</p></li>
-<li><p>Procurar categorias com (0) (onde houve erros)</p></li>
-</ol>
-<p>To delete imported exam and repeat:</p>
-<ol class="arabic simple">
-<li><p>Open main <code class="docutils literal notranslate"><span class="pre">Category</span></code> where question exam bank is;</p></li>
-<li><p>Select everything below</p></li>
-<li><p>Delete</p></li>
-</ol>
-<p>Eventaully,</p>
+<p>Starting:</p>
 <ul class="simple">
-<li><p>Is necessary to delete subcategories one by one.</p></li>
+<li><p>“devtools”: development tools to do the work easily.</p></li>
+<li><p>“testthat”: for unit-testing.</p></li>
+<li><p>“rmarkdown”: documentation language to create vignettes with code chunks.</p></li>
+<li><p>“roxygen2”: permits function auto-documentation.</p></li>
 </ul>
+<div class="highlight-R notranslate"><div class="highlight"><pre><span></span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;devtools&quot;</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="s">&quot;devtools&quot;</span><span class="p">)</span>
+<span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;roxygen2&quot;</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">roxygen2</span><span class="p">)</span>
+
+<span class="nf">create</span><span class="p">(</span><span class="s">&quot;rmdmoodle&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Function documentation:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1">#&#39; A Cat Function</span>
+<span class="c1">#&#39;</span>
+<span class="c1">#&#39; This function allows you to express your love of cats.</span>
+<span class="c1">#&#39; @param love Do you love cats? Defaults to TRUE.</span>
+<span class="c1">#&#39; @keywords cats</span>
+<span class="c1">#&#39; @export</span>
+<span class="c1">#&#39; @examples</span>
+<span class="c1">#&#39; cat_function()</span>
+
+<span class="n">cat_function</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">love</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">){</span>
+<span class="w">    </span><span class="nf">if</span><span class="p">(</span><span class="n">love</span><span class="o">==</span><span class="kc">TRUE</span><span class="p">){</span>
+<span class="w">        </span><span class="nf">print</span><span class="p">(</span><span class="s">&quot;I love cats!&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nf">print</span><span class="p">(</span><span class="s">&quot;I am not a cool person.&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="documentation-with-sphinxdoc">
+<h2>documentation with <cite>sphinxdoc</cite><a class="headerlink" href="#documentation-with-sphinxdoc" title="Permalink to this heading">¶</a></h2>
+<p>Python:</p>
+<p><a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html">reStructuredText</a> is the default plaintext markup language used by Sphinx</p>
+<p><a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/markdown.html">markdown in Sphinx</a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>myst-parser
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -188,8 +193,9 @@ b. Voltar a promover</p>
   <div>
     <h3><a href="index.html">Table of Contents</a></h3>
     <ul>
-<li><a class="reference internal" href="#">moodle questions</a><ul>
-<li><a class="reference internal" href="#moodle-import-process">moodle import process</a></li>
+<li><a class="reference internal" href="#">Development</a><ul>
+<li><a class="reference internal" href="#build-package-rmdmoodle">build package rmdmoodle</a></li>
+<li><a class="reference internal" href="#documentation-with-sphinxdoc">documentation with <cite>sphinxdoc</cite></a></li>
 </ul>
 </li>
 </ul>
@@ -197,13 +203,8 @@ b. Voltar a promover</p>
   </div>
   <div>
     <h4>Previous topic</h4>
-    <p class="topless"><a href="index.html"
-                          title="previous chapter"><cite>rmdmoodle</cite> documentation</a></p>
-  </div>
-  <div>
-    <h4>Next topic</h4>
-    <p class="topless"><a href="devel.html"
-                          title="next chapter">Development</a></p>
+    <p class="topless"><a href="moodle.html"
+                          title="previous chapter">moodle questions</a></p>
   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
@@ -226,10 +227,7 @@ b. Voltar a promover</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="devel.html" title="Development"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="index.html" title="rmdmoodle documentation"
+          <a href="moodle.html" title="moodle questions"
              >previous</a> |</li>
           <li><img src="_static/py.svg" alt="python logo" style="vertical-align: middle; margin-top: -1px"/></li>
           <li><a href="https://www.python.org/">Python</a> &#187;</li>
@@ -242,7 +240,7 @@ b. Voltar a promover</p>
               <a href="index.html">rmdmoodle  documentation</a> &#187;
               
           </li>
-        <li class="nav-item nav-item-this"><a href="">moodle questions</a></li>
+        <li class="nav-item nav-item-this"><a href="">Development</a></li>
                 <li class="right">
                     
 

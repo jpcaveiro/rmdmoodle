@@ -30,7 +30,7 @@ author = 'João Pedro Cruz'
 extensions = [
     'myst_parser',
     'sphinxcontrib.mermaid',
-    'sphinxawesome_theme'
+#    'sphinxawesome_theme'
 ]
 
 
@@ -59,9 +59,9 @@ exclude_patterns = []
 #
 #html_theme = 'alabaster'
 
-html_theme = "sphinxawesome_theme"
+#html_theme = "sphinxawesome_theme"
 #now is above: extensions = ['sphinxawesome_theme']
-
+html_theme = 'python_docs_theme'
 
 
 # Add any paths that contain custom static files (such as style sheets) here,
