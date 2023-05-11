@@ -546,9 +546,9 @@ rmdexam <- function(nvariants, rmdfilename, ...) {
 
   head_txt <- paste0(
     "---\n",
-    "title: \"ano e título\"\n",
+    "title: \"", rmdfilename, "\"\n",
     "author: \"(autores)\"\n",
-    "date: \"(data)\"\n",
+    "date: \"", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\"\n",
     "output: html_document\n",
     "---\n\n",
     "A versão inicial deste documento foi construída com:\n",
@@ -572,6 +572,14 @@ rmdexam <- function(nvariants, rmdfilename, ...) {
   cat(ex_rmdtext, file = con)
   close(con)
 
+
+  cat("The author of the exam can check file", rmdfilename, "and search for eventual problems.\n")
+
+  rmdfilename_no_ext <- substr(rmdfilename, 1, nchar(rmdfilename) - 4)
+
+  xmlmoodle(  rmdfilename_no_ext )
+
+  cat("Then import ", rmdfilename_no_ext, ".xml to moodle.\n", sep='')
 
   return(rmdfilename)
 }
