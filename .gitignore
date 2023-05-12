@@ -1,6 +1,5 @@
 .Rproj.user
 .Rhistory
+.Rbuildignore
 build
-
-.Rhistory
-.Rhistory
+exame-de-hoje.Rmd
