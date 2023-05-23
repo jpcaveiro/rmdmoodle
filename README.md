@@ -23,5 +23,17 @@ Testar com:
    - correr uma versão para testar instalação.
    - podem ser executados outros containers com testes
 
+**docker: management**
+
+```
+$ docker ps
+CONTAINER ID   IMAGE                     COMMAND   CREATED          STATUS          PORTS                    NAMES
+a27181eb032a   rocker-rstudio-devtools   "/init"   30 minutes ago   Up 30 minutes   0.0.0.0:8787->8787/tcp   youthful_austin
+$ docker stop youthful_austin
+youthful_austin
+$ docker ps
+CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+$
+```
 
  
