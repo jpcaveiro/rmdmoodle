@@ -17,11 +17,13 @@ Testar com:
 
 1. `docker run -d -p 8787:8787 rocker/rstudio`
    - correr e instalar o devtools
-2. docker commit sharp_brown rocker-rstudio-devtools:latest
+2. `docker commit sharp_brown rocker-rstudio-devtools:latest`
    - gravar o rstudio já com devtools instalado 
-3. docker run -v ~/GitHub/WorkPackages/2020-rmdmoodle/:/home/rstudio -e PASSWORD=nobrecaminho -d -p 8787:8787 rocker-rstudio-devtools
+3. `docker run -v ~/GitHub/WorkPackages/2020-rmdmoodle/:/home/rstudio -e PASSWORD=nobrecaminho -d -p 8787:8787 rocker-rstudio-devtools`
    - correr uma versão para testar instalação.
    - podem ser executados outros containers com testes
+   - abrir `http://localhost:8787/` com user: rstudio e pass: nobrecaminho
+
 
 **docker: management**
 
