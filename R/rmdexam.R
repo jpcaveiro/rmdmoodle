@@ -467,7 +467,7 @@ exer2rmdstring <- function(nvar, ...) {
 
     # Generate variant: enredo (1) blá blá \n\n (2) blá blá \n\n etc
     al_string <- paste0(al_string,
-                        paste0("**(", as.character(al), ")**", al_rmdtext),
+                        paste0("\n\n**(", as.character(al), ")**\n\n", al_rmdtext),
                         collapse = '\n\n')
 
   }

@@ -1,7 +1,7 @@
 
 
+# algoritmo ====
 
-# -----------------------
 # Algoritmo geral:
 #
 # 1. Ler via read_html()
@@ -12,13 +12,7 @@
 # 1. templating https://cran.r-project.org/web/packages/whisker/whisker.pdf
 # 2. json: install.packages("rjson")
 #
-# -----------------------
 
-library(stringr)
-library(rvest)
-library(whisker)
-library(rjson)
-library(xml2)
 
 
 
@@ -42,6 +36,19 @@ library(xml2)
 
 
 
+# libraries ====
+
+# TODO: colocar que funções são usadas
+# library(rjson) rjson::fromJSON
+# library(rmarkdown)  rmarkdown::render
+library(whisker)  # whisker.render
+library(rvest) #imports read_html, html_children, html_text
+library(stringr)
+library(xml2)
+
+
+
+# xml templates ====
 
 
 # template: {{exam_name}}, {{question_name}}, {{variant_name}},
@@ -215,6 +222,10 @@ ESSAY_template <- '
 
 
 
+
+# functions ====
+
+
 is_level <- function(html_part, str_level, keyword) {
   #html_part: a html "node" like "<div ......."
   #str_level: "section level2" or "section level3"
@@ -357,7 +368,7 @@ question_with_variants <- function(question_title, question_html, main_question_
   }
 
   if (total_variants<1) {
-    stop("question_with_variants: secções com ## devem conter a palavra 'variante'.")
+    stop("question_with_variants: section defined by '##' should be '## variante <and some text>'.")
   }
 
   return( list(question_title=question_title, variants=variants) )
@@ -491,10 +502,29 @@ multichoice <- function(variant_title, variant_contents) {
 
 }
 
+
+
+#' @title cloze - joins text and verify moodle-cloze {....} instructions
+#'
+#' @param variant_title
+#' @param variant_contents
+#'
+#' @return
+#' @export
+#'
+#' @examples
 cloze <- function(variant_title, variant_contents) {
 
   n <- length( variant_contents )
-  enunciado <- paste0( variant_contents[2:(n-1)], collapse = '\n')
+
+  enunciado <- paste0( variant_contents[2:(n-1)], collapse = "\n")
+  enunciado <- gsub("\x0D\x0D\x0A", "", enunciado)
+  #debug
+  #cat("enunciado:\n",enunciado,"\n")
+
+  #in file verifycloze.R
+  verifycloze(enunciado)
+
 
   # feedback global - deve ocorrer sempre na posição n
   if ( is_level(variant_contents[n], "section level3", "feedback") ) {
@@ -548,6 +578,15 @@ essay <- function(variant_title, variant_contents) {
 
 
 
+#' From a list of questions produce a xml file
+#' to be imported in Moodle.
+#'
+#' @param exam_title - name of the future file
+#' @param all_questions - a list
+#'
+#' @return - a saved file in system
+#'
+#' @examples
 export_to_moodlexml <- function(exam_title, all_questions) {
 
 
@@ -562,8 +601,9 @@ export_to_moodlexml <- function(exam_title, all_questions) {
   for(q in 1:nquestions) {
 
     question <- all_questions[[q]]
+
     #debug
-    QUESTION <<- question
+    #QUESTION <<- question
 
 
     variants <- question$variants
@@ -597,7 +637,7 @@ export_to_moodlexml <- function(exam_title, all_questions) {
 
         NUMERICAL_ANSWER_xml <- ''
 
-        #Debug
+        # Debug
         #print("A exportar numerical para xml:")
         #print(variant$respostas)
         #VVV <<- variant$respostas
@@ -686,21 +726,28 @@ export_to_moodlexml <- function(exam_title, all_questions) {
 
 
 
+#' Extracts "moodle questions" from a html file
+#'
+#' @param filename - an user/author written filename
+#'
+#' @return - a list with "moodle questions"
 make_moodlexml <- function(filename) {
 
-  html <- rvest::read_html(filename, encoding = "UTF-8")
+  #read_html is a function from rvest library
+  html <- read_html(filename, encoding = "UTF-8")
 
-  # Extrai a secção <body> ... </body>
+  # Extracts section <body> ... </body>
   body <- html_elements(html, "body")
 
-  # Dentro do <body> existem secções que agora são extraídas:
+  # Inside <body> there are sub sections "children":
   body_children <- html_children(body)
 
+  # TODO: melhorar a frase com exemplo
   # Só interessa o primeiro elemento dessas secções
   # Os outros elemento são javascript e não interessam no moodle
   conteudo <- body_children[1]
 
-  # Obtém o título que o RMarkdown coloca no primeiro <h1>
+  # Get "title:" now in <h1> tag
   all_h1_elements <- html_elements(conteudo, "h1")
   exam_title = html_text( all_h1_elements[1] )
 
@@ -710,9 +757,10 @@ make_moodlexml <- function(filename) {
   all_questions <- list()
   total_questions <- 0
 
-  # procura a posição em "conteudo" com o primeiro "h1"
-  # a posição 1 de all_h1_elements tem o título do documento
-  # a posição 2 de all_h1_elements tem o título da primeira questão do teste
+  # Get all sections<h1>
+  # position 1 of all_h1_elements has the "title:" (originally in RMarkdown)
+  # position 2 of all_h1_elements has the name of the first question
+  # etc
   first_question_title <- html_text( all_h1_elements[2] )
   start <- 1
   text_on_h1 <- html_text( html_children(conteudo)[start] )
@@ -724,7 +772,8 @@ make_moodlexml <- function(filename) {
   }
 
 
-  # Só o 3º <h1> e subsequentes é que têm questões.
+  # TODO: why?
+  # Only 3rd <h1> and after has questions.
   for( i in seq(2,length(all_h1_elements)) ) { #i=1 é o título do exame, i=2 será a primeira questão "h1"
 
     question_title <- html_text( all_h1_elements[i] )
@@ -734,7 +783,9 @@ make_moodlexml <- function(filename) {
     #cat(question_title,"\n")
     #cat("----------------\n")
 
-    cat("Processando a questão:", question_title, '\n')
+    cat("\n------------------\n")
+    cat("Processing question:", question_title, '\n')
+    cat("--------------------\n\n")
 
     if ( grepl("MULTICHOICE", question_title, ignore.case = TRUE) ) {
       main_question_type <- "MULTICHOICE"
@@ -786,7 +837,7 @@ html_to_json_protected <- function(html_code) {
 
   # Source: https://stackoverflow.com/questions/12193779/how-to-write-trycatch-in-r
   out <- tryCatch(
-    fromJSON(txt3),  #para várias linhas de código incluir {...linhas...}
+    rjson::fromJSON(txt3),  #para várias linhas de código incluir {...linhas...}
     error=function(cond) {
       message(paste('É preciso rever a sintaxe nesta linha:\n', txt,'\n'))
       message('Espera-se a notação assim:\n   "palavrachave": 123.456\n   "palavrachave": "texto entre aspas"\n   apenas uma "," entre palavrashcave.\n')
@@ -829,7 +880,7 @@ html_to_json_protected <- function(html_code) {
 xmlmoodle <- function(filename_no_extension) {
 
   #
-  #Método sem multivariantes
+  # Método sem multivariantes
   #
   rmarkdown::render(paste(filename_no_extension,".Rmd",sep=""), output_format="html_document", quiet=T)
   make_moodlexml(paste(filename_no_extension,".html",sep=""))
