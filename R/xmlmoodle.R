@@ -345,21 +345,21 @@ question_with_variants <- function(question_title, question_html, main_question_
 
 
       if (question_type == "MULTICHOICE") {
+        cat(' Processing', variant_title, '\n')
         total_variants <- total_variants + 1
         variants[[total_variants]] <- multichoice(variant_title, variant_contents)
-        cat('   ', variant_title, '\n')
       } else if (question_type == "NUMERICAL") {
+        cat(' Processing', variant_title, '\n')
         total_variants <- total_variants + 1
         variants[[total_variants]] <- numerical(variant_title, variant_contents)
-        cat('   ', variant_title, '\n')
       } else if (question_type == "CLOZE") {
+        cat(' Processing', variant_title, '\n')
         total_variants <- total_variants + 1
         variants[[total_variants]] <- cloze(variant_title, variant_contents)
-        cat('   ', variant_title, '\n')
       } else if (question_type == "ESSAY") {
+        cat(' Processing', variant_title, '\n')
         total_variants <- total_variants + 1
         variants[[total_variants]] <- essay(variant_title, variant_contents)
-        cat('   ', variant_title, '\n')
       } else {
         warning(paste("question_with_variants: 'question_type' não existente. Deve ser: MULTICHOICE, NUMERICAL, CLOZE, ESSAY. Rever", question_title,"\n"))
       }
@@ -533,7 +533,9 @@ cloze <- function(variant_title, variant_contents) {
     nh <- length(h)
     if (nh==1) {
       feedbackglobal <- '\n\n\n'
-      cat("    Há uma variante 'CLOZE' com feedback vazio.\n")
+      if (pkg.env$WARNINGS.BOOLEAN) {
+        cat("    Há uma variante 'CLOZE' com feedback vazio.\n")
+      }
     } else {
       feedbackglobal <- paste0( h[2:nh], collapse = '\n')
     }
@@ -882,7 +884,52 @@ xmlmoodle <- function(filename_no_extension) {
   #
   # Método sem multivariantes
   #
-  rmarkdown::render(paste(filename_no_extension,".Rmd",sep=""), output_format="html_document", quiet=T)
+  tryCatch(
+    {
+      # Just to highlight: if you want to use more than one
+      # R expression in the "try" part then you'll have to
+      # use curly brackets.
+      # 'tryCatch()' will return the last evaluated expression
+      # in case the "try" part was completed successfully
+
+      rmarkdown::render(paste(filename_no_extension,".Rmd",sep=""), output_format="html_document", quiet=T)
+
+      # The return value of `rmarkdown::render()` is the actual value
+      # that will be returned in case there is no condition
+      # (e.g. warning or error).
+      # You don't need to state the return value via `return()` as code
+      # in the "try" part is not wrapped inside a function (unlike that
+      # for the condition handlers for warnings and error below)
+    },
+    error=function(cond) {
+      if (grepl("Duplicate chunk label",cond)) {
+        message("\nAvoid using code chunk labels. Code chunks from several files could have same name and `knitr()` does not accept two equal named code chunks. Find information about the code chunk in the next message.\n")
+      }
+      message(cond)
+      #message(paste("URL does not seem to exist:", url))
+      #message("Here's the original error message:")
+      # Choose a return value in case of error
+      #return(NA)
+    },
+    warning=function(cond) {
+      #message(paste("URL caused a warning:", url))
+      #message("Here's the original warning message:")
+      message(cond)
+      # Choose a return value in case of warning
+      #return(NULL)
+    },
+    finally={
+      # NOTE:
+      # Here goes everything that should be executed at the end,
+      # regardless of success or error.
+      # If you want more than one expression to be executed, then you
+      # need to wrap them in curly brackets ({...}); otherwise you could
+      # just have written 'finally=<expression>'
+      #message(paste("Processed URL:", url))
+      #message("Some other message at the end")
+    }
+  )
+
   make_moodlexml(paste(filename_no_extension,".html",sep=""))
 
 }

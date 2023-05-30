@@ -8,6 +8,7 @@ DEBUG <- F
 # o valor da variável dentro deste package.
 pkg.env <- new.env()
 pkg.env$EXERCISE_ROOT <- ""
+pkg.env$WARNINGS.BOOLEAN <- FALSE
 
 
 # EXERCISE_ROOT <- "C:/Users/pedrocruz/Documents/GitHub/bioestatistica/rmdmoodle"
@@ -28,6 +29,19 @@ set_exercise_root <- function(pathstr) {
   pkg.env$EXERCISE_ROOT <- pathstr
   return(pkg.env$EXERCISE_ROOT)
 }
+
+
+#' Turn TRUE or FALSE the
+#' printing of warnings.
+#'
+#' @param b - a boolean TRUE or FALSE
+#'
+#' @return
+#' @export
+set.warnings <- function(b) {
+  pkg.env$WARNINGS.BOOLEAN <- b
+}
+
 
 
 #' Get a global variable with the OS path of the questions
@@ -554,11 +568,28 @@ rmdexam <- function(nvariants, rmdfilename, ...) {
     "A versão inicial deste documento foi construída com:\n",
     "```\n",
     "library(rmdmoodle)\n",
-    "set_exercise_root( \"C:/Users/USERNAME/<Where is the exercise folder?>\" )\n",
+    "set_exercise_root(\"", pkg.env$EXERCISE_ROOT   , "\")\n",
+    #"set_exercise_root( \"C:/Users/USERNAME/<Where is the exercise folder?>\" )\n",
     comando_txt,
+    "```\n",
+    "\n",
+    "**Configuração do que se vê no HTML de verificação**\n",
+    "\n",
+    "\n",
+    "```{r echo=TRUE, results=FALSE}\n",
+    "VARCOUNT    = ", nvariants, "  # total de variantes\n",
+    "SHOWCODE    = FALSE  # Se mostra o código R (no HTML de verificação)\n",
+    "SHOWRESULTS = FALSE  # Se mostra o output do R (no HTML de verificação)\n",
+    "SET.SEED    = ", round(runif(1,1000,3000),0), " # set.seed(SET.SEED)\n",
+    "#Avoid scientific notation in all document\n",
+    "options(scipen = 999)\n",
+    "#Na commandline: str(knitr::opts_chunk$get())\n",
+    "knitr::opts_chunk$set(echo = TRUE) \n",
     "```\n",
     "\n\n",
     collapse = '\n\n')
+
+  #debug
   #cat(head_txt)
 
 
