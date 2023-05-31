@@ -12,6 +12,8 @@ Testar com:
 
 - **Abrir docker no Windows** - não é intuitivo que para usar docker no WSL2 seja preciso primeiro abrir no Windows.
 - Abrir WSL2 ubuntu
+
+Porque é muito lento instalar o `devtools` pode valer a pena fazer um `commit`, ou seja, instalar e gravar uma nova `image` do docker rstudio já com o `devtools` a funcionar:
 - Correr os comandos seguintes:
 
 
