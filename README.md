@@ -10,7 +10,7 @@ rmdmoodle
 
 Testar com:
 
-- Abrir docker no Windows
+- **Abrir docker no Windows** - não é intuitivo que para usar docker no WSL2 seja preciso primeiro abrir no Windows.
 - Abrir WSL2 ubuntu
 - Correr os comandos seguintes:
 
@@ -37,5 +37,17 @@ $ docker ps
 CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 $
 ```
+
+**testar com outras versões do R**
+
+Ver exemplo, a dockerfile para o [R 4.1.2](https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/rstudio_4.1.2.Dockerfile).
+
+* Guardar a dockerfile acima especificada num ficheiro de texto `rocker_rstudio_412`, por exemplo, e executar:
+ 
+```
+$ docker build . -f ./rocker_rstudio_412 -t rocker-rstudio-412
+```
+que produz uma imagem com nome `rocker-rstudio-412`.
+
 
  
