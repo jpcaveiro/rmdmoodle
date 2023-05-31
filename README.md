@@ -42,6 +42,8 @@ $
 
 **testar com outras versões do R**
 
+- Não funcionou com a dockerfile tal como está no link devido a um conflito/erro/omissão no sistema operativo base. Há que rever esta solução:
+
 Ver exemplo, a dockerfile para o [R 4.1.2](https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/rstudio_4.1.2.Dockerfile).
 
 * Guardar a dockerfile acima especificada num ficheiro de texto `rocker_rstudio_412`, por exemplo, e executar:
@@ -51,5 +53,12 @@ $ docker build . -f ./rocker_rstudio_412 -t rocker-rstudio-412
 ```
 que produz uma imagem com nome `rocker-rstudio-412`.
 
+**Outras operações**
 
+Abrir uma consola de um container em curso:
+
+```
+docker exec -it <CONTAINER-name> bash
+```
+ 
  
