@@ -6,7 +6,14 @@ rmdmoodle
 
 # develop
 
-**docker**
+## com windows
+
+* You can hold down the Control key during the launch of RStudio you can cause the R version selection dialog to display at startup. Fonte: https://support.rstudio.com/hc/en-us/articles/200486138-Using-Different-Versions-of-R
+
+(por fazer)
+
+
+## com docker
 
 Testar com:
 
@@ -40,7 +47,7 @@ CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 $
 ```
 
-**testar com outras versões do R**
+*testar com outras versões do R - docker**
 
 - Não funcionou com a dockerfile tal como está no link devido a um conflito/erro/omissão no sistema operativo base. Há que rever esta solução:
 
