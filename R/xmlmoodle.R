@@ -905,6 +905,10 @@ xmlmoodle <- function(filename_no_extension) {
       if (grepl("Duplicate chunk label",cond)) {
         message("\nAvoid using code chunk labels. Code chunks from several files could have same name and `knitr()` does not accept two equal named code chunks. Find information about the code chunk in the next message.\n")
       }
+      if (grepl("not found",cond)){
+        #message("\nAn used variable has no declaration. Probably the code declared in an item, that contains that variable, must be relocated to '# code' where common code resides.\n")
+        message("\nAn used variable was not found. Probably some code must be relocated to '# code' where common code resides.\n")
+      }
       message(cond)
       #message(paste("URL does not seem to exist:", url))
       #message("Here's the original error message:")

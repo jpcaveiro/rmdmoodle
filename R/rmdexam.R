@@ -326,6 +326,8 @@ parse_exrmdfile <- function(rmdfilename) {
   if (line_start_alinea <= nlines) {
     #store alínea
     no_of_alineas <- no_of_alineas + 1
+    # See https://github.com/jpcaveiro/rmdmoodle/issues/17
+    # TODO: maybe add "\n\n" adding newline in case the user don't press "enter" after last line.
     list_of_alineas[[no_of_alineas]] <- paste(lines[line_start_alinea:nlines],collapse='\n')
   }
 
@@ -442,7 +444,7 @@ exer2rmdstring <- function(nvar, ...) {
   if (grepl(".Rmd", exrequest[[1]])) {
     rmdfilename <- exrequest[[1]]
   } else {
-    rmdfilename <- paste0(exrequest[[1]],".Rmd", collapse='')
+    rmdfilename <- paste0(exrequest[[1]],".Rmd", collapse="")
   }
 
   ex <- parse_exrmdfile(file.path(pkg.env$EXERCISE_ROOT,rmdfilename))
@@ -452,11 +454,13 @@ exer2rmdstring <- function(nvar, ...) {
   ex_rmdtext <- ""
 
   # A # section is an exercise in Rmd.
-  ex_header  <- paste0("# ", ex$title, "-", toupper(ex$type), collapse=' ')
-  ex_rmdtext <- paste0(ex_rmdtext, ex_header, collapse = '\n\n')
+  # antes: ex_header  <- paste0("# ", ex$title, "-", toupper(ex$type), collapse = " ")
+  #now: 
+  ex_header  <- paste0("# ", rmdfilename, "-", toupper(ex$type), collapse = " ")
+  ex_rmdtext <- paste0(ex_rmdtext, ex_header, collapse = "\n\n")
 
   #code
-  ex_rmdtext <- paste0(ex_rmdtext, ex$code, collapse = '\n\n')
+  ex_rmdtext <- paste0(ex_rmdtext, ex$code, collapse = "\n\n")
 
   # FAZER
   #   ## variante 1
@@ -539,7 +543,7 @@ rmdexam <- function(nvariants, rmdfilename, ...) {
   #args is a list of lists
   #args[[1]][[1]] access the first exercise-filename to be written
   #to the new Rmd
-  argslist = list(...)
+  argslist <- list(...)
 
   ex_rmdtext <- ""
 
