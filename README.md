@@ -6,12 +6,21 @@ rmdmoodle
 
 # develop
 
-**docker**
+## com windows
+
+* You can hold down the Control key during the launch of RStudio you can cause the R version selection dialog to display at startup. Fonte: https://support.rstudio.com/hc/en-us/articles/200486138-Using-Different-Versions-of-R
+
+(por fazer)
+
+
+## com docker
 
 Testar com:
 
-- Abrir docker no Windows
+- **Abrir docker no Windows** - não é intuitivo que para usar docker no WSL2 seja preciso primeiro abrir no Windows.
 - Abrir WSL2 ubuntu
+
+Porque é muito lento instalar o `devtools` pode valer a pena fazer um `commit`, ou seja, instalar e gravar uma nova `image` do docker rstudio já com o `devtools` a funcionar:
 - Correr os comandos seguintes:
 
 
@@ -38,4 +47,25 @@ CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
 $
 ```
 
+*testar com outras versões do R - docker**
+
+- Não funcionou com a dockerfile tal como está no link devido a um conflito/erro/omissão no sistema operativo base. Há que rever esta solução:
+
+Ver exemplo, a dockerfile para o [R 4.1.2](https://github.com/rocker-org/rocker-versioned2/blob/master/dockerfiles/rstudio_4.1.2.Dockerfile).
+
+* Guardar a dockerfile acima especificada num ficheiro de texto `rocker_rstudio_412`, por exemplo, e executar:
+ 
+```
+$ docker build . -f ./rocker_rstudio_412 -t rocker-rstudio-412
+```
+que produz uma imagem com nome `rocker-rstudio-412`.
+
+**Outras operações**
+
+Abrir uma consola de um container em curso:
+
+```
+docker exec -it <CONTAINER-name> bash
+```
+ 
  
