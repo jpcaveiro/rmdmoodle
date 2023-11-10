@@ -56,7 +56,7 @@ library(xml2)
 #  {{{answer_incorrect1}}}, {{{answer_incorrect2}}}, {{{answer_incorrect3}}}
 
 
-MULTICHOICE_template <- '
+MULTICHOICE_template4 <- '
   <question type="category">
     <category>
       <text>$course$/top/importados/{{exam_title}}/{{question_title}}</text>
@@ -99,19 +99,19 @@ MULTICHOICE_template <- '
         <text></text>
       </feedback>
     </answer>
-    <answer fraction="-25" format="html">
+    <answer fraction="0" format="html">
       <text><![CDATA[{{{answer_incorrect1}}}]]></text>
       <feedback format="html">
         <text></text>
       </feedback>
     </answer>
-    <answer fraction="-25" format="html">
+    <answer fraction="0" format="html">
       <text><![CDATA[{{{answer_incorrect2}}}]]></text>
       <feedback format="html">
         <text></text>
       </feedback>
     </answer>
-    <answer fraction="-25" format="html">
+    <answer fraction="0" format="html">
       <text><![CDATA[{{{answer_incorrect3}}}]]></text>
       <feedback format="html">
         <text></text>
@@ -120,6 +120,79 @@ MULTICHOICE_template <- '
   </question>
 
   '
+
+
+MULTICHOICE_template5 <- '
+  <question type="category">
+    <category>
+      <text>$course$/top/importados/{{exam_title}}/{{question_title}}</text>
+    </category>
+    <info format="html">
+      <text></text>
+    </info>
+    <idnumber></idnumber>
+  </question>
+  <question type="multichoice">
+    <name>
+      <text>{{variant_title}} de {{question_title}}</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[{{{question_problem}}}]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[{{{feedbackglobal}}}]]></text>
+    </generalfeedback>
+    <defaultgrade>1.0000000</defaultgrade>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+    <single>true</single>
+    <shuffleanswers>true</shuffleanswers>
+    <answernumbering>none</answernumbering>
+    <correctfeedback format="html">
+      <text><![CDATA[<p>A sua resposta está correta.</p>]]></text>
+    </correctfeedback>
+    <partiallycorrectfeedback format="html">
+      <text><![CDATA[<p>A sua resposta está parcialmente correta.</p>]]></text>
+    </partiallycorrectfeedback>
+    <incorrectfeedback format="html">
+      <text><![CDATA[<p>A sua resposta está incorreta.</p>]]></text>
+    </incorrectfeedback>
+    <shownumcorrect/>
+    <answer fraction="100" format="html">
+      <text><![CDATA[{{{answer_correct}}}]]></text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="0" format="html">
+      <text><![CDATA[{{{answer_incorrect1}}}]]></text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="0" format="html">
+      <text><![CDATA[{{{answer_incorrect2}}}]]></text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="0" format="html">
+      <text><![CDATA[{{{answer_incorrect3}}}]]></text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+    <answer fraction="0" format="html">
+      <text><![CDATA[{{{answer_incorrect4}}}]]></text>
+      <feedback format="html">
+        <text></text>
+      </feedback>
+    </answer>
+  </question>
+
+  '
+
 
 NUMERICAL_ANSWER_template = '
     <answer fraction="{{FRACTION}}" format="moodle_auto_format">
@@ -620,21 +693,41 @@ export_to_moodlexml <- function(exam_title, all_questions) {
 
       if (variant$variant_type == 'MULTICHOICE') {
 
-        xml_str <- paste(xml_str,
-                         whisker.render(MULTICHOICE_template,list(
-                           exam_title        = exam_title,
-                           question_title    = question[[1]],
-                           variant_title     = variant$variant_title,
-                           question_problem  = variant$enunciado,
-                           answer_correct    = variant$respostas[1], #"correta",
-                           answer_incorrect1 = variant$respostas[2], #"incorreta 1",
-                           answer_incorrect2 = variant$respostas[3], #"incorreta 2",
-                           answer_incorrect3 = variant$respostas[4], #"incorreta 3",
-                           feedbackglobal    = variant$feedbackglobal)
-                         ),
-                         sep='\n'
-        )
+        #debug
+        cat("Nr. de opções obtidas =", length(variant$respostas),'\n')
 
+        if (length(variant$respostas)==4) {
+          xml_str <- paste(xml_str,
+                          whisker.render(MULTICHOICE_template4,list(
+                            exam_title        = exam_title,
+                            question_title    = question[[1]],
+                            variant_title     = variant$variant_title,
+                            question_problem  = variant$enunciado,
+                            answer_correct    = variant$respostas[1], #"correta",
+                            answer_incorrect1 = variant$respostas[2], #"incorreta 1",
+                            answer_incorrect2 = variant$respostas[3], #"incorreta 2",
+                            answer_incorrect3 = variant$respostas[4], #"incorreta 3",
+                            feedbackglobal    = variant$feedbackglobal)
+                          ),
+                          sep='\n'
+          )
+        } else {
+          xml_str <- paste(xml_str,
+                          whisker.render(MULTICHOICE_template5,list(
+                            exam_title        = exam_title,
+                            question_title    = question[[1]],
+                            variant_title     = variant$variant_title,
+                            question_problem  = variant$enunciado,
+                            answer_correct    = variant$respostas[1], #"correta",
+                            answer_incorrect1 = variant$respostas[2], #"incorreta 1",
+                            answer_incorrect2 = variant$respostas[3], #"incorreta 2",
+                            answer_incorrect3 = variant$respostas[4], #"incorreta 3",
+                            answer_incorrect4 = variant$respostas[5], #"incorreta 4",
+                            feedbackglobal    = variant$feedbackglobal)
+                          ),
+                          sep='\n'
+          )
+        }
       } else if (variant$variant_type == 'NUMERICAL') {
 
         NUMERICAL_ANSWER_xml <- ''
@@ -731,6 +824,7 @@ export_to_moodlexml <- function(exam_title, all_questions) {
 #' Extracts "moodle questions" from a html file
 #'
 #' @param filename - an user/author written filename
+#' @param noneiscorrect
 #'
 #' @return - a list with "moodle questions"
 make_moodlexml <- function(filename) {
@@ -874,6 +968,8 @@ html_to_json_protected <- function(html_code) {
 #' in moodle.
 #'
 #' @param filename_no_extension
+#' @param noneiscorrect string like "None of the other is correct."
+#' 
 #'
 #' @return A xml file to be imported in moodle.
 #' @export
@@ -936,5 +1032,6 @@ xmlmoodle <- function(filename_no_extension) {
 
   make_moodlexml(paste(filename_no_extension,".html",sep=""))
 
+  return('ok')
 }
 

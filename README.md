@@ -6,11 +6,27 @@ rmdmoodle
 
 # develop
 
-## com windows
+
+## With R in Windows for developing
 
 * You can hold down the Control key during the launch of RStudio you can cause the R version selection dialog to display at startup. Fonte: https://support.rstudio.com/hc/en-us/articles/200486138-Using-Different-Versions-of-R
 
 (por fazer)
+
+
+```r
+install.packages("devtools")
+library(devtools)
+
+# Pode ser preciso:
+#.rs.restartR()
+
+# Evita a instalação e library(rmdmoodle):
+# With reset=TRUE, unload and reload the package for a clean start
+# It could necessary to install rvest package
+load_all("C:/Users/pedrocruz/Documents/GitHub/rmdmoodle", reset=TRUE)
+```
+
 
 
 ## com docker
