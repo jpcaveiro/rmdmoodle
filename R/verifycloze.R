@@ -5,10 +5,6 @@
 # - see test04-regex.R in WorkPackages/2020-rmdmoodle for experiences
 
 
-# variável local
-DEBUG <- F
-
-
 
 
 
