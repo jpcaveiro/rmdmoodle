@@ -622,7 +622,7 @@ rmdexam <- function(nvariants, rmdfilename, ...) {
 
   xmlmoodle(  rmdfilename_no_ext )
 
-  cat("Please, import ", rmdfilename_no_ext, ".xml to moodle.\n\n", sep='')
+  cat("\nPlease, import file ", rmdfilename_no_ext, ".xml to moodle.\n\n", sep='')
 
   return(rmdfilename)
 }
