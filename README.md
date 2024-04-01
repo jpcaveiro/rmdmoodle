@@ -1,4 +1,9 @@
-[homepage in construction](https://jpcaveiro.github.io/rmdmoodle/)
+
+# homepage
+
+* [homepage in construction](https://jpcaveiro.github.io/rmdmoodle/)
+* gitpages https://quarto.org/docs/publishing/github-pages.html
+
 
 # rmdmoodle
 
@@ -84,4 +89,4 @@ Abrir uma consola de um container em curso:
 docker exec -it <CONTAINER-name> bash
 ```
  
- 
+
