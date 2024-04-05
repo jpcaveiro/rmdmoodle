@@ -1,0 +1,32 @@
+---
+title: "Moodle"
+---
+
+O modo matemática, a usar no ficheiro Rmd, é com  `\(\bar x\)`.
+
+
+Resultado numérico arredondado a 4 casas decimais:
+
+```{2:NUMERICAL:=`r round(var,4)`:0.001}```
+
+Utilização de shortanswer:
+
+```{2:SHORTANSWER_S:=alguma palavra ou frase correta=outra correta\~esta é errada\~esta é outra errada}```
+
+* não usar LaTeX na shortanswer.
+* o moodle permite facilmente que o professor corrija e adapte a classificação lendo cada resposta de cada aluno.
+
+ 
+Para mostrar código R, **sem executar**, pode-se colocar três plicas e a letra "r":
+
+<pre>
+```r
+> x = matrix( c(A,B,C,D),nrow=2)
+```
+</pre>
+
+
+## Tipodes de questões Moodle
+
+Três tipos: CLOZE, MULTICHOICE, ESSAY.
+

@@ -1,0 +1,50 @@
+---
+title: "Base de Questões"
+---
+
+::: {.callout-tip}
+## Ideia
+
+Usufruir de uma base de questões, com alíneas, para criar um novo teste, escolhendo questões e que alíneas vão estar no teste.
+:::
+
+
+É frequente uma questão ser composta de um enredo e alíneas sobre esse enredo. Esta base de questões segue esse esquema com uma condição: as alíneas serem independentes, ou de algum modo, grupos de alíneas serem independentes entre si.
+
+A estrutura de ficheiros, que segue a ideia da imagem, baseia-se numa pasta raiz e subpastas com questões por capítulos:
+
+![](img/questions-folder-structure.png)
+
+em que
+
+1. Cada ficheiro R Markdown, por exemplo "c4-anova-1fator-com-dados.Rmd", tem uma questão definida por um enredo e alíneas.
+2. Cada alínea tem um nome que a identifica. No caso de questão mencionada, o RSTudio mostra as alíneas no "outline" do ficheiro Rmd:
+
+![](img/questions-with-items.png)
+
+
+Pode ser usado um sistema de controlo de versões (por exemplo, github) tornando a gestão acessível aos autores.
+
+
+## Criar um teste
+
+Num pasta de testes proceder assim:
+
+```r
+#install.packages("rmdmoodle")
+
+library(rmdmoodle)
+
+# Indica onde está a base de questões com alíneas
+set_exercise_root( "~/GitHub/rmdmoodle/examples/questions" )
+
+# Create an exam from exercises.
+rmdexam("exame-de-hoje.Rmd",
+        c("cap3/c3-estimativa.Rmd", "alinea01", "alinea04"),
+        c("cap4/c4-anova-1fator-com-dados.Rmd", "id01", "concept01") )
+```
+
+Neste código, o novo teste desigando por "exame-de-hoje.Rmd", contém duas questões, uma sobre estimativa e outra sobre anova, e respectivas alíneas.
+
+
+

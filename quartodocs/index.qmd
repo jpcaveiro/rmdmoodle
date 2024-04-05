@@ -1,0 +1,59 @@
+---
+title: "rmdmoodle"
+lang: pt 
+---
+
+This is a Quarto website.
+
+To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+
+```{r}
+1 + 1
+```
+
+
+
+## Construção desta documentação
+
+
+Ligações úteis:
+
+- [Document Language](https://quarto.org/docs/authoring/language.html#lang-option)
+- https://quarto.org/docs/books/book-structure.html
+
+
+## Desenvolvimento
+
+
+Contacto: Pedro Cruz ( pedrocruz at ua.pt )
+
+
+
+```r
+library(devtools)
+
+# Pode ser preciso:
+#.rs.restartR()
+
+
+# Evita a instalação e library(rmdmoodle):
+# With reset=TRUE, unload and reload the package for a clean start
+load_all("~/GitHub/rmdmoodle", reset=TRUE)
+
+
+set_exercise_root( "~/GitHub/rmdmoodle/examples" )
+get_exercise_root()
+
+
+# Create an exam from exercises.
+r <- rmdexam(6,
+             "exame-de-hoje.Rmd",
+             c("cap3/c3-estimativa.Rmd", "alinea01", "alinea04"),
+             c("cap4/c4-anova-1fator-com-dados.Rmd", "id01", "concept01") )
+```
+
+
+
+
+
+

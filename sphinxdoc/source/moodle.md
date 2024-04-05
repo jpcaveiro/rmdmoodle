@@ -1,4 +1,10 @@
 
+# quarto 
+
+- https://quarto.org/docs/websites/ (preferível)
+- https://quarto.org/docs/books/book-structure.html (não apropriado)
+
+
 # moodle questions
 
 
