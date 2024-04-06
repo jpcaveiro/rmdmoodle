@@ -1,2 +1,0 @@
-* folder `exams` contains an example of how to build an exam inside a Rmd file with `# Questions` and `## Variants`.
-* folder `questions` contains an example of how to build files with questions and their items, ready to be incorporated in an exam 
