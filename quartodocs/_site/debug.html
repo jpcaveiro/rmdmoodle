@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>rmdmoodle - Base de Questões</title>
+<title>rmdmoodle - Debug</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,40 +19,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -135,7 +101,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Teste Moodle</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./base.html" aria-current="page"> 
+    <a class="nav-link" href="./base.html"> 
 <span class="menu-text">Base de Questões</span></a>
   </li>  
   <li class="nav-item">
@@ -143,7 +109,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Exemplos</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./debug.html"> 
+    <a class="nav-link active" href="./debug.html" aria-current="page"> 
 <span class="menu-text">Debug</span></a>
   </li>  
   <li class="nav-item">
@@ -162,20 +128,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
-   
-  <ul>
-  <li><a href="#criar-um-teste" id="toc-criar-um-teste" class="nav-link active" data-scroll-target="#criar-um-teste">Criar um teste</a></li>
-  </ul>
-</nav>
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Base de Questões</h1>
+<h1 class="title">Debug</h1>
 </div>
 
 
@@ -192,47 +152,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Ideia
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Usufruir de uma base de questões, com alíneas, para criar um novo teste, escolhendo questões e que alíneas vão estar no teste.</p>
-</div>
-</div>
-<p>É frequente uma questão ser composta de um enredo e alíneas sobre esse enredo. Esta base de questões segue esse esquema com uma condição: as alíneas serem independentes, ou de algum modo, grupos de alíneas serem independentes entre si.</p>
-<p>A estrutura de ficheiros, que segue a ideia da imagem, baseia-se numa pasta raiz e subpastas com questões por capítulos:</p>
-<p><img src="img/questions-folder-structure.png" class="img-fluid"></p>
-<p>em que</p>
-<ol type="1">
-<li>Cada ficheiro R Markdown, por exemplo “c4-anova-1fator-com-dados.Rmd”, tem uma questão definida por um enredo e alíneas.</li>
-<li>Cada alínea tem um nome que a identifica. No caso de questão mencionada, o RSTudio mostra as alíneas no “outline” do ficheiro Rmd:</li>
-</ol>
-<p><img src="img/questions-with-items.png" class="img-fluid"></p>
-<p>Pode ser usado um sistema de controlo de versões (por exemplo, github) tornando a gestão acessível aos autores.</p>
-<section id="criar-um-teste" class="level2">
-<h2 class="anchored" data-anchor-id="criar-um-teste">Criar um teste</h2>
-<p>Num pasta de testes proceder assim:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("rmdmoodle")</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmdmoodle)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Indica onde está a base de questões com alíneas</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set_exercise_root</span>( <span class="st">"~/GitHub/rmdmoodle/examples/questions"</span> )</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an exam from exercises.</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rmdexam</span>(<span class="st">"exame-de-hoje.Rmd"</span>,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(<span class="st">"cap3/c3-estimativa.Rmd"</span>, <span class="st">"alinea01"</span>, <span class="st">"alinea04"</span>),</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(<span class="st">"cap4/c4-anova-1fator-com-dados.Rmd"</span>, <span class="st">"id01"</span>, <span class="st">"concept01"</span>) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Neste código, o novo teste desigando por “exame-de-hoje.Rmd”, contém duas questões, uma sobre estimativa e outra sobre anova, e respectivas alíneas.</p>
+<p><code>Error, please check :MULTICHOICE:=L</code></p>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
