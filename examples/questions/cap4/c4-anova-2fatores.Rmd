@@ -1,0 +1,424 @@
+---
+title: "c4-anova-1fator-com-dados"
+author: "JP Cruz  - A Freitas"
+date: "27/05/2022"
+output: html_document
+---
+
+
+# código
+
+
+Objetivo: Cap4 anova 1 fator usando dados
+
+
+**Configuração do que se vê no HTML de verificação**
+
+
+```{r echo=T, results=F, include=FALSE}
+VAR         = 1  # Só mostra a variante escolhida em VAR
+VARCOUNT    = 6  # total de variantes
+SHOWCODE    = T  # Mostra o código R (no HTML de verificação)
+SHOWRESULTS = F  # Mostra o output do R (no HTML de verificação)
+SET.SEED    = 12 # set.seed(SET.SEED)
+#Avoid scientific notation in all document
+options(scipen = 999)
+#Na commandline: str(knitr::opts_chunk$get())
+knitr::opts_chunk$set(echo = TRUE) 
+```
+
+
+
+```{r echo=SHOWCODE, results=SHOWRESULTS}
+set.seed(SET.SEED)
+library(kableExtra)
+
+GDIM = 4
+
+LOC_SD = 5 #desvio padrão igual em todos
+
+L1MEDIA = c(20,19,32,13,24,25)
+L2MEDIA = c(30,21,22,23,14,25)
+L3MEDIA = c(20,31,22,23,24,16)
+
+
+AMOSTRA1 = list(
+  round(rnorm(GDIM, L1MEDIA[1], LOC_SD),0),
+  round(rnorm(GDIM, L1MEDIA[2], LOC_SD),0),
+  round(rnorm(GDIM, L1MEDIA[3], LOC_SD),0),
+  round(rnorm(GDIM, L1MEDIA[4], LOC_SD),0),
+  round(rnorm(GDIM, L1MEDIA[5], LOC_SD),0),
+  round(rnorm(GDIM, L1MEDIA[6], LOC_SD),0)
+)
+
+
+AMOSTRA2 = list(
+  round(rnorm(GDIM, L2MEDIA[1], LOC_SD),0),
+  round(rnorm(GDIM, L2MEDIA[2], LOC_SD),0),
+  round(rnorm(GDIM, L2MEDIA[3], LOC_SD),0),
+  round(rnorm(GDIM, L2MEDIA[4], LOC_SD),0),
+  round(rnorm(GDIM, L2MEDIA[5], LOC_SD),0),
+  round(rnorm(GDIM, L2MEDIA[6], LOC_SD),0)
+)
+
+
+AMOSTRA3 = list(
+  round(rnorm(GDIM, L3MEDIA[1], LOC_SD),0),
+  round(rnorm(GDIM, L3MEDIA[2], LOC_SD),0),
+  round(rnorm(GDIM, L3MEDIA[3], LOC_SD),0),
+  round(rnorm(GDIM, L3MEDIA[4], LOC_SD),0),
+  round(rnorm(GDIM, L3MEDIA[5], LOC_SD),0),
+  round(rnorm(GDIM, L3MEDIA[6], LOC_SD),0)
+)
+
+
+## TABLE FORM
+create_table <- function(v) {
+  
+  loc1 <- AMOSTRA1[[v]]
+  loc2 <- AMOSTRA2[[v]]
+  loc3 <- AMOSTRA3[[v]]
+  
+  #matrix( c(loc1,loc2,loc3), 
+  #        nrow = 4,
+          #dimnames = list(
+          # `Observação`  = c("1","2","3","4"),
+          # `Zona do molusco` = c("Costa Nova", 
+          #                   "São Jacinto",
+          #                   "Torreira"))
+  #)
+  
+  data.frame( `CostaNova`= loc1, `SãoJacinto`=loc2, `Torreira`=loc3 )
+
+  }
+
+#tt <- create_table(1)
+#colnames(tt) <- c("CN","SJ","T")
+#print( tt )
+
+zonas = c( rep("1",4), rep("2",4), rep("3",4) )
+
+dados = list(
+   data.frame(peso = c( AMOSTRA1[[1]], AMOSTRA2[[1]], AMOSTRA3[[1]] ),
+              zona  = zonas),
+   data.frame(peso = c( AMOSTRA1[[2]], AMOSTRA2[[2]], AMOSTRA3[[2]] ),
+              zona  = zonas),
+   data.frame(peso = c( AMOSTRA1[[3]], AMOSTRA2[[3]], AMOSTRA3[[3]] ),
+              zona  = zonas),
+   data.frame(peso = c( AMOSTRA1[[4]], AMOSTRA2[[4]], AMOSTRA3[[4]] ),
+              zona  = zonas),
+   data.frame(peso = c( AMOSTRA1[[5]], AMOSTRA2[[5]], AMOSTRA3[[5]] ),
+              zona  = zonas),
+   data.frame(peso = c( AMOSTRA1[[6]], AMOSTRA2[[6]], AMOSTRA3[[6]] ),
+              zona  = zonas)
+)
+
+# Crazy R stuff
+# https://stackoverflow.com/questions/3366506/extract-p-value-from-aov
+
+AOVPVALUE = c(
+  summary(aov(peso~zona, data=dados[[1]]))[[1]][["Pr(>F)"]][1], 
+  summary(aov(peso~zona, data=dados[[2]]))[[1]][["Pr(>F)"]][1], 
+  summary(aov(peso~zona, data=dados[[3]]))[[1]][["Pr(>F)"]][1], 
+  summary(aov(peso~zona, data=dados[[4]]))[[1]][["Pr(>F)"]][1], 
+  summary(aov(peso~zona, data=dados[[5]]))[[1]][["Pr(>F)"]][1], 
+  summary(aov(peso~zona, data=dados[[6]]))[[1]][["Pr(>F)"]][1]
+)
+
+cat(AOVPVALUE,'\n')
+
+#plot( peso~zona, data=dados[[1]] )
+
+
+# H0
+frase11 = "os pesos médios, das três populações consideradas, não são significativamente diferentes"
+frase12 = "não existe evidência de que exista pelo menos um par de zonas com médias diferentes"
+frase13 = "não existem pares de zonas com médias significativamente diferentes"
+
+
+# H1
+frase21 = "existe pelo menos um par de zonas com pesos esperados significativamente diferentes"
+frase22 = "existe pelo menos uma zona com peso médio significativamente diferentes das restantes médias"
+
+
+
+AOV_CORRETA = c(
+  frase11,
+  frase21,
+  frase22,
+  frase21,
+  frase12,
+  frase13
+)
+
+AOV_INCORRETA = c(
+  frase21,
+  frase11,
+  frase12,
+  frase13,
+  frase22,
+  frase22
+)
+
+
+#A conclusão, no contexto do problema, é que
+#{:MULTICHOICE_S:=~os pesos são todos iguais~os pesos esperados são todos diferentes~}
+
+
+# Ria Formosa
+
+```
+
+
+
+# enredo cloze
+
+
+Pretende-se avaliar se o peso esperado (ou média populacional) de um molusco adulto difere em três zonas da Ria de Aveiro (Costa Nova, São Jacinto, Torreira) e para essa finalidade foram recolhidos 4 pesos de moluscos por zona apresentados na tabela seguinte:
+
+
+```{r echo=F}
+create_table(VAR) %>%
+  kbl() %>%
+  kable_styling() %>%
+  kable_paper(full_width = FALSE)
+```
+
+
+# alínea id01
+
+
+Identifique:
+
+a variável resposta (Y): {1:MULTICHOICE_S:= peso de um molusco \~ peso esperado de um molusco \~ zona \~ peso médio dos moluscos \~ localização do molusco }
+
+a variável independente, ou fator, (X): {1:MULTICHOICE_S:= zona \~ peso de um molusco \~ peso esperado de um molusco \~ peso médio dos moluscos \~ localização do molusco }
+
+
+
+# alínea id02
+
+
+Especifique a hipótese nula e a hipótese alternativa desta análise.
+
+H0: {1:MULTICHOICE_S:= os pesos esperados nas três zonas são iguais \~%-25% os pesos dos moluscos são todos iguais \~%-25% existe pelo menos um peso esperado diferente dos restantes \~%-25% todos os pesos esperados são diferentes \~%-25% existem pelo menos duas zonas com pesos esperados, de um molusco, diferentes } (desconta 25% do valor da questão se errar).
+
+H1: {1:MULTICHOICE_S:= existe, pelo menos, um par de zonas com pesos esperados diferentes \~ existe pelo menos um peso diferente dos pesos restantes \~ os pesos médios dos moluscos são todos iguais \~ todos os pesos esperados são diferentes \~ existem pelo menos duas zonas com pesos médios dos moluscos iguais }
+
+
+# alínea id03 
+
+Identifique ou determine:
+
+* o número de grupos é {1:MULTICHOICE_S:= 3 \~%-25% 4 \~%-25% 12 \~%-25% 1 } (desconta 25% do valor da questão se errar);
+* o número de observações em cada grupo é {1:NUMERICAL:=4}.
+
+
+# alínea concept01
+
+
+Indique a frase apropriada ao contexto da ANOVA:
+
+{20:MULTICHOICE_S= O fator zona divide-se em 3 grupos \~ O grupo zona divide-se em 3 fatores \~ O grupo zona divide-se em 3 níveis \~ O fator zona divide-se em 3 fatores }
+
+
+# alínea concept02
+
+
+Pretende efetuar-se uma ANOVA
+{20:MULTICHOICE_S:= a 1 fator que é zona \~ a 1 fator que é o peso \~ a 3 fatores que são as 3 zonas \~   a 4 fatores que são os 4 pesos }
+
+
+# alínea concept03
+
+
+Com os dados do enunciado, pretende efetuar-se uma ANOVA. A ANOVA a realizar é de efeitos {1:MULTICHOICE_S:= fixos \~ aleatórios \~ médios \~ homogéneos }.
+
+Na ANOVA paramétrica pressupõe-se, teoricamente, que os pesos observados nas três zonas provêm de distribuições normais {1:MULTICHOICE_S:= com variâncias iguais nas três zonas \~ com médias iguais nas três zonas \~ com médias nulas nas três zonas \~ com variâncias nulas nas três zonas }.
+
+
+
+# alínea concl01
+
+
+Considere o nível de significância de **1%**, assuma a normalidade dos dados e a homogeneidade das variâncias populacionais.
+
+
+O valor-p, resultante do teste da ANOVA paramétrica com a amostra apresentada, é 
+{1:NUMERICAL:=`r AOVPVALUE[VAR]`:0.001} (3 casas decimais).
+
+
+A conclusão, no contexto do problema, é que
+{1:MULTICHOICE_S:= `r AOV_CORRETA[VAR]` \~ `r AOV_INCORRETA[VAR]` \~ os pesos são todos iguais \~ os pesos médios são todos diferentes \~ os pesos médios amostrais, das três zona, não são significativamente diferentes \~ existe pelo menos um par de zonas com pesos amostrais significativamente diferentes }
+
+
+
+# alínea concl02
+
+
+REVER ESTA ALINEA 
+
+Considere o nível de significância de **1%**, assuma a normalidade dos dados e a homogeneidade das variâncias populacionais.
+
+
+O valor observado da estatística de teste, resultante do teste da ANOVA paramétrica com a amostra apresentada, é 
+{10:NUMERICAL:="r ???ESTATISTICA DE TESTE ??? [VAR]":0.001} (3 casas decimais).
+
+
+(*AGORA, NÃO tenha em conta valores obtidos na calculadora!*) 
+Se valor-p do teste for menor que **0.01**, a conclusão, no contexto do problema, é que
+{10:MULTICHOICE_S:= `r AOV_CORRETA[VAR]` \~ `r AOV_INCORRETA[VAR]` \~ existe pelo menos um par de zonas com pesos médios populacionais significativamente diferentes \~ os pesos médios amostrais das três zonas são todos iguais \~ os pesos médios populacionais são todos diferentes \~ os pesos médios amostrais, das três zonas, não são significativamente diferentes \~ existe pelo menos um par de pesos de zonas significativamente diferentes}
+
+
+
+
+# alínea tab01
+
+
+
+```{r, echo=SHOWCODE, results=SHOWRESULTS}
+
+dados = list(
+   data.frame(peso = c( AMOSTRA1[[1]], AMOSTRA2[[1]], AMOSTRA3[[1]] ),
+              zona  = zonas),
+   data.frame(peso = c( AMOSTRA1[[2]], AMOSTRA2[[2]], AMOSTRA3[[2]] ),
+              zona  = zonas),
+   data.frame(peso = c( AMOSTRA1[[3]], AMOSTRA2[[3]], AMOSTRA3[[3]] ),
+              zona  = zonas),
+   data.frame(peso = c( AMOSTRA1[[4]], AMOSTRA2[[4]], AMOSTRA3[[4]] ),
+              zona  = zonas),
+   data.frame(peso = c( AMOSTRA1[[5]], AMOSTRA2[[5]], AMOSTRA3[[5]] ),
+              zona  = zonas),
+   data.frame(peso = c( AMOSTRA1[[6]], AMOSTRA2[[6]], AMOSTRA3[[6]] ),
+              zona  = zonas)
+)
+
+# Crazy R stuff
+# https://stackoverflow.com/questions/3366506/extract-p-value-from-aov
+
+
+# Trocar os dados
+sf = list(
+  summary(aov(peso~zona, data=dados[[2]])),
+  summary(aov(peso~zona, data=dados[[3]])),
+  summary(aov(peso~zona, data=dados[[4]])),
+  summary(aov(peso~zona, data=dados[[5]])),
+  summary(aov(peso~zona, data=dados[[6]])),
+  summary(aov(peso~zona, data=dados[[1]]))
+)
+
+SSG = c( 
+  sf[[1]][[1]][["Sum Sq"]][1],
+  sf[[2]][[1]][["Sum Sq"]][1],
+  sf[[3]][[1]][["Sum Sq"]][1],
+  sf[[4]][[1]][["Sum Sq"]][1],
+  sf[[5]][[1]][["Sum Sq"]][1],
+  sf[[6]][[1]][["Sum Sq"]][1]
+)
+
+SSE = c( 
+  sf[[1]][[1]][["Sum Sq"]][2],
+  sf[[2]][[1]][["Sum Sq"]][2],
+  sf[[3]][[1]][["Sum Sq"]][2],
+  sf[[4]][[1]][["Sum Sq"]][2],
+  sf[[5]][[1]][["Sum Sq"]][2],
+  sf[[6]][[1]][["Sum Sq"]][2]
+)
+
+
+FOBS2 = c(
+ sf[[1]][[1]][["F value"]][1],
+ sf[[2]][[1]][["F value"]][1],
+ sf[[3]][[1]][["F value"]][1],
+ sf[[4]][[1]][["F value"]][1],
+ sf[[5]][[1]][["F value"]][1],
+ sf[[6]][[1]][["F value"]][1]
+)
+
+
+PVALUE2 = c(
+ sf[[1]][[1]][["Pr(>F)"]][1],
+ sf[[2]][[1]][["Pr(>F)"]][1],
+ sf[[3]][[1]][["Pr(>F)"]][1],
+ sf[[4]][[1]][["Pr(>F)"]][1],
+ sf[[5]][[1]][["Pr(>F)"]][1],
+ sf[[6]][[1]][["Pr(>F)"]][1]
+)
+
+
+#Na Ria Formosa, a ANOVA produziu um valor observado  da estatística de teste de
+#{:NUMERICAL:=`r FOBS2[VAR]`:0.01} (2 casas decimais) a que corresponde um 
+#valor-p {:NUMERICAL:`r PVALUE2[VAR]`:0.001} (3 casas decimais).
+
+
+cat(SSG,'\n')
+cat('\n')
+cat(SSE,'\n')
+cat('\n')
+cat(FOBS2,'\n')
+cat('\n')
+cat(PVALUE2,'\n')
+cat('\n')
+```
+
+
+
+Foi realizado um estudo semelhante na Ria Formosa, em Faro, com o mesmo volume de dados, igualmente em três zonas.
+
+
+Sabe-se que a soma de quadrados (SQG ou SSG), resultante da variação causada por cada zona, é 
+`r round(SSG[VAR],4)` e que a soma de quadrados (SQE ou SSE), devida aos afastamentos às médias por zona é
+`r round(SSE[VAR],4)`.
+
+Na Ria Formosa, a ANOVA produziu um valor observado  da estatística de teste de
+{1:NUMERICAL:=`r round(FOBS2[VAR],6)`:0.0001} (4 casas decimais, com zeros se necessário) a que corresponde um 
+valor-p {1:NUMERICAL:=`r round(PVALUE2[VAR],4)`:0.001} (3 casas decimais, com zeros se necessário).
+
+
+
+
+# alínea tab02
+
+
+Foi realizado um estudo semelhante na Ria Formosa, em Faro, com o mesmo volume de dados, igualmente em três zonas.
+
+
+O teste ANOVA produziu um valor observado da estatística de teste de
+`r round(FOBS2[VAR],4)` e uma  soma de quadrados (SQG ou SSG), resultante da variação causada por cada zona, de `r round(SSG[VAR],4)`.
+
+
+Assim, 
+
+* o valor-p da ANOVA, efetuada para a Ria Formosa, é {1:NUMERICAL:=`r round(PVALUE2[VAR],4)`:0.001} (3 casas decimais, com zeros se necessário);
+* a soma de quadrados (SQE ou SSE), devida aos afastamentos às médias por zona, é
+{1:NUMERICAL:=`r SSE[VAR]`:0.01} (2 casas decimais, com zeros se necessário).
+
+
+# alínea tab03
+
+
+
+Foi realizado um estudo semelhante na Ria Formosa, em Faro, com o mesmo volume de dados, igualmente em três zonas.
+
+Foi obtido o valor-p, da ANOVA, de `r round(PVALUE2[VAR],4)` e uma soma de quadrados (SQE ou SSE), devida aos afastamentos às médias por zona, de `r round(SSE[VAR],4)`.
+
+
+Com estes valores, o teste ANOVA produziu um valor observado da estatística de teste de
+{1:NUMERICAL:=`r FOBS2[VAR]`:0.001} (3 casas decimais) e uma  soma de quadrados, resultante da variação causada por cada zona, de {1:NUMERICAL:=`r SSG[VAR]`:0.01} (2 casas decimais).
+
+
+
+
+# alínea tab04
+
+
+Foi realizado um estudo semelhante na **Ria Formosa**, em Faro, com o mesmo volume de dados, igualmente em três zonas.
+
+
+Com base nesta nova amostra de dados, verificou-se que a média de quadrados (MQG ou MSG), resultante da variação causada por cada zona, é `r round(SSG[VAR],4)` e que  valor observado  da estatística de teste é `r round(FOBS2[VAR],6)`.
+
+Para os dados da **Ria Formosa**, a soma de quadrados totais (SQT ou SST) é igual a {1:NUMERICAL:=`r SSG[VAR]+SSE[VAR]`:0.1} (1 casa decimal, caso seja necessária) tendo a ANOVA produzido um valor-p igual a {1:NUMERICAL:=`r PVALUE2[VAR]`:0.001} (3 casas decimais, caso sejam necessárias).
+
+
+
+

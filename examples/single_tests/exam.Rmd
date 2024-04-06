@@ -1,0 +1,128 @@
+---
+title: "Exam With Question and their variants"
+author: "Author 1, Author 2"
+date: "2023/september"
+output: html_document
+---
+
+
+This format, called `rmdmoodle exam`, implements the following ideas:
+
+* this file contains an exam
+* an exam is made by questions marked with `# Question 01` (example below)
+* each question has variants marked with `## Variant 01` (example below)
+* after each variante could be a tag `### feedback` if it is necessary to give a feedback
+
+
+
+Between the title and up until first question marked with `#`, like this note, one can write:
+
+* code shared by all Questions and their Variants
+* notes that will not appear in moodle
+* one should not start lines with `#` because its reserved to declare questions and variants
+
+
+Code example shared with all Questions and their Variants:
+```{r}
+# fix seed to debug while developing an exam
+set.seed(10)
+# set sample size
+samplesize = 10
+```
+
+
+Next, it's the declaration of the first exam question.
+
+
+
+# Question 01 - Descriptive Statistics - CLOZE
+
+Here one can write:
+
+* code shared by all variants
+* notes that will no be in moodle
+
+For example, this question has 3 variants.
+
+
+```{r}
+ages = list(
+  round(rnorm(samplesize, 10,2),1),
+  round(rnorm(samplesize, 20,2),1),
+  round(rnorm(samplesize, 30,2),1)
+)
+```
+
+
+
+## Variante  `r VAR=1 ; sprintf("%02d", VAR)`
+
+Consider the following sample:
+
+```{r echo=FALSE} 
+cat(ages[[VAR]],'\n')
+```
+
+
+**(a)** 
+
+The sample mean is {:NUMERICAL:=`r mean(ages[[VAR]])`:0.1} (round to 1 decimal place).
+
+**(b)** 
+
+The maximum value of the sample is {:NUMERICAL:=`r max(ages[[VAR]])`}.
+
+
+### feedback
+
+Provide here some feedback.
+
+
+
+## Variante  `r VAR=2 ; sprintf("%02d", VAR) `
+
+Consider the following sample:
+
+```{r echo=FALSE} 
+cat(ages[[VAR]],'\n')
+```
+
+
+**(a)** 
+
+The sample mean is {:NUMERICAL:=`r mean(ages[[VAR]])`:0.1} (round to 1 decimal place).
+
+**(b)** 
+
+The minimum value of the sample is {:NUMERICAL:=`r max(ages[[VAR]])`}.
+
+
+### feedback
+
+Provide here some feedback.
+
+
+
+## Variante  `r VAR=3 ; sprintf("%02d", VAR) `
+
+Consider the following sample:
+
+```{r echo=FALSE} 
+cat(ages[[VAR]],'\n')
+```
+
+
+**(a)** 
+
+The sample mean is {:NUMERICAL:=`r mean(ages[[VAR]])`:0.1} (round to 1 decimal place).
+
+**(b)** 
+
+The value of $x_2$ is {:NUMERICAL:=`r ages[[VAR]][2]`}.
+
+
+### feedback
+
+Provide here some feedback.
+
+
