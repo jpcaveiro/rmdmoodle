@@ -15,6 +15,10 @@ website:
       - debug.qmd
       - sobre.qmd
 
+permissions:
+  id-token: write
+  pages: write
+
 format:
   html:
     theme: cosmo
