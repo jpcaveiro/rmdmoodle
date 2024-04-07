@@ -25,7 +25,6 @@ em que
 
 Pode ser usado um sistema de controlo de versões (por exemplo, github) tornando a gestão acessível aos autores.
 
-
 ## Criar um teste
 
 Num pasta de testes proceder assim:
