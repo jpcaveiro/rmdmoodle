@@ -20,5 +20,10 @@ format:
     css: styles.css
     toc: true
 
+project:
+  type: website
+  output-dir: docs
+
+  
 
 

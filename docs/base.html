@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>rmdmoodle - Exemplos</title>
+<title>rmdmoodle - Base de Questões</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,8 +64,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -68,65 +100,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-filename','listing-file-modified',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-filename","listing-file-modified"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -161,11 +135,11 @@ window.Quarto = {
 <span class="menu-text">Teste Moodle</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./base.html"> 
+    <a class="nav-link active" href="./base.html" aria-current="page"> 
 <span class="menu-text">Base de Questões</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./examples.html" aria-current="page"> 
+    <a class="nav-link" href="./examples.html"> 
 <span class="menu-text">Exemplos</span></a>
   </li>  
   <li class="nav-item">
@@ -188,14 +162,20 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#criar-um-teste" id="toc-criar-um-teste" class="nav-link active" data-scroll-target="#criar-um-teste">Criar um teste</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Exemplos</h1>
+<h1 class="title">Base de Questões</h1>
 </div>
 
 
@@ -212,244 +192,49 @@ window.Quarto = {
 </header>
 
 
-<!--# tirar - "examples/*.png" -->
-<!--# esta listagem é gerada automaticamente e pode ser alterada; ver https://quarto.org/docs/websites/website-listings-custom.html -->
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Ideia
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Usufruir de uma base de questões, com alíneas, para criar um novo teste, escolhendo questões e que alíneas vão estar no teste.</p>
+</div>
+</div>
+<p>É frequente uma questão ser composta de um enredo e alíneas sobre esse enredo. Esta base de questões segue esse esquema com uma condição: as alíneas serem independentes, ou de algum modo, grupos de alíneas serem independentes entre si.</p>
+<p>A estrutura de ficheiros, que segue a ideia da imagem, baseia-se numa pasta raiz e subpastas com questões por capítulos:</p>
+<p><img src="img/questions-folder-structure.png" class="img-fluid"></p>
+<p>em que</p>
+<ol type="1">
+<li>Cada ficheiro R Markdown, por exemplo “c4-anova-1fator-com-dados.Rmd”, tem uma questão definida por um enredo e alíneas.</li>
+<li>Cada alínea tem um nome que a identifica. No caso de questão mencionada, o RSTudio mostra as alíneas no “outline” do ficheiro Rmd:</li>
+</ol>
+<p><img src="img/questions-with-items.png" class="img-fluid"></p>
+<p>Pode ser usado um sistema de controlo de versões (por exemplo, github) tornando a gestão acessível aos autores.</p>
+<section id="criar-um-teste" class="level2">
+<h2 class="anchored" data-anchor-id="criar-um-teste">Criar um teste</h2>
+<p>Num pasta de testes proceder assim:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("rmdmoodle")</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmdmoodle)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Indica onde está a base de questões com alíneas</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set_exercise_root</span>( <span class="st">"~/GitHub/rmdmoodle/examples/questions"</span> )</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an exam from exercises.</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rmdexam</span>(<span class="st">"exame-de-hoje.Rmd"</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(<span class="st">"cap3/c3-estimativa.Rmd"</span>, <span class="st">"alinea01"</span>, <span class="st">"alinea04"</span>),</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(<span class="st">"cap4/c4-anova-1fator-com-dados.Rmd"</span>, <span class="st">"id01"</span>, <span class="st">"concept01"</span>) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Neste código, o novo teste desigando por “exame-de-hoje.Rmd”, contém duas questões, uma sobre estimativa e outra sobre anova, e respectivas alíneas.</p>
 
 
+</section>
 
-
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-03-29 055418.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-03-29 055418.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-03-29 055418.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-03-29 104046.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-03-29 104046.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-03-29 104046.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-01 063723.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-01 063723.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-01 063723.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-01 172042.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-01 172042.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-01 172042.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-01 172115.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-01 172115.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-01 172115.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="5" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-01 172244.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-01 172244.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-01 172244.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="6" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-01 172424.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-01 172424.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-01 172424.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="7" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-02 105955.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-02 105955.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-02 105955.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="8" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-02 171539.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-02 171539.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-02 171539.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="9" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-02 171711.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-02 171711.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-02 171711.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="10" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-03 071318.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-03 071318.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-03 071318.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="11" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-03 072855.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-03 072855.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-03 072855.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="12" data-listing-file-modified-sort="1712506440434">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-03 073821.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-03 073821.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-03 073821.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="13" data-listing-file-modified-sort="1712506440434">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-03 073832.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-03 073832.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-03 073832.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="14" data-listing-file-modified-sort="1712506440434">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-03 073847.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-03 073847.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-03 073847.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

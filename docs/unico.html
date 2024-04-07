@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>rmdmoodle - Exemplos</title>
+<title>rmdmoodle - Teste Moodle</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -30,8 +64,6 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-listing/list.min.js"></script>
-<script src="site_libs/quarto-listing/quarto-listing.js"></script>
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -68,65 +100,10 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
-<script>
+<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-filename','listing-file-modified',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      
-      searchColumns: ["listing-filename","listing-file-modified"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
-
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -157,7 +134,7 @@ window.Quarto = {
 <span class="menu-text">Moodle</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./unico.html"> 
+    <a class="nav-link active" href="./unico.html" aria-current="page"> 
 <span class="menu-text">Teste Moodle</span></a>
   </li>  
   <li class="nav-item">
@@ -165,7 +142,7 @@ window.Quarto = {
 <span class="menu-text">Base de Questões</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./examples.html" aria-current="page"> 
+    <a class="nav-link" href="./examples.html"> 
 <span class="menu-text">Exemplos</span></a>
   </li>  
   <li class="nav-item">
@@ -188,14 +165,20 @@ window.Quarto = {
 <!-- sidebar -->
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#detalhes" id="toc-detalhes" class="nav-link active" data-scroll-target="#detalhes">Detalhes</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Exemplos</h1>
+<h1 class="title">Teste Moodle</h1>
 </div>
 
 
@@ -212,244 +195,374 @@ window.Quarto = {
 </header>
 
 
-<!--# tirar - "examples/*.png" -->
-<!--# esta listagem é gerada automaticamente e pode ser alterada; ver https://quarto.org/docs/websites/website-listings-custom.html -->
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Ideia
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Num único ficheiro R Markdown define-se um exame Moodle explicitando o que constitui cada “questão aleatória” (variantes).</p>
+</div>
+</div>
+<p>Por “Teste Moodle” entende-se que há um ficheiro R Markdown (Rmd):</p>
+<ul>
+<li><p>que contém todas as questões do teste de forma explícita.</p></li>
+<li><p>implementa questões Moodle dos tipos: CLOZE, MULTICHOICE, ESSAY.</p></li>
+<li><p>cada secção <code>#</code> define uma “questão aleatória” que pode ser vista como:</p>
+<ul>
+<li>um conjunto de questões com um prósito similar a serem sorteadas no momento do teste;</li>
+<li>uma categoria Moodle dentro da qual estão questões concretas.</li>
+</ul></li>
+<li><p>dentro de cada secção <code>#</code>, ocorre uma ou mais subsecções <code>##</code> que definem questões concretas:</p>
+<ul>
+<li>dentro do Moodle corresponde a uma questão concreta;</li>
+<li>eventualmente, o auto pode editar essa questão já dentro do Moodle.</li>
+</ul></li>
+</ul>
+<p>O fluxo de etapas é a seguinte:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart LR
+    T[Teacher] --&gt;|creates| A
+    A[R Markdown\n'exam.Rmd'] --&gt;|knitr| B[HTML file]
+    B --&gt;|review| A
+    A --&gt;|"export\n(...)"| M[Moodle]
+    M --&gt; S[Student]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="detalhes" class="level2">
+<h2 class="anchored" data-anchor-id="detalhes">Detalhes</h2>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">R Markdown</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">HTML</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Instruções</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false">Fluxo</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false">Moodle</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<pre><code>---
+title: "Teste Moodle em ficheiro único"
+author: "Pedro Cruz"
+date: "2024/setembro/10"
+output: html_document
+---
+
+# Question 1 - Estatística Descritiva - CLOZE
 
 
+## Variante 1
+
+Considere a amostra \(2.2, 5.6, 3.8\):
+
+**(a)** A média amostral é {:NUMERICAL:=3.866667:0.005} (use 2 casas decimais).
+
+**(b)** O valor máximo é {:NUMERICAL:=5.6}.
+
+**(c)** A média é uma medida de 
+{:MULTICHOICE:=localização central\~localização relativa\~dispersão}
 
 
-<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
-<div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-listing-file-modified-sort="1712506440419">
-<div class="body">
+### feedback
+
+Consulte o Capítulo 1 - Estatística Descritiva.
+
+
+## Variante 2
+
+Considere a amostra \(2.2, 5.6, 1.1\):
+
+**(a)** A média amostral é {:NUMERICAL:=2.966667:0.005} (use 2 casas decimais).
+
+**(b)** O valor mínimo é {:NUMERICAL:=2.2}.
+
+**(c)** O desvio padrão corrigido é uma medida de 
+{:MULTICHOICE:=dispersão\~localização central\~localização relativa}
+
+
+### feedback
+
+Consulte o Capítulo 1 - Estatística Descritiva.
+
+
+# Questão 2 - Natureza e escalas - MULTICHOICE
+
+
+## Variante 01  
+
+Seja "N.º diário de pagamentos numa loja de roupas" uma variável estatística. 
+Esta é uma variável é
+
+### Respostas  
+
+* quantitativa, discreta, classificada em escala de razão.  
+* qualitativa, classificada em escala ordinal.
+* quantitativa, contínua, classificada em escala de intervalos.
+* quantitativa, discreta, classificada em escala nominal.
+
+### Feedback
+
+Consulte o Capítulo 1 - Estatística Descritiva.
+
+## Variante 02  
+
+
+Seja "peso de uma enguia (em kg)" uma variável estatística. 
+Esta é uma variável é
+
+### Respostas  
+
+* quantitativa, contínua, classificada em escala de razão.
+* quantitativa, discreta, classificada em escala de intervalos.  
+* qualitativa, classificada em escala ordinal.
+* quantitativa, discreta, classificada em escala nominal.
+
+### Feedback
+
+Consulte o Capítulo 1 - Estatística Descritiva.
+</code></pre>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+
+
+<meta charset="utf-8">
+<meta name="generator" content="pandoc">
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+<meta name="author" content="Pedro Cruz">
+<meta name="date" content="2024/setembro/10">
+<title>
+Teste Moodle em ficheiro único
+</title>
+
+
+<div class="container-fluid main-container">
+<div id="header">
+<h1 class="title toc-ignore">
+Teste Moodle em ficheiro único
+</h1>
+<h4 class="author anchored">
+Pedro Cruz
+</h4>
+<h4 class="date anchored">
+2024-04-05
+</h4>
+</div>
+<section id="question-1---estatística-descritiva---cloze" class="level1">
+<h1>
+Question 1 - Estatística Descritiva - CLOZE
+</h1>
+<section id="variante-1" class="level2">
+<h2 class="anchored" data-anchor-id="variante-1">
+Variante 1
+</h2>
+<p>
+Considere a amostra <span class="math inline">(2.2, 5.6, 3.8)</span>:
+</p>
+<p>
+<strong>(a)</strong> A média amostral é {:NUMERICAL:=3.866667:0.005} (use 2 casas decimais).
+</p>
+<p>
+<strong>(b)</strong> O valor máximo é {:NUMERICAL:=5.6}.
+</p>
+<p>
+<strong>(c)</strong> A média é uma medida de {:MULTICHOICE:=localização central~localização relativa~dispersão}
+</p>
+<section id="feedback" class="level3">
+<h3 class="anchored" data-anchor-id="feedback">
+feedback
+</h3>
+<p>
+Consulte o Capítulo 1 - Estatística Descritiva.
+</p>
+</section>
+</section>
+<section id="variante-2" class="level2">
+<h2 class="anchored" data-anchor-id="variante-2">
+Variante 2
+</h2>
+<p>
+Considere a amostra <span class="math inline">(2.2, 5.6, 1.1)</span>:
+</p>
+<p>
+<strong>(a)</strong> A média amostral é {:NUMERICAL:=2.966667:0.005} (use 2 casas decimais).
+</p>
+<p>
+<strong>(b)</strong> O valor mínimo é {:NUMERICAL:=2.2}.
+</p>
+<p>
+<strong>(c)</strong> O desvio padrão corrigido é uma medida de {:MULTICHOICE:=dispersão~localização central~localização relativa}
+</p>
+<section id="feedback-1" class="level3">
+<h3 class="anchored" data-anchor-id="feedback-1">
+feedback
+</h3>
+<p>
+Consulte o Capítulo 1 - Estatística Descritiva.
+</p>
+</section>
+</section>
+</section>
+<section id="questão-2---natureza-e-escalas---multichoice" class="level1">
+<h1>
+Questão 2 - Natureza e escalas - MULTICHOICE
+</h1>
+<section id="variante-01" class="level2">
+<h2 class="anchored" data-anchor-id="variante-01">
+Variante 01
+</h2>
+<p>
+Seja “N.º diário de pagamentos numa loja de roupas” uma variável estatística. Esta é uma variável é
+</p>
+<section id="respostas" class="level3">
+<h3 class="anchored" data-anchor-id="respostas">
+Respostas
+</h3>
+<ul>
+<li>
+quantitativa, discreta, classificada em escala de razão.<br>
+</li>
+<li>
+qualitativa, classificada em escala ordinal.
+</li>
+<li>
+quantitativa, contínua, classificada em escala de intervalos.
+</li>
+<li>
+quantitativa, discreta, classificada em escala nominal.
+</li>
+</ul>
+</section>
+<section id="feedback-2" class="level3">
+<h3 class="anchored" data-anchor-id="feedback-2">
+Feedback
+</h3>
+<p>
+Consulte o Capítulo 1 - Estatística Descritiva.
+</p>
+</section>
+</section>
+<section id="variante-02" class="level2">
+<h2 class="anchored" data-anchor-id="variante-02">
+Variante 02
+</h2>
+<p>
+Seja “peso de uma enguia (em kg)” uma variável estatística. Esta é uma variável é
+</p>
+<section id="respostas-1" class="level3">
+<h3 class="anchored" data-anchor-id="respostas-1">
+Respostas
+</h3>
+<ul>
+<li>
+quantitativa, contínua, classificada em escala de razão.
+</li>
+<li>
+quantitativa, discreta, classificada em escala de intervalos.<br>
+</li>
+<li>
+qualitativa, classificada em escala ordinal.
+</li>
+<li>
+quantitativa, discreta, classificada em escala nominal.
+</li>
+</ul>
+</section>
+<section id="feedback-3" class="level3">
+<h3 class="anchored" data-anchor-id="feedback-3">
+Feedback
+</h3>
+<p>
+Consulte o Capítulo 1 - Estatística Descritiva.
+</p>
+</section>
+</section>
+</section>
+</div>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
 
 </div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-03-29 055418.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-03-29 055418.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-03-29 055418.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="1" data-listing-file-modified-sort="1712506440419">
-<div class="body">
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>Primeiro edita-se o ficheiro de nome <code>exam01.Rmd</code>, por exemplo, fazendo knitr até estar pronto.</p>
+<p>Depois produz-se o ficheiro xml para ser importado para as “Categorias” Moodle do seguinte modo:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">library</span>(rmdmoodle)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">xmlmoodle</span>(<span class="st">"exam01"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>O resultado é este:</p>
+<pre><code>&gt; xmlmoodle("exam01")
 
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-03-29 104046.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-03-29 104046.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-03-29 104046.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="2" data-listing-file-modified-sort="1712506440419">
-<div class="body">
+------------------
+Processing question: Question 1 - Estatística Descritiva - CLOZE 
+--------------------
 
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-01 063723.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-01 063723.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-01 063723.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="3" data-listing-file-modified-sort="1712506440419">
-<div class="body">
+ Processing Variante 1 
+ Processing Variante 2 
 
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-01 172042.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-01 172042.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-01 172042.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-listing-file-modified-sort="1712506440419">
-<div class="body">
+------------------
+Processing question: Questão 2 - Natureza e escalas - MULTICHOICE 
+--------------------
 
+ Processing Variante 01 
+ Processing Variante 02
+ </code></pre>
+<p>sendo produzido um ficheiro <code>exam01.xml</code> que pode ser importado para o Moodle:</p>
+<p><img src="img/moodle_import_teste_unico.png" class="img-fluid"></p>
 </div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-01 172115.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-01 172115.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-01 172115.png
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    S[start] --&gt;|docs and\nexamples| A
+    A[R Markdown\n'exam.Rmd'] --&gt;|knitr| B[HTML file]
+    B --&gt;|review\nfrequently| A
+    A --&gt;|open| C
+    C[R console] --&gt;|"&gt; library(rmdmoodle)\n&gt; xmlmoodle('exam')"| D[xml file\n'exam.xml']
+    D --&gt;|import| E[Moodle]
+    E --&gt;|"review,\n(rarely)"| A
+    E --&gt; F[Real test moment]
+    F --&gt;|improvements| A
+</pre>
 </div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
+<p></p></figure><p></p>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-listing-file-modified-sort="1712506440419">
-<div class="body">
+</div>
+</div>
+<div id="tabset-1-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-5-tab">
+<p><strong>Teste como categoria moodle</strong></p>
+<p>A imagem seguinte mostra o “exam01” como “Categoria Moodle” após importação do ficheiro “exam01.xml”:</p>
+<p><img src="img/moodle_categorias_teste_unico.png" class="img-fluid"></p>
+<p><strong>Grupo de questões como subcategoria moodle</strong></p>
+<p>A subcategoria “Question 1 - Estatística Descritiva - CLOZE” tem duas questões que podem ser visualizadas:</p>
+<p><img src="img/moodle_categoria_e_variantes.png" class="img-fluid"></p>
+<p>Essas questões serão sorteadas pelos estudantes no momento de um teste.</p>
+<p><strong>Criação do teste no Moodle</strong></p>
+<p>Na criação do teste, opta-se por “+ uma pergunta aleatória” indicando, posteriormente, a subcategoria “Question 1 - Estatística Descritiva - CLOZE”</p>
+<p><img src="img/subcategoria_e_questao_aleatoria.png" class="img-fluid"></p>
+</div>
+</div>
+</div>
 
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-01 172244.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-01 172244.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-01 172244.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="6" data-listing-file-modified-sort="1712506440419">
-<div class="body">
 
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-01 172424.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-01 172424.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-01 172424.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="7" data-listing-file-modified-sort="1712506440419">
-<div class="body">
+</section>
 
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-02 105955.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-02 105955.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-02 105955.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="8" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-02 171539.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-02 171539.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-02 171539.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="9" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-02 171711.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-02 171711.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-02 171711.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="10" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-03 071318.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-03 071318.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-03 071318.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="11" data-listing-file-modified-sort="1712506440419">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-03 072855.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-03 072855.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-03 072855.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="12" data-listing-file-modified-sort="1712506440434">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-03 073821.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-03 073821.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-03 073821.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="13" data-listing-file-modified-sort="1712506440434">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-03 073832.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-03 073832.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-03 073832.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="14" data-listing-file-modified-sort="1712506440434">
-<div class="body">
-
-</div>
-<div class="metadata">
-<p><a href="./examples\Captura de ecrã 2024-04-03 073847.png" class="no-external"></a></p><a href="./examples\Captura de ecrã 2024-04-03 073847.png" class="no-external">
-<div class="metadata-value listing-filename">
-Captura de ecrã 2024-04-03 073847.png
-</div>
-<div class="metadata-value listing-file-modified">
-4/7/24, 5:14:00 PM
-</div>
-</a>
-</div>
-</div>
-</div>
-<div class="listing-no-matching d-none">
-No matching items
-</div>
-</div></main> <!-- /main -->
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

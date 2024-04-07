@@ -1,0 +1,16 @@
+---
+title: "Sobre"
+---
+
+Sobre este *website*:
+
+```{r}
+1 + 1
+```
+
+
+Autores:
+
+- Pedro Cruz
+- Adelaide Freitas
+
