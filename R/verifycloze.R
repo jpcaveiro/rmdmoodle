@@ -34,6 +34,12 @@
 
 
 
+AFIND_MAX_DISTANCE <- 4
+# TODO:
+#
+# número versus NUMERICAL com "AFIND_MAX_DISTANCE <- 6" dispara a situação
+#
+
 
 #' Before formal parse (with regex), it searches using `stringdist::afind`
 #' for MULTICHOICE_S, NUMERICAL and SHORTANSWER patterns.
@@ -41,8 +47,8 @@
 #'
 #' @param uclozetext - an uppercase text
 #'
-#' @return FALSE or list(pattern="...pattern...", afind=afind.result)
-maybe.a.pattern <- function(uclozetext) {
+#' @return FALSE or list(pattern="...pattern...", afind=afind_result)
+maybe_pattern <- function(uclozetext) {
 
   # stringdist::afind returns
   # $ location: int [1, 1] 11
@@ -51,16 +57,18 @@ maybe.a.pattern <- function(uclozetext) {
 
 
   # MAYBE a :MULTICHOICE_S:
-  afind.result <- stringdist::afind(toupper(uclozetext),":MULTICHOICE_S:")
-  if (afind.result$distance<=6) { #TODO: tune this 6
-    return(list(pattern="[^{^}]{\\d*:MULTICHOICE_S:=(?<inside>[^}]*)}", afind=afind.result))
+  afind_result <- stringdist::afind(toupper(uclozetext), ":MULTICHOICE_S:")
+  if (afind_result$distance <= AFIND_MAX_DISTANCE) { #TODO: tune this 6
+    return(list(pattern = "[^{^}]{\\d*:MULTICHOICE_S:=(?<inside>[^}]*)}",
+                afind = afind_result))
   }
 
 
   # MAYBE a :NUMERICAL:
-  afind.result <- stringdist::afind(toupper(uclozetext),":NUMERICAL:")
-  if (afind.result$distance<=6) { #TODO: tune this 6
-    return(list(pattern="[^{^}]{\\d*:NUMERICAL:=(?<inside>[^}]*)}", afind=afind.result))
+  afind_result <- stringdist::afind(toupper(uclozetext),":NUMERICAL:")
+  if (afind_result$distance <= AFIND_MAX_DISTANCE) { #TODO: tune this 6
+    return(list(pattern = "[^{^}]{\\d*:NUMERICAL:=(?<inside>[^}]*)}",
+                afind = afind_result))
   }
 
 
@@ -69,7 +77,7 @@ maybe.a.pattern <- function(uclozetext) {
 
 
   #found no pattern
-  return( FALSE )
+  return(FALSE)
 }
 
 
@@ -78,20 +86,20 @@ maybe.a.pattern <- function(uclozetext) {
 #' Formal verification of cloze instructions (using regex).
 #'
 #' @param uclozetext
-#' @param resultofmaybe is list(pattern="...pattern...", afind=afind.result)
+#' @param resultofmaybe is list(pattern="...pattern...", afind=afind_result)
 #'
 #' @return list(type="...",  options = options, pos.s = pos.s,  pos.e = pos.e)
-#'
-validate.pattern <- function(uclozetext,resultofmaybe) {
+validate_pattern <- function(uclozetext, resultofmaybe) {
 
   # See test04-regex.R in "regexpr" section for a study of cases.
-
   # resultofmaybe$pattern could be:
   #   "[^}]{\\d*:MULTICHOICE_S:=(?<inside>[^}]*)}"
 
-  parsed <- regexpr(resultofmaybe$pattern, uclozetext, perl = T, ignore.case = T)
+  parsed <- regexpr(resultofmaybe$pattern,
+                    uclozetext, perl = TRUE,
+                    ignore.case = TRUE)
 
-  if (parsed==-1) {
+  if (parsed == -1) {
     return(FALSE)
   }
 
@@ -109,7 +117,7 @@ validate.pattern <- function(uclozetext,resultofmaybe) {
   # - attr(*, "capture.names")= chr "inside"
 
 
-
+  # get field "inside"
   ml <- attr(parsed, "match.length")
   cs <- attr(parsed, "capture.start")
   cl <- attr(parsed, "capture.length")
@@ -119,25 +127,33 @@ validate.pattern <- function(uclozetext,resultofmaybe) {
   #debug
   #cat("options=",options,"\n")
 
-  if( grepl("<SUB>",options, ignore.case=T) ) {
+
+  # MULTICHOICE_S or NUMERICAL options situations
+  if (grepl("<SUB>", options, ignore.case = TRUE)) {
     cat("    Error: use '\\~' instead of only '~' in RMarkdown file to avoid produce '<sub>' tag.\n")
   }
-  options <- strsplit(options, "~")
+  options_list <- strsplit(options, "~")
+
+  # NUMERICAL options situations
+  if (grepl("\\^", options, ignore.case = TRUE) && grepl("NUMERICAL", resultofmaybe$pattern, ignore.case = TRUE) ) {
+    cat(paste0("    Error: moodle does not support curly braces in numbers like 10^{2}. See '", options, "'\n"))
+  }
+
 
   attributes(parsed) <- NULL
-  pos.s <- parsed+1
-  pos.e <- parsed+ml-1
+  pos.s <- parsed + 1
+  pos.e <- parsed + ml - 1
 
 
-  if ( grepl("MULTICHOICE_S",resultofmaybe$pattern, ignore.case = T) ) {
+  if (grepl("MULTICHOICE_S", resultofmaybe$pattern, ignore.case = TRUE)) {
     type <- "MULTICHOICE_S"
-  } else if ( grepl("NUMERICAL",resultofmaybe$pattern, ignore.case = T) ) {
+  } else if (grepl("NUMERICAL", resultofmaybe$pattern, ignore.case = TRUE)) {
     type <- "NUMERICAL"
-  } else if ( grepl("SHORTANSWER",resultofmaybe$pattern, ignore.case = T) ) {
+  } else if (grepl("SHORTANSWER", resultofmaybe$pattern, ignore.case = TRUE)) {
     type <- "SHORTANSWER"
   }
 
-  return( list(type = type, options = options, pos.s = pos.s,  pos.e = pos.e) )
+  return(list(type = type, options = options_list, pos.s = pos.s,  pos.e = pos.e))
 }
 
 
@@ -175,7 +191,7 @@ validate.pattern <- function(uclozetext,resultofmaybe) {
 #' @examples
 #' verifycloze("some text {:NUMERICAL:=10:0} etc\n etc\n {15:MULTICHOICE_S:=A~B~C}\n")
 #'
-verifycloze <- function(clozetext,showprogress=F) {
+verifycloze <- function(clozetext, showprogress = FALSE) {
 
   # Algorithm:
   # text: "from {:multihcoice_s:...} and blá blá {:numerical:=...} until the end!"
@@ -190,30 +206,30 @@ verifycloze <- function(clozetext,showprogress=F) {
 
   #pos <- 1
   #nn <- nchar(clozetext)
-  must.try = T
+  must_try <- TRUE
 
   imax_debug <- 1
 
-  while(must.try) {
+  while (must_try) {
 
     if (showprogress) {
-      cat("uclozetext:\n",uclozetext,"\n")
+      cat("uclozetext:\n", uclozetext, "\n")
     }
 
 
-    resultofmaybe <- maybe.a.pattern(uclozetext)
+    resultofmaybe <- maybe_pattern(uclozetext)
 
-    must.try <- F
+    must_try <- FALSE
 
     # TODO - it does not work : if(resultofmaybe)
     #        when "resultofmaybe" is a list() or FALSE
-    if (class(resultofmaybe)=="list") {
+    if (class(resultofmaybe) == "list") {
 
       # validade formaly and warn if errors
-      resultofvalidate <- validate.pattern(uclozetext,resultofmaybe)
-      must.try <- T #must try again to find next instruction
+      resultofvalidate <- validate_pattern(uclozetext, resultofmaybe)
+      must_try <- TRUE #must try again to find next instruction
 
-      if (class(resultofvalidate)=="list") {
+      if (class(resultofvalidate) == "list") {
 
         #TODO: make the next cat() optional for user/author:
 
@@ -234,10 +250,9 @@ verifycloze <- function(clozetext,showprogress=F) {
         pos.s <- resultofvalidate$pos.s
         pos.e <- resultofvalidate$pos.e
 
-        uclozetext <- paste0(
-                substr(uclozetext, 1, pos.s - 1),
-                "REMOVED-CORRECTINSTRUCTION",
-                substr(uclozetext, pos.e + 1, nchar(uclozetext)))
+        uclozetext <- paste0(substr(uclozetext, 1, pos.s - 1),
+                             "REMOVED-CORRECTINSTRUCTION",
+                             substr(uclozetext, pos.e + 1, nchar(uclozetext)))
 
       } else {
 
@@ -247,24 +262,32 @@ verifycloze <- function(clozetext,showprogress=F) {
 
         #warn user/author
         #TODO: improve error message with solution
-        cat("    Error, please check", resultofmaybe$afind$match,"\n")
+        cat(paste0("    Check eventual situation in CLOZE syntax: "))
+        #cat(paste0("    ", resultofmaybe$afind$match, "\n"))
+        start_pos <- resultofmaybe$afind$location
+        stop_pos  <- min(resultofmaybe$afind$location+50,nchar(uclozetext))
+        cat(paste0("    ", substr(uclozetext,start_pos,stop_pos)))
+        cat("\n")
 
         #build new uclozetext from "resultofmaybe"
-        uclozetext <- gsub(resultofmaybe$afind$match, "REMOVED-POSSIBLEINSTRUCTION", uclozetext, ignore.case = T)
+        uclozetext <- gsub(resultofmaybe$afind$match,
+                           "REMOVED-POSSIBLEINSTRUCTION",
+                           uclozetext,
+                           ignore.case = TRUE)
 
       }
 
       #debug
       imax_debug <- imax_debug + 1
-      if (imax_debug>100) {
+      if (imax_debug > 100) {
         stop("rmdmoodle::verifycloze() is not working! Contact developer.")
       }
 
     }
-  } #end while(must.try)
+  } #end while(must_try)
 
   if (showprogress) {
-    cat("uclozetext:\n",uclozetext,"\n")
+    cat("uclozetext:\n", uclozetext, "\n")
   }
 
 

@@ -310,7 +310,7 @@ is_level <- function(html_part, str_level, keyword) {
   }
 
   #debug
-  # GGG <<- html_part
+  # GGG <<- html_part # nolint
   # cat('\n\n\ninício de is_level\n')
   # print(html_part)
   # cat( 'contém a keyword = ', grepl(keyword,html_part,ignore.case=TRUE),'\n' )
@@ -322,9 +322,9 @@ is_level <- function(html_part, str_level, keyword) {
   # )
   #stop()
 
-  return(  html_name(html_part)=='div' &&
-             grepl(keyword,html_part,ignore.case=TRUE) &&
-             html_attrs(html_part)[2] == str_level )
+  return(html_name(html_part) == "div" &&
+          grepl(keyword, html_part, ignore.case = TRUE) &&
+          html_attrs(html_part)[2] == str_level)
 
 }
 
@@ -434,14 +434,14 @@ question_with_variants <- function(question_title, question_html, main_question_
         total_variants <- total_variants + 1
         variants[[total_variants]] <- essay(variant_title, variant_contents)
       } else {
-        warning(paste("question_with_variants: 'question_type' não existente. Deve ser: MULTICHOICE, NUMERICAL, CLOZE, ESSAY. Rever", question_title,"\n"))
+        warning(paste("Tipo de questão ('question_type') não existente.\nDeve ser: MULTICHOICE, NUMERICAL, CLOZE, ESSAY. Rever a questão:", question_title,"\n"))
       }
     }
     #else: ignora (para já) e nada diz ao autor!
   }
 
   if (total_variants<1) {
-    stop("question_with_variants: section defined by '##' should be '## variante <and some text>'.")
+    stop("Esperada uma questão com variantes: uma secção definida por '##' deve ter a sintaxe '## variante <and some text>'.\nOu este ficheiro Rmd não é um teste isolado mas é parte de uma base de questões (formato rmdmoodle).")
   }
 
   return( list(question_title=question_title, variants=variants) )
@@ -694,7 +694,9 @@ export_to_moodlexml <- function(exam_title, all_questions) {
       if (variant$variant_type == 'MULTICHOICE') {
 
         #debug
-        cat("Nr. de opções obtidas =", length(variant$respostas),'\n')
+        #TODO inventar um relatório promenorizado do teste
+        #e colocar lá esta informação
+        #cat("Nr. de opções obtidas =", length(variant$respostas),'\n')
 
         if (length(variant$respostas)==4) {
           xml_str <- paste(xml_str,
@@ -883,22 +885,23 @@ make_moodlexml <- function(filename) {
     cat("Processing question:", question_title, '\n')
     cat("--------------------\n\n")
 
-    if ( grepl("MULTICHOICE", question_title, ignore.case = TRUE) ) {
+    if (grepl("MULTICHOICE", question_title, ignore.case = TRUE)) {
       main_question_type <- "MULTICHOICE"
-    } else if ( grepl("ESSAY", question_title, ignore.case = TRUE) ) {
+    } else if (grepl("ESSAY", question_title, ignore.case = TRUE)) {
       main_question_type <- "ESSAY"
-    } else if ( grepl("CLOZE", question_title, ignore.case = TRUE) ) {
+    } else if (grepl("CLOZE", question_title, ignore.case = TRUE)) {
       main_question_type <- "CLOZE"
-    } else if ( grepl("NUMERICAL", question_title, ignore.case = TRUE) ) {
+    } else if (grepl("NUMERICAL", question_title, ignore.case = TRUE)) {
       main_question_type <- "NUMERICAL"
     } else {
-      cat('   (Questão sem tipo pré-definido)\n')
+      cat("   (Questão sem tipo pré-definido)\n")
       main_question_type <- "indefinido" #deixa-se para as variantes
     }
 
     question_div_h1 <- html_children(html_children(conteudo)[start+i-2])
     total_questions <- total_questions + 1
-    all_questions[[total_questions]] <- question_with_variants(question_title, question_div_h1, main_question_type)
+    all_questions[[total_questions]] <-
+         question_with_variants(question_title, question_div_h1, main_question_type)
 
   }
 
@@ -910,7 +913,7 @@ make_moodlexml <- function(filename) {
 
   export_to_moodlexml(exam_title, all_questions)
 
-  return( all_questions )
+  return(all_questions)
 }
 
 
@@ -969,7 +972,6 @@ html_to_json_protected <- function(html_code) {
 #'
 #' @param filename_no_extension
 #' @param noneiscorrect string like "None of the other is correct."
-#' 
 #'
 #' @return A xml file to be imported in moodle.
 #' @export
@@ -988,7 +990,8 @@ xmlmoodle <- function(filename_no_extension) {
       # 'tryCatch()' will return the last evaluated expression
       # in case the "try" part was completed successfully
 
-      rmarkdown::render(paste(filename_no_extension,".Rmd",sep=""), output_format="html_document", quiet=T)
+      rmarkdown::render(paste(filename_no_extension, ".Rmd", sep = ""),
+                        output_format = "html_document", quiet = TRUE)
 
       # The return value of `rmarkdown::render()` is the actual value
       # that will be returned in case there is no condition
@@ -1004,6 +1007,9 @@ xmlmoodle <- function(filename_no_extension) {
       if (grepl("not found",cond)){
         #message("\nAn used variable has no declaration. Probably the code declared in an item, that contains that variable, must be relocated to '# code' where common code resides.\n")
         message("\nAn used variable was not found. Probably some code must be relocated to '# code' where common code resides.\n")
+      }
+      if (grepl("cannot open the connection",cond)) {
+        stop(paste0("\nRun knitr on file '", filename_no_extension,".Rmd' and check for missing files (probably data files).\n"))
       }
       message(cond)
       #message(paste("URL does not seem to exist:", url))
@@ -1030,8 +1036,12 @@ xmlmoodle <- function(filename_no_extension) {
     }
   )
 
-  make_moodlexml(paste(filename_no_extension,".html",sep=""))
+  make_moodlexml(paste(filename_no_extension,".html", sep=""))
 
-  return('ok')
+  cat(paste0("\n"))
+  cat(paste0("Import into Moodle: ", filename_no_extension, ".xml", "\n"))
+  #O user não quer ver o "ok"
+  #return('ok')
+  #return()
 }
 

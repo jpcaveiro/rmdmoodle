@@ -81,14 +81,14 @@
     "href": "debug.html",
     "title": "Debug",
     "section": "",
-    "text": "Error, please check :MULTICHOICE:=L"
+    "text": "Nota: “ficheiro” é um “ficheiro.Rmd”.\nSituação 01: Error, please check :MULTICHOICE:=L"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "rmdmoodle",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n1 + 1\n\n[1] 2"
+    "text": "Ideia\n\n\n\nTornar a criação de exercícios mais amiga do autor.\n\n\nContacto: Pedro Cruz ( pedrocruz at ua.pt )"
   },
   {
     "objectID": "index.html#construção-desta-documentação",
@@ -110,5 +110,26 @@
     "title": "Sobre",
     "section": "",
     "text": "Sobre este website:\n\n1 + 1\n\n[1] 2\n\n\nAutores:\n\nPedro Cruz\nAdelaide Freitas"
+  },
+  {
+    "objectID": "debug.html#etapa-execução-de-xmlmoodleficheiro",
+    "href": "debug.html#etapa-execução-de-xmlmoodleficheiro",
+    "title": "Debug",
+    "section": "",
+    "text": "Nota: “ficheiro” é um “ficheiro.Rmd”.\nSituação 01: Error, please check :MULTICHOICE:=L"
+  },
+  {
+    "objectID": "debug.html#etapa-durante-a-importação-do-xml-para-o-moodle",
+    "href": "debug.html#etapa-durante-a-importação-do-xml-para-o-moodle",
+    "title": "Debug",
+    "section": "Etapa: durante a importação do xml para o moodle",
+    "text": "Etapa: durante a importação do xml para o moodle\n\n\n\n\n\n\ncódigos como &lt;0112&gt;\n\n\n\nSurgem códigos como &lt;0112&gt; no xml em lugar das usuais letras portuguesas acentuadas.\n\n\nA solução foi fazer um “restart R”!\n\n\n\n\n\n\nPergunta de respostas incorporadas (Cloze) inválida\n\n\n\nA importação resulta em:\nErro ao importar pergunta. Pergunta de respostas incorporadas (Cloze) inválida (A resposta deve ser um número. Exemplo: -1234 ou 3e8 ou ‘’. A resposta deve ser um número. Exemplo: -1234 ou 3e8 ou ’’.).”\n\n\nO erro deve estar num NUMERICAL. Exemplos:\n\n{2:NUMERICAL:=1.6927875^{-196}}"
+  },
+  {
+    "objectID": "debug.html#situação-01",
+    "href": "debug.html#situação-01",
+    "title": "Debug",
+    "section": "Situação 01",
+    "text": "Situação 01\nSurgem códigos como &lt;0112&gt; no xml em lugar das usuais letras portuguesas acentuadas.\nA solução foi fazer um “restart R”!"
   }
 ]
