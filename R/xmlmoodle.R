@@ -190,8 +190,7 @@ MULTICHOICE_template5 <- '
       </feedback>
     </answer>
   </question>
-
-  '
+'
 
 
 NUMERICAL_ANSWER_template = '
@@ -235,8 +234,7 @@ NUMERICAL_template <- '
     <unitsleft>0</unitsleft>
     {{{NUMERICAL_ANSWER}}}
   </question>
-
-  ' # NUMERICAL_template
+' # NUMERICAL_template
 
 
 CLOZE_template <- '
@@ -263,7 +261,6 @@ CLOZE_template <- '
     <hidden>0</hidden>
     <idnumber></idnumber>
   </question>
-
 '  #end of CLOZE_template
 
 ESSAY_template <- '
@@ -290,7 +287,6 @@ ESSAY_template <- '
     <hidden>0</hidden>
     <idnumber></idnumber>
   </question>
-
 '  #end of ESSAY_template
 
 
