@@ -8,10 +8,6 @@ pkg.env$EXERCISE_ROOT <- ""
 pkg.env$WARNINGS.BOOLEAN <- FALSE
 
 
-# EXERCISE_ROOT <- "C:/Users/pedrocruz/Documents/GitHub/bioestatistica/rmdmoodle"
-
-
-
 #' Set a global variable with the OS path of the questions
 #' "database" in the filesystem .
 #'
@@ -35,7 +31,7 @@ set_exercise_root <- function(pathstr) {
 #'
 #' @return
 #' @export
-set.warnings <- function(b) {
+set_warnings <- function(b) {
   pkg.env$WARNINGS.BOOLEAN <- b
 }
 
