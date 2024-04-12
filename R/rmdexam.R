@@ -99,7 +99,10 @@ next_line <- function(curr_lineno, lines) {
 
 
 
-
+#' To avoid search a pattern ^# Código or ^# enredo
+#' etc, this function skips until a chunk ends.
+#'
+#' @return numerica (line after chunk ends)
 skip_chunk <- function(curr_lineno, lines, rmdfilename) {
 
     nlines <- length(lines)
@@ -204,8 +207,27 @@ parse_exrmdfile <- function(rmdfilename) {
   list_of_alineas_title <- list()
   no_of_alineas <- 0
 
-  got_varcount <- FALSE
   varcount <- 0
+
+  #Before parsing an file with question and items
+  #a serach for VARCOUNT <- 6 is done.
+  for (lineno in 1:nlines) {
+
+    #debug
+    #cat(paste0(lines[curr_lineno]," : ", varcount,"\n"))
+
+    varcount <- get_varcount(lines[lineno])
+    if (varcount) break
+
+  }
+
+  if (!varcount) {
+    stop(paste0("Please add: VARCOUNT <- 6 (or other number of variants) to the '# code' section in file ",rmdfilename,"\n"))
+  }
+
+
+
+
 
   #This "while()" it's a state machine whose states are:
   # S_BEFORECODE, S_CODE, S_ENREDO, S_ALINEAS
@@ -215,12 +237,6 @@ parse_exrmdfile <- function(rmdfilename) {
     #  browser()
     #}
 
-    if (!got_varcount) {
-      varcount <- get_varcount(curr_lineno)
-      if (varcount) {
-        got_varcount <- TRUE
-      }
-    }
 
     #to avoid infinite loops
     protect_counter <- curr_lineno
@@ -357,7 +373,6 @@ parse_exrmdfile <- function(rmdfilename) {
     list_of_alineas[[no_of_alineas]] <- paste(lines[line_start_alinea:nlines],collapse='\n')
   }
 
-
   return(list(title = ex_title,
               varcount = varcount,
               type = "cloze", #TODO: e se o autor quiser um ESSAY sem alíneas?
@@ -485,7 +500,7 @@ exer2rmdstring <- function(...) {
 
   ex_path <- file.path(pkg.env$EXERCISE_ROOT,rmdfilename)
   #debug
-  print(ex_path)
+  #print(ex_path)
   ex <- parse_exrmdfile(ex_path)
 
 
@@ -541,7 +556,11 @@ exer2rmdstring <- function(...) {
 
     #section ## Variante `r VAR<- v;VAR`
 
-    sec_text <- sprintf("\n## variante `r VAR <- %d; VAR`\n\n", v)
+    #debug
+    #cat( sprintf("for (v in 1:ex$varcount): %d, %d",v,ex$varcount))
+
+    #sec_text <- sprintf("\n## variante `r VAR <- %d; VAR`\n\n", v)
+    sec_text <- sprintf("\n## variante `r (VAR <- %d)`\n\n", v)
 
     #generate variants
     ex_rmdtext <- paste0(ex_rmdtext,
@@ -603,9 +622,9 @@ rmdexam <- function(rmdfilename, ...) {
   #                          nvariants,
   #                          rmdfilename,
   #                          paste( argslist, collapse=", \n" ))
-  comando_txt <- sprintf("rmdexam(\n\"%s\",\n%s)\n",
+  comando_txt <- sprintf("rmdexam(\"%s\",\n%s)\n    ",
                          rmdfilename,
-                         paste( argslist, collapse=", \n" ))
+                         paste( argslist, collapse=", \n    " ))
 
 
   head_txt <- paste0(
