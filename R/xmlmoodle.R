@@ -986,6 +986,7 @@ xmlmoodle <- function(filename_no_extension) {
       # 'tryCatch()' will return the last evaluated expression
       # in case the "try" part was completed successfully
 
+      cat(paste0("\nProduzindo ",filename_no_extension,".html\n\n"))
       rmarkdown::render(paste(filename_no_extension, ".Rmd", sep = ""),
                         output_format = "html_document", quiet = TRUE)
 
@@ -1016,7 +1017,13 @@ xmlmoodle <- function(filename_no_extension) {
     warning=function(cond) {
       #message(paste("URL caused a warning:", url))
       #message("Here's the original warning message:")
-      message(cond)
+      #message(cond)
+      #Debug
+      if(grepl("fetch resource",cond)){
+        cat(paste0("Copiar a imagem para a pasta de ",filename_no_extension, ".Rmd\n"))
+      } else {
+        print(class(cond))
+      }
       # Choose a return value in case of warning
       #return(NULL)
     },
@@ -1032,6 +1039,7 @@ xmlmoodle <- function(filename_no_extension) {
     }
   )
 
+  cat(paste0("\nProduzindo ",filename_no_extension,".xml\n\n"))
   make_moodlexml(paste(filename_no_extension,".html", sep=""))
 
   cat(paste0("\n"))

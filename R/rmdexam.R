@@ -622,9 +622,9 @@ rmdexam <- function(rmdfilename, ...) {
   #                          nvariants,
   #                          rmdfilename,
   #                          paste( argslist, collapse=", \n" ))
-  comando_txt <- sprintf("rmdexam(\"%s\",\n%s)\n    ",
+  comando_txt <- sprintf("rmdexam(\"%s\",\n%s)\n\n\n", #precisa pelo menos 2 \n
                          rmdfilename,
-                         paste( argslist, collapse=", \n    " ))
+                         paste( argslist, collapse=", \n"))
 
 
   head_txt <- paste0(
@@ -674,7 +674,8 @@ rmdexam <- function(rmdfilename, ...) {
   close(con)
 
 
-  cat("The author of the exam can check file", rmdfilename, "and search for eventual problems.\n")
+  cat("Check file", rmdfilename, "and search for eventual problems or change for needs.\n")
+  cat(paste0("Then, run xmlmoodle(\"",rmdfilename,"\") to produce the xml file to be exported.\n\n"))
 
   rmdfilename_no_ext <- substr(rmdfilename, 1, nchar(rmdfilename) - 4)
 
