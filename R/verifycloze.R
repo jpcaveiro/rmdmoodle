@@ -65,7 +65,7 @@ maybe_pattern <- function(uclozetext) {
 
 
   # MAYBE a :NUMERICAL:
-  afind_result <- stringdist::afind(toupper(uclozetext),":NUMERICAL:")
+  afind_result <- stringdist::afind(toupper(uclozetext), ":NUMERICAL:")
   if (afind_result$distance <= AFIND_MAX_DISTANCE) { #TODO: tune this 6
     return(list(pattern = "[^{^}]{\\d*:NUMERICAL:=(?<inside>[^}]*)}",
                 afind = afind_result))
@@ -141,8 +141,8 @@ validate_pattern <- function(uclozetext, resultofmaybe) {
 
 
   attributes(parsed) <- NULL
-  pos.s <- parsed + 1
-  pos.e <- parsed + ml - 1
+  pos_s <- parsed + 1
+  pos_e <- parsed + ml - 1
 
 
   if (grepl("MULTICHOICE_S", resultofmaybe$pattern, ignore.case = TRUE)) {
@@ -153,7 +153,7 @@ validate_pattern <- function(uclozetext, resultofmaybe) {
     type <- "SHORTANSWER"
   }
 
-  return(list(type = type, options = options_list, pos.s = pos.s,  pos.e = pos.e))
+  return(list(type = type, options = options_list, pos_s = pos_s,  pos_e = pos_e))
 }
 
 
@@ -247,12 +247,12 @@ verifycloze <- function(clozetext, showprogress = FALSE) {
         # }
 
         #build new uclozetext from "resultofvalidate"
-        pos.s <- resultofvalidate$pos.s
-        pos.e <- resultofvalidate$pos.e
+        pos_s <- resultofvalidate$pos_s
+        pos_e <- resultofvalidate$pos_e
 
-        uclozetext <- paste0(substr(uclozetext, 1, pos.s - 1),
+        uclozetext <- paste0(substr(uclozetext, 1, pos_s - 1),
                              "REMOVED-CORRECTINSTRUCTION",
-                             substr(uclozetext, pos.e + 1, nchar(uclozetext)))
+                             substr(uclozetext, pos_e + 1, nchar(uclozetext)))
 
       } else {
 
@@ -265,8 +265,8 @@ verifycloze <- function(clozetext, showprogress = FALSE) {
         cat(paste0("    Check eventual situation in CLOZE syntax: "))
         #cat(paste0("    ", resultofmaybe$afind$match, "\n"))
         start_pos <- resultofmaybe$afind$location
-        stop_pos  <- min(resultofmaybe$afind$location+50,nchar(uclozetext))
-        cat(paste0("    ", substr(uclozetext,start_pos,stop_pos)))
+        stop_pos  <- min(resultofmaybe$afind$location + 50, nchar(uclozetext))
+        cat(paste0("    ", substr(uclozetext, start_pos, stop_pos)))
         cat("\n")
 
         #build new uclozetext from "resultofmaybe"
@@ -292,6 +292,3 @@ verifycloze <- function(clozetext, showprogress = FALSE) {
 
 
 }
-
-
-
