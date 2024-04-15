@@ -373,7 +373,7 @@ question_with_variants <- function(question_title, question_html, main_question_
 
   #first node was the question title
   #Other nodes are expected to contain 'variants'
-  for (node in 1:num_of_nodes) {
+  for (node in seq_len(num_of_nodes)) {
 
     question_part <- question_html[node]
 
@@ -431,7 +431,7 @@ question_with_variants <- function(question_title, question_html, main_question_
         total_variants <- total_variants + 1
         variants[[total_variants]] <- essay(variant_title, variant_contents)
       } else {
-        warning(paste("Tipo de questão ('question_type') não existente.\nDeve ser: MULTICHOICE, NUMERICAL, CLOZE, ESSAY. Rever a questão:", question_title,"\n"))
+        warning(paste("Tipo de questão ('question_type') não existente.\nDeve ser: MULTICHOICE, NUMERICAL, CLOZE, ESSAY. Rever a questão:", question_title, "\n"))
       }
     }
     #else: ignora (para já) e nada diz ao autor!
@@ -461,7 +461,7 @@ numerical <- function(variant_title, variant_contents) {
     # * "answer": 100.1, "tol": 0.001, "fraction": 100, "feedback" : "Aqui uma longa frase 1."
     # * "answer": 100.1, "tol": 0.001, "fraction": 100, "feedback" : "Aqui uma longa frase 2."
 
-    r <- html_children(variant_contents[n-1])
+    r <- html_children(variant_contents[n - 1])
     ulist_items <- html_children(r[2])
 
     # Debug
@@ -491,7 +491,10 @@ numerical <- function(variant_title, variant_contents) {
 
 
     respostas <- lapply(ulist_items, html_to_json_protected)
-    RESPOSTAS <<- respostas
+
+    #Debug
+    #RESPOSTAS <<- respostas
+
   } else {
     stop("Numa questão 'NUMERICAL' tem que existir a secção '### respostas' e a secção '### feedback' em cada variante.\nApós a modificação tem que fazer 'knitr'.") # nolint
   }
@@ -545,7 +548,7 @@ multichoice <- function(variant_title, variant_contents) {
   #cat("\n--------------------\n\n")
 
   # resposta - deve ocorrer sempre na posição n-1
-  if (is_level(variant_contents[n-1], "section level3", "respostas")) {
+  if (is_level(variant_contents[n - 1], "section level3", "respostas")) {
 
     r <- html_children(variant_contents[n - 1])
     ulist_items <- html_children(r[2])
@@ -594,9 +597,9 @@ multichoice <- function(variant_title, variant_contents) {
 #' @examples
 cloze <- function(variant_title, variant_contents) {
 
-  n <- length(variant_contents )
+  n <- length(variant_contents)
 
-  enunciado <- paste0( variant_contents[2:(n - 1)], collapse = "\n")
+  enunciado <- paste0(variant_contents[2:(n - 1)], collapse = "\n")
   enunciado <- gsub("\x0D\x0D\x0A", "", enunciado)
   #debug
   #cat("enunciado:\n",enunciado,"\n")
@@ -612,7 +615,7 @@ cloze <- function(variant_title, variant_contents) {
     nh <- length(h)
     if (nh == 1) {
       feedbackglobal <- "\n\n\n"
-      if (pkg.env$WARNINGS.BOOLEAN) {
+      if (pkg_env$WARNINGS.BOOLEAN) {
         cat("    Há uma variante 'CLOZE' com feedback vazio.\n")
       }
     } else {
@@ -674,7 +677,7 @@ essay <- function(variant_title, variant_contents) {
 #' @return - a saved file in system
 #'
 #' @examples
-export_to_moodlexml <- function(exam_title, all_questions) {
+export_to_moodlexml <- function(filename_no_extension, exam_title, all_questions) {
 
 
   #<?xml version="1.0" encoding="UTF-8"?>
@@ -698,7 +701,7 @@ export_to_moodlexml <- function(exam_title, all_questions) {
     nvariants <- length(variants)
 
 
-    for(v in 1:nvariants) {
+    for(v in seq_len(nvariants)) {
 
       #variant <- question[[v+2]]
       variant <- variants[[v]]
@@ -728,7 +731,7 @@ export_to_moodlexml <- function(exam_title, all_questions) {
         } else {
           xml_str <- paste(xml_str,
                           whisker.render(MULTICHOICE_template5, list(
-                            exam_title        = exam_title,
+                            exam_title        = exam_title, # nolint
                             question_title    = question[[1]],
                             variant_title     = variant$variant_title,
                             question_problem  = variant$enunciado,
@@ -795,7 +798,7 @@ export_to_moodlexml <- function(exam_title, all_questions) {
                          sep = "\n"
         )
 
-      } else if (variant$variant_type == 'ESSAY') {
+      } else if (variant$variant_type == "ESSAY") {
 
         xml_str <- paste(xml_str,
                          whisker.render(ESSAY_template, list(
@@ -822,7 +825,7 @@ export_to_moodlexml <- function(exam_title, all_questions) {
   #debug
   #cat(xml_str,"\n")
 
-  f <- file(paste(exam_title, ".xml", sep = ""),
+  f <- file(paste0(filename_no_extension, ".xml"),
             open = "wt",
             encoding = "utf8")
   write(xml_str, file = f)
@@ -843,7 +846,9 @@ export_to_moodlexml <- function(exam_title, all_questions) {
 #' @param noneiscorrect
 #'
 #' @return - a list with "moodle questions"
-make_moodlexml <- function(filename) {
+make_moodlexml <- function(filename_no_extension) {
+
+  filename <- paste0(filename_no_extension, ".html")
 
   #read_html is a function from rvest library
   html <- read_html(filename, encoding = "UTF-8")
@@ -925,11 +930,24 @@ make_moodlexml <- function(filename) {
 
   # Escreve informação no "moodle xml".
 
-  export_to_moodlexml(exam_title, all_questions)
+
+  slug_exam_title <- slugify(exam_title)
+
+  export_to_moodlexml(filename_no_extension, slug_exam_title, all_questions)
 
   return(all_questions)
 }
 
+
+slugify <- function(x, non_alphanum_replace="-", space_replace="_", tolower=FALSE) {
+  x <- gsub("[^[:alnum:] ]", non_alphanum_replace, x)
+  x <- trimws(x)
+  x <- gsub("[[:space:]]", space_replace, x)
+
+  if(tolower) { x <- tolower(x) }
+
+  return(x)
+}
 
 
 html_to_json_protected <- function(html_code) {
@@ -980,6 +998,8 @@ html_to_json_protected <- function(html_code) {
 }
 
 
+
+
 #' Convert an Rmd file containing questions and variants
 #' to xml moodle file to be imported for the "exam" tool
 #' in moodle.
@@ -992,6 +1012,11 @@ html_to_json_protected <- function(html_code) {
 #'
 #' @examples
 xmlmoodle <- function(filename_no_extension) {
+
+  if (grepl(".", filename_no_extension)) {
+    filename_no_extension <- tools::file_path_sans_ext(filename_no_extension)
+  }
+
 
   #
   # Método sem multivariantes
@@ -1016,17 +1041,25 @@ xmlmoodle <- function(filename_no_extension) {
       # for the condition handlers for warnings and error below)
     },
     error = function(cond) {
+
+      #DEBUG
+      #A palavra "Quitting" não surge no cond$message
+      #"at("Quitting is", grepl("Quitting", cond$message), "\n")
+      #print(str(cond))
+
       if (grepl("Duplicate chunk label", cond)) {
         message("\nAvoid using code chunk labels. Code chunks from several files could have same name and `knitr()` does not accept two equal named code chunks. Find information about the code chunk in the next message.\n")
-      }
-      if (grepl("not found", cond)) {
+      } else if (grepl("not found", cond)) {
         #message("\nAn used variable has no declaration. Probably the code declared in an item, that contains that variable, must be relocated to '# code' where common code resides.\n")
         message("\nAn used variable was not found. Probably some code must be relocated to '# code' where common code resides.\n")
-      }
-      if (grepl("cannot open the connection", cond)) {
+      } else if (grepl("cannot open the connection", cond)) {
         stop(paste0("\nRun knitr on file '", filename_no_extension, ".Rmd' and check for missing files (probably data files).\n"))
+      } else {
+        cat(paste0("Please, open '", filename_no_extension, ".Rmd' and execute `knitr` to check possible errors.\n\n"))
+        message(cond)
+        cat("\n\n")
       }
-      message(cond)
+
       #message(paste("URL does not seem to exist:", url))
       #message("Here's the original error message:")
       # Choose a return value in case of error
@@ -1058,7 +1091,7 @@ xmlmoodle <- function(filename_no_extension) {
   )
 
   cat(paste0("\nProduzindo ", filename_no_extension, ".xml\n\n"))
-  make_moodlexml(paste(filename_no_extension, ".html", sep = ""))
+  make_moodlexml(filename_no_extension)
 
   cat(paste0("\n"))
   cat(paste0("Import into Moodle: ", filename_no_extension, ".xml", "\n"))
