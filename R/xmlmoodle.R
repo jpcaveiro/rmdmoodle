@@ -1,24 +1,26 @@
-# algoritmo ====
 
-# Algoritmo geral:
-#
-# 1. Ler via read_html()
-# 2. Lê o html e coloca numa estrutura "xml_document"
-#
-#
-# References:
-# 1. templating https://cran.r-project.org/web/packages/whisker/whisker.pdf
-# 2. json: install.packages("rjson")
-#
+# How it works ====
 
-
+#' Algoritmo geral:
+#'
+#' 1. Ler via read_html()
+#' 2. Lê o html e coloca numa estrutura "xml_document"
+#'
+#'
+#' References:
+#' 1. templating https://cran.r-project.org/web/packages/whisker/whisker.pdf
+#' 2. json: install.packages("rjson")
 
 
-# Pode ser:
-# se multichoice: enunciado da variante nas células 2 a n-2; a célula n-1 tem a resposta <ul> e n tem o feeback
-#   se numerical: enunciado da variante nas células 2 a n-2; a célula n-1 tem a resposta <ul> com opções numericas e n tem o feeback
-# se openquestion: enunciado da variante nas células 2 a n-1; a célula  n tem o feeback
-# se cloze: enunciado da variante nas células 2 a n-1; a célula  n tem o feeback
+
+#' se multichoice: enunciado da variante nas células 2 a n-2;
+#'    a célula n-1 tem a resposta <ul> e n tem o feeback
+#' se numerical: enunciado da variante nas células 2 a n-2;
+#'    a célula n-1 tem a resposta <ul> com opções numericas e n tem o feeback
+#' se essay: enunciado da variante nas células 2 a n-1;
+#'    a célula  n tem o feeback
+#' se cloze: enunciado da variante nas células 2 a n-1;
+#'    a célula  n tem o feeback
 
 # if (question_type == "MULTICHOICE") {
 #     question_tuple <- moodle_question_multichoice(question_name, partes_da_questao)
@@ -34,7 +36,7 @@
 
 
 
-# libraries ====
+# library(...) imports ====
 
 # TODO: colocar que funções são usadas
 # library(rjson) rjson::fromJSON
@@ -326,6 +328,17 @@ is_level <- function(html_part, str_level, keyword) {
 
 
 
+skip_li <- function(snode) {
+  #browser()
+  st <- paste0(snode)
+  #debug
+  #cat(s)
+  st <- gsub("<li>", "", st)
+  st <- gsub("</li>", "", st)
+  return(st)
+}
+
+
 question_with_variants <- function(question_title, question_html, main_question_type) {
   # A variante pode ter tipos (multi, numerical, cloze, essay) mas só são efetivos
   # se a questão (que contem variantes) não definir o tipo.
@@ -533,7 +546,8 @@ multichoice <- function(variant_title, variant_contents) {
   # feedback "feedback" for each student
 
   # verificações no caso de multichoice
-  # se multichoice: enunciado da variante nas células 2 a n-2; a célula n-1 tem a resposta <ul> e n tem o feeback
+  # se multichoice: enunciado da variante nas células 2 a n-2;
+  # a célula n-1 tem a resposta <ul> e n tem o feeback
 
   n <- length(variant_contents)
 
@@ -552,8 +566,18 @@ multichoice <- function(variant_title, variant_contents) {
 
     r <- html_children(variant_contents[n - 1])
     ulist_items <- html_children(r[2])
-    respostas <- sapply(ulist_items, html_text)
+    for (u in ulist_items) {
+      if (grepl("start=", u)) {
+        warning("In ## respostas, please avoid using '* 9.' (with .) because a bug. Use only '* 9' without a dot.")
+      }
+    }
+
+    #respostas <- sapply(ulist_items, html_text) skip_li
+    respostas <- lapply(ulist_items, skip_li)
+
+
     #Debug
+    #browser()
     #RESPOSTAS <<- respostas
 
   } else {
@@ -571,6 +595,7 @@ multichoice <- function(variant_title, variant_contents) {
     } else {
       feedbackglobal <- paste0(h[2:nh], collapse = "\n")
     }
+
   } else {
     stop("Numa questão 'MULTICHOICE' tem que existir a secção '### respostas' e a secção '### feedback' em cada variante.\nApós a modificação tem que fazer 'knitr'.")
   }
@@ -667,7 +692,6 @@ essay <- function(variant_title, variant_contents) {
 
 
 
-
 #' From a list of questions produce a xml file
 #' to be imported in Moodle.
 #'
@@ -677,7 +701,7 @@ essay <- function(variant_title, variant_contents) {
 #' @return - a saved file in system
 #'
 #' @examples
-export_to_moodlexml <- function(filename_no_extension, exam_title, all_questions) {
+saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions) {
 
 
   #<?xml version="1.0" encoding="UTF-8"?>
@@ -811,9 +835,8 @@ export_to_moodlexml <- function(filename_no_extension, exam_title, all_questions
                          sep = "\n"
         )
       } else {
-        warning("megua.R: unknown variant$variant_type\n")
+        warning(paste0("Unknown variant$variant_type: ", variant$variant_type, "\n"))
       }
-
 
     } #end for variants
 
@@ -837,20 +860,18 @@ export_to_moodlexml <- function(filename_no_extension, exam_title, all_questions
 
 
 
-
-
-
 #' Extracts "moodle questions" from a html file
 #'
 #' @param filename - an user/author written filename
 #' @param noneiscorrect
 #'
 #' @return - a list with "moodle questions"
-make_moodlexml <- function(filename_no_extension) {
+extractquestions_fromhtml <- function(filename_no_extension) {
 
   filename <- paste0(filename_no_extension, ".html")
 
   #read_html is a function from rvest library
+  #`html
   html <- read_html(filename, encoding = "UTF-8")
 
   # Extracts section <body> ... </body>
@@ -931,14 +952,25 @@ make_moodlexml <- function(filename_no_extension) {
   # Escreve informação no "moodle xml".
 
 
-  slug_exam_title <- slugify(exam_title)
-
-  export_to_moodlexml(filename_no_extension, slug_exam_title, all_questions)
-
-  return(all_questions)
+  return(list(all_questions = all_questions,
+              exam_title = exam_title))
 }
 
 
+
+
+#' Transform "Title f(2024)" into "Title_f-2024-"
+#'
+#' @param x character string
+#' @param non_alphanum_replace "-" if nonalpha appears in `x`
+#' @param space_replace "_" if spaces appears in `x`
+#' @param tolower FALSE
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' > slugify("Title f(2024)")
 slugify <- function(x, non_alphanum_replace="-", space_replace="_", tolower=FALSE) {
   x <- gsub("[^[:alnum:] ]", non_alphanum_replace, x)
   x <- trimws(x)
@@ -947,6 +979,44 @@ slugify <- function(x, non_alphanum_replace="-", space_replace="_", tolower=FALS
   if(tolower) { x <- tolower(x) }
 
   return(x)
+}
+
+
+
+
+
+#' `find_setwd()` search for instructions `setwd()`
+#'
+#' The idea is to warn
+#' user to put data and images files in same path
+#' or to add an absolut path.
+#'
+#' Called in `xmlmoodle()`
+#'
+#' @return nothing
+#'
+find_setwd <- function(filename_no_extension) {
+
+  filename <- paste0(filename_no_extension, ".Rmd")
+
+  all_lines <- readLines(filename)
+
+  lineno <- 0
+
+  for (l in all_lines) {
+
+    lineno <- lineno + 1
+
+    if (grepl("setwd",l)) {
+
+      cat(paste0("\nIn line ", lineno,
+                 " of ", filename,
+                 " there is a setwd() call.\n"))
+      cat("Avoid use of setwd() and place data or images files in same folder, or a subfolder, of Rmd files.\n")
+      cat("Another option is to use global path like 'c://users//name//etc//data.csv' or for images 'c://users//name//etc//an_image.png'\n\n")
+    }
+  }
+
 }
 
 
@@ -1011,6 +1081,8 @@ html_to_json_protected <- function(html_code) {
 #' @export
 #'
 #' @examples
+#' > xmlmoodle("my_exam.Rmd") or
+#' > xmlmoodle("my_exam")
 xmlmoodle <- function(filename_no_extension) {
 
   if (grepl(".", filename_no_extension)) {
@@ -1018,9 +1090,16 @@ xmlmoodle <- function(filename_no_extension) {
   }
 
 
-  #
-  # Método sem multivariantes
-  #
+  #' Search for `setwd()` in order to warn
+  #' user to put data and images files in same path
+  #' or to add an absolut path.
+  find_setwd(filename_no_extension)
+
+
+
+  #' Método sem multivariantes
+  #' TODO: o que são multivariantes ??
+  #'
   tryCatch(
     {
       # Just to highlight: if you want to use more than one
@@ -1090,8 +1169,18 @@ xmlmoodle <- function(filename_no_extension) {
     }
   )
 
+
+
   cat(paste0("\nProduzindo ", filename_no_extension, ".xml\n\n"))
-  make_moodlexml(filename_no_extension)
+
+  #Produce a list() with all questions
+  q_t <- extractquestions_fromhtml(filename_no_extension)
+
+  slug_exam_title <- slugify(q_t$exam_title, space_replace = " ") #espaços ok!
+
+  saveto_xmlmoodle(filename_no_extension, slug_exam_title, q_t$all_questions)
+
+
 
   cat(paste0("\n"))
   cat(paste0("Import into Moodle: ", filename_no_extension, ".xml", "\n"))

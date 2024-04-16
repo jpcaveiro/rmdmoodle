@@ -1,13 +1,20 @@
 
+# global variables ====
+
+# Isto não funciona quando colocado no ficheiro .lintr:
+# indentation_linter(indent = 2L, hanging_indent_style = c("tidy", "always", "never"), assignment_as_infix = TRUE)
 
 
-#indentation_linter(indent = 2L, hanging_indent_style = c("tidy", "always", "never"), assignment_as_infix = TRUE)
-
-# environment local mas que permite mudar
+# Trata-se de um "environment" local mas que permite mudar
 # o valor da variável dentro deste package.
 pkg_env <- new.env()
 pkg_env$EXERCISE_ROOT <- ""
 pkg_env$WARNINGS.BOOLEAN <- FALSE
+
+
+
+
+# functions ====
 
 
 #' Set a global variable with the OS path of the questions
@@ -424,11 +431,6 @@ parse_exrmdfile <- function(rmdfilename) { # nolint: cyclocomp_linter.
 }
 
 
-#DEBUG
-#res <- parse_exrmdfile("c3-estimativa.Rmd")
-#print(res)
-
-
 
 #' Find "alinea" Rmd text by searching `alinea_tag`.
 #'
@@ -463,38 +465,6 @@ find_alinea <- function(alinea_tag, ex_struct) {
   }
   return(ex_struct$alineas[[i]])
 }
-
-
-
-
-# Templating
-#library(whisker)
-
-
-part1_header <- paste0("---",
-                        "title: \"2022-2023 1o teste (turno 1)\"",
-                        "author: \"(preencher)\"",
-                        "date: \"(preencher)\"",
-                        "output: html_document",
-                        "---",
-                        collapse = "\n")
-#cat(part1_header,"\n")
-
-
-# https://www.statology.org/turn-off-scientific-notation-in-r
-# opções por defeito nos chunks
-# str(knitr::opts_chunk$get())
-part2_show <-  paste0("Para controlar o que globalmente surge:",
-                      "```{r setup, include = F, echo = F, results = F}",
-                      "#todo - improve",
-                      "knitr::opts_chunk$set(echo = TRUE, results='show', message=FALSE, fig.show='show')",
-                      "options(scipen = 999)", #turn-off-scientific-notation-in-r
-                      "SHOWCODE <- F",
-                      "SHOWRESULTS <- F",
-                      "```",
-                      collapse = "\n")
-#cat(part2_show,"\n")
-
 
 
 
@@ -634,16 +604,19 @@ exer2rmdstring <- function(...) {
 #' @export
 #'
 #' @examples
-#' make_rmdmoodle(6,
-#'                "my-new-moodle-exam.Rmd",
+#' make_rmdmoodle("my-new-moodle-exam.Rmd",
 #'                c("cap1/c1-estimation.Rmd","est-mean","est-var"),
 #'                c("cap2/c2-normalprob.Rmd","prob-less", "prob-greater", "prob-between"))
 rmdexam <- function(rmdfilename, ...) {
 
-  #remove later
-  if (is.numeric(rmdfilename)) {
-    stop(paste0("Please remove first argument ",rmdfilename," from instruction 'rmdexam(", rmdfilename, "...)'.\n  Use VARCOUNT <- ", rmdfilename, " in code.\n"))
 
+  # TODO: maybe remove after all testing on new exams
+  if (is.numeric(rmdfilename)) {
+    #it will print an integer (before april/2024 it uses a number in 1st arg)
+    stop(paste0("Please remove first argument ",
+                rmdfilename, #is an integer (see above)
+                " from instruction 'rmdexam(", rmdfilename, "...)'.\n  Use VARCOUNT <- ",
+                rmdfilename, " in code.\n"))
   }
 
   cat("\nConstruindo", rmdfilename, "\n\n")
@@ -677,10 +650,10 @@ rmdexam <- function(rmdfilename, ...) {
   head_txt <- paste0(
     "---\n",
     "title: \"", rmdfilename, "\"\n",
-    "author: \"(ã á autores)\"\n",
+    "author: \"User '", Sys.info()["user"], "' compilou este exame\"\n",
     "date: \"", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\"\n",
     "output: html_document\n",
-    "---\n\n",
+    "---\n\n\n",
     "A versão inicial deste documento foi construída com:\n",
     "```\n",
     "library(rmdmoodle)\n",

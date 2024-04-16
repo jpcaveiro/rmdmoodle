@@ -1,13 +1,5 @@
 
 
-# Notes:
-# - module xmlmoodle.R calls verifycloze() defined n this file.
-# - see test04-regex.R in WorkPackages/2020-rmdmoodle for experiences
-
-
-
-
-
 
 #library(stringdist) -afind
 
@@ -15,22 +7,31 @@
 
 # algoritmo ====
 
-# 1. limpar 0D 0D 0A para espaço
-# 2.
-
-# main ====
-
-# Ideia:
-# Aplicar o filtro verificador de instruções cloze
-# apenas no XML antes que este siga para o Moodle
-# evitando os erros lacónicos do Moodle.
+#' Notes:
+#' - module xmlmoodle.R calls verifycloze() defined n this file.
+#' - see test04-regex.R in WorkPackages/2020-rmdmoodle for experiences
 
 
-# Two problems
-# 1. se a linha tem mais que um multichoice
-# 2. se uma mesma linha pode ter multichoice e numerical, etc
-# One solution
-# scan, first, all multichoices, then all numerical, etc
+#' 1. limpar 0D 0D 0A para espaço
+#' 2.
+
+
+
+
+# functions ====
+
+#' Ideia:
+#' Aplicar o filtro verificador de instruções cloze
+#' apenas no XML antes que este siga para o Moodle
+#' evitando os erros lacónicos do Moodle.
+
+
+#' Two problems
+#' 1. se a linha tem mais que um multichoice
+#' 2. se uma mesma linha pode ter multichoice e numerical, etc
+#'
+#' One solution
+#' scan, first, all multichoices, then all numerical, etc
 
 
 
