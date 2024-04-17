@@ -1,4 +1,13 @@
 
+
+#' internationalization
+#' `xgettext --language='python' --from-code='UTF-8' --keyword=_ -o pkg.pot *.R`
+#' pthon porque usa "#" para comentários ainda que isso não seja
+#' suficiente
+#' * https://www.gnu.org/software/gettext/manual/index.html
+#'
+
+
 # How it works ====
 
 #' Algoritmo geral:
@@ -56,7 +65,7 @@ library(xml2)
 #  {{{answer_incorrect1}}}, {{{answer_incorrect2}}}, {{{answer_incorrect3}}}
 
 
-MULTICHOICE_template4 <- '
+MULTICHOICE_template4 <- '/
   <question type="category">
     <category>
       <text>$course$/top/importados/{{exam_title}}/{{question_title}}</text>
@@ -647,7 +656,7 @@ cloze <- function(variant_title, variant_contents) {
       feedbackglobal <- paste0(h[2:nh], collapse = "\n")
     }
   } else {
-    stop("Numa questão 'cloze' tem que existir a secção '### feedback' em cada variante (ainda que possa estar vazia).\nApós a modificação tem que fazer 'knitr'.")
+    stop(_("Numa questão 'cloze' tem que existir a secção '### feedback' em cada variante (ainda que possa estar vazia).\nApós a modificação tem que fazer 'knitr'.")
   }
 
 

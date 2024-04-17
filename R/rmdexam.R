@@ -1,64 +1,24 @@
 
 # global variables ====
 
-# Isto não funciona quando colocado no ficheiro .lintr:
-# indentation_linter(indent = 2L, hanging_indent_style = c("tidy", "always", "never"), assignment_as_infix = TRUE)
+#' TODO: Isto não funciona quando colocado no ficheiro .lintr:
+#' `indentation_linter(indent = 2L, hanging_indent_style = c("tidy", "always", "never"), assignment_as_infix = TRUE)`
 
 
-# Trata-se de um "environment" local mas que permite mudar
-# o valor da variável dentro deste package.
-pkg_env <- new.env()
-pkg_env$EXERCISE_ROOT <- ""
-pkg_env$WARNINGS.BOOLEAN <- FALSE
 
+#' Ativa alguns `cat()` espalhados pelo código que
+#' processa os exercícios. Este módulo faz parse
+#' de texto: ativando esta flag passam a ser vistos
+#' muitos `cat()` no processo de debug.
+DBG_rmdexam <- F
 
 
 
 # functions ====
 
 
-#' Set a global variable with the OS path of the questions
-#' "database" in the filesystem .
-#'
-#' @param pathstr string
-#'
-#' @return string
-#' @export
-#'
-#' @examples
-#' set_exercise_root("c:/Users/name/Documents/rmdmoodle")
-set_exercise_root <- function(pathstr) {
-  pkg_env$EXERCISE_ROOT <- pathstr
-  return(pkg_env$EXERCISE_ROOT)
-}
-
-
-#' Turn TRUE or FALSE the
-#' printing of warnings.
-#'
-#' @param b - a boolean TRUE or FALSE
-#'
-#' @return
-#' @export
-set_warnings <- function(b) {
-  pkg_env$WARNINGS.BOOLEAN <- b
-}
-
-
-
-#' Get a global variable with the OS path of the questions
-#' "database" in the filesystem .
-#'
-#' @return A string containing a OS path.
-#' @export
-#'
-get_exercise_root <- function() {
-  return(pkg_env$EXERCISE_ROOT)
-}
-
-
-
 #' Get VARCOUNT <- 6 or VARCOUNT = 6.
+#' Search in the line for that pattern.
 #'
 #' @return numeric>0 or 0 if no varcount
 get_varcount <- function(text_line) {
@@ -94,11 +54,18 @@ get_varcount <- function(text_line) {
 
 
 
+#' Increases `curr_lineno` but
+#' it `cat()` if debug is activated.
+#'
+#' @param curr_lineno
+#' @param all_lines
+#'
+#' @return integer
 next_line <- function(curr_lineno, all_lines) {
 
   curr_lineno <- curr_lineno + 1
 
-  if (DEBUGRMDMOODLE) {
+  if (DBG_rmdexam) {
     cat("next line", curr_lineno, "is:", all_lines[curr_lineno], "\n")
   }
   return(curr_lineno)
@@ -111,13 +78,13 @@ next_line <- function(curr_lineno, all_lines) {
 #' To avoid search a pattern ^# Código or ^# enredo
 #' etc, this function skips until a chunk ends.
 #'
-#' @return numerica (line after chunk ends)
+#' @return integer (line number after chunk ends)
 skip_chunk <- function(curr_lineno, all_lines, rmdfilename) {
 
   nlines <- length(all_lines)
 
   if (grepl("^```", all_lines[curr_lineno])) {
-    if (DEBUGRMDMOODLE) {
+    if (DBG_rmdexam) {
       cat("chunk starts in line ", curr_lineno, "\n")
     }
     curr_lineno <- curr_lineno + 1
@@ -130,7 +97,7 @@ skip_chunk <- function(curr_lineno, all_lines, rmdfilename) {
     } else {
       curr_lineno <- next_line(curr_lineno, all_lines)
     }
-    if (DEBUGRMDMOODLE) {
+    if (DBG_rmdexam) {
       cat("chunk end in line ", curr_lineno - 1, "\n")
     }
 
@@ -145,9 +112,17 @@ skip_chunk <- function(curr_lineno, all_lines, rmdfilename) {
 
 
 
+#' Parser depends on states. This
+#' function prints the next state if
+#' it changes.
+#'
+#' @param to
+#' @param debug_str
+#'
+#' @return integer (a state is an integer)
 change_state <- function(to, debug_str) {
 
-  if (DEBUGRMDMOODLE) {
+  if (DBG_rmdexam) {
     cat("   change parser state to ", debug_str, "\n")
   }
 
@@ -155,6 +130,14 @@ change_state <- function(to, debug_str) {
 }
 
 
+
+#' Get exercise type (cloze, essay, multichoice).
+#' It is not working.
+#' TODO: implement ex type.
+#'
+#' @param curr_line
+#'
+#' @return character
 get_ex_type <- function(curr_line) {
   #TODO: improve
   #line with #enredo can have a type:
@@ -252,7 +235,7 @@ parse_exrmdfile <- function(rmdfilename) { # nolint: cyclocomp_linter.
   }
 
   if (!varcount) {
-    stop(paste0("Please add: VARCOUNT <- 6 (or other number of variants) to the '# code' section in file ",
+    stop(paste0("Please add: VARCOUNT <- 6, or other number of variants, to the '# code' section in file ",
                 rmdfilename,
                 "\n"))
   }
@@ -273,7 +256,7 @@ parse_exrmdfile <- function(rmdfilename) { # nolint: cyclocomp_linter.
     #cat(">>>", grepl("código", curr_line), "\n")
 
 
-    #if (DEBUGRMDMOODLE) {
+    #if (DBG_rmdexam) {
     #  browser()
     #}
 
@@ -285,8 +268,8 @@ parse_exrmdfile <- function(rmdfilename) { # nolint: cyclocomp_linter.
     if (curr_state == S_BEFORECODE) {
 
       if (grepl("^title:", curr_line)) {
-        if (DEBUGRMDMOODLE) {
-          cat("DEBUGRMDMOODLE: entou na linha 'title' do ficheiro *.Rmd\n")
+        if (DBG_rmdexam) {
+          cat("DBG_rmdexam: entou na linha 'title' do ficheiro *.Rmd\n")
         }
         ex_title <- substr(curr_line, start = 8, stop = nchar(curr_line))
         ex_title <- gsub('"', ' ', ex_title) # nolint
@@ -399,7 +382,7 @@ parse_exrmdfile <- function(rmdfilename) { # nolint: cyclocomp_linter.
       stop("curr_state is unknown.")
     }
 
-    if (DEBUGRMDMOODLE &&   protect_counter == curr_lineno) {
+    if (DBG_rmdexam &&   protect_counter == curr_lineno) {
       stop("probably, infinite loop")
     }
 
@@ -445,7 +428,7 @@ parse_exrmdfile <- function(rmdfilename) { # nolint: cyclocomp_linter.
 #' @examples
 find_alinea <- function(alinea_tag, ex_struct) {
 
-  #if (DEBUGRMDMOODLE) {
+  #if (DBG_rmdexam) {
   #  print("exercise structure:")
   #  print(ex_struct)
   #}
@@ -509,6 +492,7 @@ exer2rmdstring <- function(...) {
   #            alineas_title = list_of_alineas_title))
 
   ex_path <- file.path(pkg_env$EXERCISE_ROOT, rmdfilename)
+
   #debug
   #print(ex_path)
   ex <- parse_exrmdfile(ex_path)
@@ -521,7 +505,7 @@ exer2rmdstring <- function(...) {
   # A # section is an exercise in Rmd.
   # antes: ex_header  <- paste0("# ", ex$title, "-", toupper(ex$type), collapse = " ")
   #now:
-  ex_header  <- paste0("# ", rmdfilename, "-", toupper(ex$type), collapse = " ")
+  ex_header  <- paste0("# ", slugify(ex$title), "-", toupper(ex$type), collapse = " ")
   ex_rmdtext <- paste0(ex_rmdtext, ex_header, collapse = "\n\n")
 
   #code
@@ -557,7 +541,7 @@ exer2rmdstring <- function(...) {
 
 
   al_string <- paste0(al_string,
-                      "\n\n### feedback\n\n",
+                      "\n\n### feedback\n\n\n",
                       collapse = "\n\n")
 
   #O número de variantes é lido
@@ -619,7 +603,7 @@ rmdexam <- function(rmdfilename, ...) {
                 rmdfilename, " in code.\n"))
   }
 
-  cat("\nConstruindo", rmdfilename, "\n\n")
+  cat("\nBuilding", rmdfilename, "\n\n")
 
   #args is a list of lists
   #args[[1]][[1]] access the first exercise-filename to be written
