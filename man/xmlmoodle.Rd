@@ -2,9 +2,7 @@
 % Please edit documentation in R/xmlmoodle.R
 \name{xmlmoodle}
 \alias{xmlmoodle}
-\title{Convert an Rmd file containing questions and variants
-to xml moodle file to be imported for the "exam" tool
-in moodle.}
+\title{Exam in R Markdown to XML Moodle exam.}
 \usage{
 xmlmoodle(filename_no_extension)
 }
@@ -18,4 +16,15 @@ A xml file to be imported in moodle.
 Convert an Rmd file containing questions and variants
 to xml moodle file to be imported for the "exam" tool
 in moodle.
+}
+\examples{
+\dontrun{xmlmoodle("my_exam.Rmd")}
+\dontrun{xmlmoodle("my_exam")}
+Warn author if `setwd()` is used.
+Search for `setwd()` in order to warn
+user to put data and images files in same path
+or to add an absolut path.
+Método sem multivariantes
+TODO: o que são multivariantes ??
+
 }

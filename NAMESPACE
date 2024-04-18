@@ -3,4 +3,6 @@
 export(get_exercise_root)
 export(rmdexam)
 export(set_exercise_root)
+export(set_warnings)
+export(verifycloze)
 export(xmlmoodle)

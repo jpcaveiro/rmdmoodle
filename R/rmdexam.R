@@ -21,7 +21,7 @@ DBG_rmdexam <- F
 #' Search in the line for that pattern.
 #'
 #' @return numeric>0 or 0 if no varcount
-get_varcount <- function(text_line) {
+varcount_line <- function(text_line) {
 
 
   # exemplo "[^{^}]{\\d*:NUMERICAL:=(?<inside>[^}]*)}"
@@ -54,11 +54,45 @@ get_varcount <- function(text_line) {
 
 
 
-#' Increases `curr_lineno` but
-#' it `cat()` if debug is activated.
+#' Search for a pattern like "VARCOUNT <- 6"
+#' in all lines (already read from rmdfile)
 #'
-#' @param curr_lineno
 #' @param all_lines
+#'
+#' @return integer (varcount value)
+get_varcount <- function(all_lines) {
+
+  varcount <- 0
+
+  #Before parsing an file with question and items
+  #a serach for a pattern like "VARCOUNT <- 6"
+  for (lineno in seq_along(all_lines)) {
+
+    #debug
+    #cat(paste0(all_lines[curr_lineno]," : ", varcount,"\n"))
+
+    varcount <- varcount_line(all_lines[lineno])
+    if (varcount) break
+
+  }
+
+  if (!varcount) {
+    stop(paste0("Please add: VARCOUNT <- 6, or other number of variants, to the '# code' section in file ",
+                rmdfilename,
+                "\n"))
+  }
+
+  return(varcount)
+}
+
+
+
+#' Increases `curr_lineno`
+#'
+#' But it `cat()` if debug is activated.
+#'
+#' @param curr_lineno current line number
+#' @param all_lines vector of lines of text
 #'
 #' @return integer
 next_line <- function(curr_lineno, all_lines) {
@@ -112,12 +146,12 @@ skip_chunk <- function(curr_lineno, all_lines, rmdfilename) {
 
 
 
-#' Parser depends on states. This
-#' function prints the next state if
-#' it changes.
+#' Parser depends on states.
 #'
-#' @param to
-#' @param debug_str
+#' This function prints the next state if it changes.
+#'
+#' @param to next state number
+#' @param debug_str textual name of the next state number
 #'
 #' @return integer (a state is an integer)
 change_state <- function(to, debug_str) {
@@ -132,10 +166,11 @@ change_state <- function(to, debug_str) {
 
 
 #' Get exercise type (cloze, essay, multichoice).
+#'
 #' It is not working.
 #' TODO: implement ex type.
 #'
-#' @param curr_line
+#' @param curr_line current line
 #'
 #' @return character
 get_ex_type <- function(curr_line) {
@@ -155,17 +190,22 @@ get_ex_type <- function(curr_line) {
 
 
 
+
 #' Parse an Rmd file containing an exercise
+#'
+#' `varcount` is the number of variants of a question
+#' from which a random one is selected to be presented to student.
 #'
 #' `parse_exrmdfile`
 #'
 #'
-#' @param rmdfilename
+#' @param rmdfilename R Markdown file name.
+#' @param varcount if null it extracts varcount from file in rmdfilename
 #'
 #' @return list(ex_title, ex_type, code, enredo, alineas, alineas_title)
 #'
 #' @examples
-parse_exrmdfile <- function(rmdfilename) { # nolint: cyclocomp_linter.
+parse_exrmdfile <- function(rmdfilename, varcount = NULL) { # nolint: cyclocomp_linter.
 
 
   # inside no code yet
@@ -220,25 +260,13 @@ parse_exrmdfile <- function(rmdfilename) { # nolint: cyclocomp_linter.
   list_of_alineas_title <- list()
   no_of_alineas <- 0
 
-  varcount <- 0
 
-  #Before parsing an file with question and items
-  #a serach for VARCOUNT <- 6 is done.
-  for (lineno in seq_len(nlines)) {
-
-    #debug
-    #cat(paste0(all_lines[curr_lineno]," : ", varcount,"\n"))
-
-    varcount <- get_varcount(all_lines[lineno])
-    if (varcount) break
-
+  #' varcount is the number of
+  #' repetitions of a question
+  if (is.null(varcount)) {
+    varcount <- get_varcount(all_lines)
   }
 
-  if (!varcount) {
-    stop(paste0("Please add: VARCOUNT <- 6, or other number of variants, to the '# code' section in file ",
-                rmdfilename,
-                "\n"))
-  }
 
 
 
@@ -415,17 +443,16 @@ parse_exrmdfile <- function(rmdfilename) { # nolint: cyclocomp_linter.
 
 
 
+
 #' Find "alinea" Rmd text by searching `alinea_tag`.
 #'
 #' * `ex_struct$alineas`is a list of Rmd strings;
 #' * `ex_struct$alineas_title` is a list of titles (containing an `alinea_tag`).
 #'
 #' @param ex_struct see return value of `parse_exrmdfile()`
-#' @param alinea_tag
+#' @param alinea_tag Each question file has items and `alinea_tag` names the item.
 #'
 #' @return string (rmd string)
-#'
-#' @examples
 find_alinea <- function(alinea_tag, ex_struct) {
 
   #if (DBG_rmdexam) {
@@ -452,18 +479,164 @@ find_alinea <- function(alinea_tag, ex_struct) {
 
 
 
-
-
-
-#' exer2rmdstring
+#' `random_q()` ("random question") Extracts items from a given question.
 #'
-#' @param ... ex. "cap3/c3-estimativa.Rmd", "alinea01", "alinea04"
+#' Since it's a "random" question, code is replicated before each variant.
+#' There is no need to use access `.[[VAR]]` or `.[VAR]` because there
+#' is no pre calculated problems.
+#'
+#' Optional arguments are:
+#'
+#' - seed (default a random integer): sets seed
+#' - varcount (default is 10): number of variants to be exported to moodle
+#'
+#' A seed can help an author to revise an exam after it is verified or delivered
+#' and corrected later.
+#'
+#' @param ... optional arguments and vector like "cap3/c3-estimativa.Rmd", "alinea01", "alinea04"
 #'
 #' @return string containing Rmd with # and ## sections (exercise title and variants)
+#' @export
 #'
 #' @examples
-#'    exerc2rmdstring(6, "cap3/c3-estimativa.Rmd", "alinea01", "alinea04")
-exer2rmdstring <- function(...) {
+#' \dontrun{random_q(seed = 90, varcount = 10, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
+#' \dontrun{random_q(varcount = 10, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
+#' \dontrun{random_q(seed = 90, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
+#' \dontrun{random_q("cap3/c3-estimate.Rmd", "mean-item", "var-item")}
+random_q <- function(...) {
+
+  arglist <- list(...)
+
+  # varcount
+  if (is.null(arglist$varcount)) {
+    varcount <- 10
+  } else {
+    #store
+    varcount <- arglist$varcount
+
+    #delete varcount
+    arglist["varcount"] <- NULL
+  }
+
+
+  # seed
+  if (is.null(arglist$seed)) {
+    seed <- 10
+  } else {
+    #store
+    seed <- arglist$seed
+
+    #delete seed
+    arglist["seed"] <- NULL
+  }
+
+  #debug
+  #cat("varcount is", varcount, "\n")
+
+  #new name
+  exrequest <- arglist
+
+  rmdfilename <- add_extension(exrequest[[1]], "Rmd")
+
+
+  question_path <- file.path(pkg_env$EXERCISE_ROOT, rmdfilename)
+  #debug
+  #print(question_path)
+
+  #ex is a list:
+  # list(title = ex_title,
+  #            varcount = varcount,
+  #            type = "cloze", #TODO: e se o autor quiser um ESSAY sem alíneas?
+  #            code    = paste0(all_lines[line_start_code:line_end_code], collapse="\n"),
+  #            enredo  = paste0(all_lines[line_start_enredo:line_end_enredo], collapse="\n"),
+  #            alineas = list_of_alineas,
+  #            alineas_title = list_of_alineas_title))
+  ex <- parse_exrmdfile(question_path, varcount = varcount)
+
+
+  # output string containing Rmd (headerless) to be joint with other exercises
+  #DEBUG
+  ex_rmdtext <- ""
+
+  # A # section is an exercise in Rmd.
+  # antes: ex_header  <- paste0("# ", ex$title, "-", toupper(ex$type), collapse = " ")
+  #now:
+  ex_header  <- paste0("# ", slugify(ex$title), "-", toupper(ex$type), "\n\n")
+  ex_seed <- paste0("```{r}\nset.seed(", seed, ")\n```\n\n")
+  ex_rmdtext <- paste0(ex_rmdtext, ex_header, ex_seed, "\n\n")
+
+  #code (vai para entro de cada variante)
+  #ex_rmdtext <- paste0(ex_rmdtext, ex$code, collapse = "\n\n")
+
+
+  #alíneas
+  al_request_number <- length(exrequest) - 1 #sem o rmdfilename
+  #al_total <- length(ex$alineas) #not used
+  al_string <- ""
+
+  for (al in seq_len(al_request_number)) {
+
+    al_rmdtext <- find_alinea(
+      alinea_tag = exrequest[[al + 1]],
+      ex_struct = ex)
+
+    # Generate variant: enredo (1) blá blá \n\n (2) blá blá \n\n etc
+    al_string <- paste0(al_string,
+                        paste0("\n\n**(", as.character(al), ")**\n\n", al_rmdtext),
+                        collapse = "\n\n")
+
+  }
+
+
+  al_string <- paste0(al_string,
+                      "\n\n### feedback\n\n\n",
+                      collapse = "\n\n")
+
+
+  #O número de variantes é lido
+  #dentro de cada exercício numa
+  #linha: VARCOUNT <- 6 ou VARCOUNT = 6
+  for (v in seq_len(ex$varcount)) {
+
+    #section ## Variante `r VAR<- v;VAR`
+
+    #debug
+    #cat( sprintf("for (v in seq_len(ex$varcount)): %d, %d",v,ex$varcount))
+
+    #sec_text <- sprintf("\n## variante `r VAR <- %d; VAR`\n\n", v)
+    sec_text <- sprintf("\n## variante %02d\n\n", v)
+
+    #generate variants
+    ex_rmdtext <- paste0(ex_rmdtext,
+                         sec_text,
+                         ex$code, "\n\n",
+                         ex$enredo,
+                         al_string,
+                         collapse = "\n\n")
+
+  }
+
+
+  return(ex_rmdtext)
+}
+
+
+
+
+
+
+
+#' `planned_q()` ("planned question") Extracts items from a given question. Since it's a planned
+#' question, values inside its variants are accessible using `.[[VAR]]` or `.[VAR]`.
+#'
+#' @param ... vector like "cap3/c3-estimativa.Rmd", "alinea01", "alinea04"
+#'
+#' @return string containing Rmd with # and ## sections (exercise title and variants)
+#' @export
+#'
+#' @examples
+#' \dontrun{planned_q("cap3/c3-estimativa.Rmd", "alinea01", "alinea04")}
+planned_q <- function(...) {
 
   #o argumento nvar seria o autor a pedir mas foi removido
 
@@ -476,11 +649,8 @@ exer2rmdstring <- function(...) {
 
   exrequest <- list(...)[[1]]
 
-  if (grepl(".Rmd", exrequest[[1]])) {
-    rmdfilename <- exrequest[[1]]
-  } else {
-    rmdfilename <- paste0(exrequest[[1]], ".Rmd", collapse = "")
-  }
+  rmdfilename <- add_extension(exrequest[[1]], "Rmd")
+
 
   #ex is a list:
   # list(title = ex_title,
@@ -588,13 +758,14 @@ exer2rmdstring <- function(...) {
 #' @export
 #'
 #' @examples
-#' make_rmdmoodle("my-new-moodle-exam.Rmd",
+#' \dontrun{make_rmdmoodle("my-new-moodle-exam.Rmd",
 #'                c("cap1/c1-estimation.Rmd","est-mean","est-var"),
-#'                c("cap2/c2-normalprob.Rmd","prob-less", "prob-greater", "prob-between"))
+#'                c("cap2/c2-normalprob.Rmd","prob-less", "prob-greater", "prob-between"))}
 rmdexam <- function(rmdfilename, ...) {
 
 
-  # TODO: maybe remove after all testing on new exams
+  #' Remove 6 from rmdexam(6, "2022-2023-exame.Rmd",...)
+  #' TODO: maybe remove after all testing on new exams.
   if (is.numeric(rmdfilename)) {
     #it will print an integer (before april/2024 it uses a number in 1st arg)
     stop(paste0("Please remove first argument ",
@@ -605,7 +776,8 @@ rmdexam <- function(rmdfilename, ...) {
 
   cat("\nBuilding", rmdfilename, "\n\n")
 
-  #args is a list of lists
+
+  #args is a list
   #args[[1]][[1]] access the first exercise-filename to be written
   #to the new Rmd
   argslist <- list(...)
@@ -614,19 +786,36 @@ rmdexam <- function(rmdfilename, ...) {
 
   # Runs all requested questions
   for (qnum in seq_along(argslist)) {
-    res <- exer2rmdstring(argslist[[qnum]])
+
+    arg <- argslist[[qnum]]
+
+    #' What is the argument type?
+    if (length(arg)==1) {  #se o vector arg só tem um elemento
+      #' if it is a character then
+      #' it could came from execution of functions like:
+      #' 1. `planned_q("c3-zinterval.Rmd", "ic01","interp01")`, or from
+      #' 2. `random_q(seed = 10, varcount = 90, "c3-zinterval.Rmd", "ic01","interp01")`
+
+      res <- arg #above functions already produce a character
+
+    } else {
+
+      res <- planned_q(arg)
+
+    }
+
+
+    #' Join every question into a big string
     ex_rmdtext <- paste0(ex_rmdtext,
                          res,
                          collapse = "\n\n")
   }
 
 
-  #Comando com nvariants
-  #   comando_txt <- sprintf("rmdexam(%d,\n\"%s\",\n%s)\n",
-  #                          nvariants,
-  #                          rmdfilename,
-  #                          paste( argslist, collapse=", \n" ))
-  comando_txt <- sprintf("rmdexam(\"%s\",\n%s)\n\n\n", #precisa pelo menos 2 \n
+  #' Reproduce the instruction that
+  #' originates the exam for later
+  #' reproducibility.
+  make_exam_script <- sprintf("rmdexam(\"%s\",\n%s)\n", #precisa pelo menos 2 \n
                          rmdfilename,
                          paste(argslist, collapse = ", \n"))
 
@@ -637,31 +826,26 @@ rmdexam <- function(rmdfilename, ...) {
     "author: \"User '", Sys.info()["user"], "' compilou este exame\"\n",
     "date: \"", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\"\n",
     "output: html_document\n",
-    "---\n\n\n",
-    "A versão inicial deste documento foi construída com:\n",
-    "```\n",
-    "library(rmdmoodle)\n",
-    "set_exercise_root(\"", pkg_env$EXERCISE_ROOT, "\")\n",
-    #"set_exercise_root( \"C:/Users/USERNAME/<Where is the exercise folder?>\" )\n",
-    comando_txt,
-    "```\n",
-    collapse = "\n\n")
+    "---\n\n\n")
 
-    # "**Configuração do que se vê no HTML de verificação**\n",
-    # "\n",
-    # "\n",
-    # "```{r echo=TRUE, results=FALSE}\n",
-    # "VARCOUNT    = ", nvariants, "  # total de variantes\n",
-    # "SHOWCODE    = FALSE  # Se mostra o código R (no HTML de verificação)\n",
-    # "SHOWRESULTS = FALSE  # Se mostra o output do R (no HTML de verificação)\n",
-    # "SET.SEED    = ", round(runif(1,1000,3000),0), " # set.seed(SET.SEED)\n",
-    # "#Avoid scientific notation in all document\n",
-    # "options(scipen = 999)\n",
-    # "#Na commandline: str(knitr::opts_chunk$get())\n",
-    # "knitr::opts_chunk$set(echo = TRUE) \n",
-    # "```\n",
-    # "\n\n",
-    # collapse = "\n\n")
+
+  #TODO: remove this commented lines
+  # "**Configuração do que se vê no HTML de verificação**\n",
+  # "\n",
+  # "\n",
+  # "```{r echo=TRUE, results=FALSE}\n",
+  # "VARCOUNT    = ", nvariants, "  # total de variantes\n",
+  # "SHOWCODE    = FALSE  # Se mostra o código R (no HTML de verificação)\n",
+  # "SHOWRESULTS = FALSE  # Se mostra o output do R (no HTML de verificação)\n",
+  # "SET.SEED    = ", round(runif(1,1000,3000),0), " # set.seed(SET.SEED)\n",
+  # "#Avoid scientific notation in all document\n",
+  # "options(scipen = 999)\n",
+  # "#Na commandline: str(knitr::opts_chunk$get())\n",
+  # "knitr::opts_chunk$set(echo = TRUE) \n",
+  # "```\n",
+  # "\n\n",
+  # collapse = "\n\n")
+
 
   #debug
   #cat(head_txt)
@@ -672,8 +856,8 @@ rmdexam <- function(rmdfilename, ...) {
                        collapse = "\n\n")
 
 
-
-  # Open and write
+  #' Save exam in `rmdfilename`
+  #' Open and write
   con <- file(rmdfilename, "wt", encoding = "UTF-8")
   #cat(ex_rmdtext, file = con)
 
@@ -684,14 +868,14 @@ rmdexam <- function(rmdfilename, ...) {
   close(con)
 
 
-  cat("Check file", rmdfilename, "and search for eventual problems or change for needs.\n")
-  cat(paste0("Then, run xmlmoodle(\"", rmdfilename, "\") to produce the xml file to be exported.\n\n\n"))
+  cat("Check file \"", rmdfilename, "\" and search for eventual problems or change for needs.\n", sep="")
+  cat("Then, run `xmlmoodle(\"", rmdfilename, "\")` to produce the xml file to be exported.\n\n\n",sep="")
 
   rmdfilename_no_ext <- substr(rmdfilename, 1, nchar(rmdfilename) - 4)
 
   xmlmoodle(rmdfilename_no_ext)
 
-  cat("\nPlease, import file ", rmdfilename_no_ext, ".xml to moodle.\n\n", sep = "")
+  cat("\nPlease, import file ", rmdfilename_no_ext, ".xml into moodle.\n\n", sep = "")
 
   return(rmdfilename)
 }

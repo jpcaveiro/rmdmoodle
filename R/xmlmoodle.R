@@ -50,8 +50,10 @@
 # TODO: colocar que funções são usadas
 # library(rjson) rjson::fromJSON
 # library(rmarkdown)  rmarkdown::render
+
+
 library(whisker)  # whisker.render
-library(rvest) #imports read_html, html_children, html_text
+library(rvest) # imports read_html, html_children, html_text
 library(stringr)
 library(xml2)
 
@@ -622,13 +624,10 @@ multichoice <- function(variant_title, variant_contents) {
 
 #' @title cloze - joins text and verify moodle-cloze {....} instructions
 #'
-#' @param variant_title
-#' @param variant_contents
+#' @param variant_title a string
+#' @param variant_contents a string
 #'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return alist with several attributes
 cloze <- function(variant_title, variant_contents) {
 
   n <- length(variant_contents)
@@ -656,7 +655,8 @@ cloze <- function(variant_title, variant_contents) {
       feedbackglobal <- paste0(h[2:nh], collapse = "\n")
     }
   } else {
-    stop(_("Numa questão 'cloze' tem que existir a secção '### feedback' em cada variante (ainda que possa estar vazia).\nApós a modificação tem que fazer 'knitr'.")
+    stop("In a 'cloze' question, it must exist a section '### feedback', possibly empty, in each variant.\n")
+    #stop(_("Numa questão 'cloze' tem que existir a secção '### feedback' em cada variante (ainda que possa estar vazia).\nApós a modificação tem que fazer 'knitr'."))
   }
 
 
@@ -702,14 +702,13 @@ essay <- function(variant_title, variant_contents) {
 
 
 #' From a list of questions produce a xml file
-#' to be imported in Moodle.
+#'
+#' The xml file is to be imported in Moodle.
 #'
 #' @param exam_title - name of the future file
 #' @param all_questions - a list
 #'
 #' @return - a saved file in system
-#'
-#' @examples
 saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions) {
 
 
@@ -968,42 +967,16 @@ extractquestions_fromhtml <- function(filename_no_extension) {
 
 
 
-#' Transform "Title f(2024)" into "Title_f-2024-"
-#'
-#' @param x character string
-#' @param non_alphanum_replace "-" if nonalpha appears in `x`
-#' @param space_replace "_" if spaces appears in `x`
-#' @param tolower FALSE
-#'
-#' @return
-#' @export
-#'
-#' @examples
-#' > slugify("Title f(2024)")
-slugify <- function(x, non_alphanum_replace="-", space_replace="_", tolower=FALSE) {
-  x <- gsub("[^[:alnum:] ]", non_alphanum_replace, x)
-  x <- trimws(x)
-  x <- gsub("[[:space:]]", space_replace, x)
-
-  if(tolower) { x <- tolower(x) }
-
-  return(x)
-}
-
-
-
 
 
 #' `find_setwd()` search for instructions `setwd()`
 #'
-#' The idea is to warn
-#' user to put data and images files in same path
+#' The idea is to warn user to put data and images files in same path
 #' or to add an absolut path.
 #'
 #' Called in `xmlmoodle()`
 #'
 #' @return nothing
-#'
 find_setwd <- function(filename_no_extension) {
 
   filename <- paste0(filename_no_extension, ".Rmd")
@@ -1078,20 +1051,20 @@ html_to_json_protected <- function(html_code) {
 
 
 
-
+#' Exam in R Markdown to XML Moodle exam.
+#'
 #' Convert an Rmd file containing questions and variants
 #' to xml moodle file to be imported for the "exam" tool
 #' in moodle.
 #'
 #' @param filename_no_extension
-#' @param noneiscorrect string like "None of the other is correct."
 #'
 #' @return A xml file to be imported in moodle.
 #' @export
 #'
 #' @examples
-#' > xmlmoodle("my_exam.Rmd") or
-#' > xmlmoodle("my_exam")
+#' \dontrun{xmlmoodle("my_exam.Rmd")}
+#' \dontrun{xmlmoodle("my_exam")}
 xmlmoodle <- function(filename_no_extension) {
 
   if (grepl(".", filename_no_extension)) {
@@ -1099,6 +1072,7 @@ xmlmoodle <- function(filename_no_extension) {
   }
 
 
+  #' Warn author if `setwd()` is used.
   #' Search for `setwd()` in order to warn
   #' user to put data and images files in same path
   #' or to add an absolut path.

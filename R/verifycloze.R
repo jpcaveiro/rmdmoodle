@@ -86,7 +86,7 @@ maybe_pattern <- function(uclozetext) {
 
 #' Formal verification of cloze instructions (using regex).
 #'
-#' @param uclozetext
+#' @param uclozetext text with Moodle cloze instructions
 #' @param resultofmaybe is list(pattern="...pattern...", afind=afind_result)
 #'
 #' @return list(type="...",  options = options, pos.s = pos.s,  pos.e = pos.e)
