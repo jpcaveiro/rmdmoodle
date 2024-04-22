@@ -1,26 +1,35 @@
 
 
-# algoritmo ====
-
-# Algoritmo geral:
-#
-# 1. Ler via read_html()
-# 2. Lê o html e coloca numa estrutura "xml_document"
-#
-#
-# References:
-# 1. templating https://cran.r-project.org/web/packages/whisker/whisker.pdf
-# 2. json: install.packages("rjson")
-#
+#' internationalization
+#' `xgettext --language='python' --from-code='UTF-8' --keyword=_ -o pkg.pot *.R`
+#' pthon porque usa "#" para comentários ainda que isso não seja
+#' suficiente
+#' * https://www.gnu.org/software/gettext/manual/index.html
+#'
 
 
+# How it works ====
+
+#' Algoritmo geral:
+#'
+#' 1. Ler via read_html()
+#' 2. Lê o html e coloca numa estrutura "xml_document"
+#'
+#'
+#' References:
+#' 1. templating https://cran.r-project.org/web/packages/whisker/whisker.pdf
+#' 2. json: install.packages("rjson")
 
 
-# Pode ser:
-# se multichoice: enunciado da variante nas células 2 a n-2; a célula n-1 tem a resposta <ul> e n tem o feeback
-#   se numerical: enunciado da variante nas células 2 a n-2; a célula n-1 tem a resposta <ul> com opções numericas e n tem o feeback
-# se openquestion: enunciado da variante nas células 2 a n-1; a célula  n tem o feeback
-# se cloze: enunciado da variante nas células 2 a n-1; a célula  n tem o feeback
+
+#' se multichoice: enunciado da variante nas células 2 a n-2;
+#'    a célula n-1 tem a resposta <ul> e n tem o feeback
+#' se numerical: enunciado da variante nas células 2 a n-2;
+#'    a célula n-1 tem a resposta <ul> com opções numericas e n tem o feeback
+#' se essay: enunciado da variante nas células 2 a n-1;
+#'    a célula  n tem o feeback
+#' se cloze: enunciado da variante nas células 2 a n-1;
+#'    a célula  n tem o feeback
 
 # if (question_type == "MULTICHOICE") {
 #     question_tuple <- moodle_question_multichoice(question_name, partes_da_questao)
@@ -36,13 +45,15 @@
 
 
 
-# libraries ====
+# library(...) imports ====
 
 # TODO: colocar que funções são usadas
 # library(rjson) rjson::fromJSON
 # library(rmarkdown)  rmarkdown::render
+
+
 library(whisker)  # whisker.render
-library(rvest) #imports read_html, html_children, html_text
+library(rvest) # imports read_html, html_children, html_text
 library(stringr)
 library(xml2)
 
@@ -56,7 +67,7 @@ library(xml2)
 #  {{{answer_incorrect1}}}, {{{answer_incorrect2}}}, {{{answer_incorrect3}}}
 
 
-MULTICHOICE_template4 <- '
+MULTICHOICE_template4 <- '/
   <question type="category">
     <category>
       <text>$course$/top/importados/{{exam_title}}/{{question_title}}</text>
@@ -193,7 +204,7 @@ MULTICHOICE_template5 <- '
 '
 
 
-NUMERICAL_ANSWER_template = '
+NUMERICAL_ANSWER_template <- '
     <answer fraction="{{FRACTION}}" format="moodle_auto_format">
       <text>{{VALUE}}</text>
       <feedback format="html">
@@ -309,25 +320,37 @@ is_level <- function(html_part, str_level, keyword) {
   # GGG <<- html_part # nolint
   # cat('\n\n\ninício de is_level\n')
   # print(html_part)
-  # cat( 'contém a keyword = ', grepl(keyword,html_part,ignore.case=TRUE),'\n' )
+  # cat( 'contém a keyword = ', grepl(keyword,html_part,ignore.case=TRUE),"\n" )
   # print(html_attrs(html_part)) #umas vezes precisa de [[1]] e outras não !! # AQUI AQUI
-  # cat("class de html_part = ", class(html_part), '\n')
+  # cat("class de html_part = ", class(html_part), "\n")
   # cat(
-  #     html_name(html_part)=='div' && grepl(keyword,html_part,ignore.case=TRUE) && html_attrs(html_part)[2] == str_level,
+  #     html_name(html_part)=='div' && grepl(keyword,html_part,ignore.case=TRUE) &&
+  #     html_attrs(html_part)[2] == str_level,
   #     '\nfim de is_level\n\n\n\n'
   # )
   #stop()
 
   return(html_name(html_part) == "div" &&
-          grepl(keyword, html_part, ignore.case = TRUE) &&
-          html_attrs(html_part)[2] == str_level)
+         grepl(keyword, html_part, ignore.case = TRUE) &&
+         html_attrs(html_part)[2] == str_level)
 
 }
 
 
 
 
-question_with_variants <- function(question_title, question_html, main_question_type ) {
+skip_li <- function(snode) {
+  #browser()
+  st <- paste0(snode)
+  #debug
+  #cat(s)
+  st <- gsub("<li>", "", st)
+  st <- gsub("</li>", "", st)
+  return(st)
+}
+
+
+question_with_variants <- function(question_title, question_html, main_question_type) {
   # A variante pode ter tipos (multi, numerical, cloze, essay) mas só são efetivos
   # se a questão (que contem variantes) não definir o tipo.
   # A ver se o autor aceita isto!
@@ -362,7 +385,8 @@ question_with_variants <- function(question_title, question_html, main_question_
   #     <div id="variante-1-para-esta-questão-dentro-deste-teste" class="section level2">
   # 2. procurar resposta como sendo level3 e dentro desta:
   # 2a. Se MULTICHOICE procurar <ul> <li> ... </li> </ul> sendo a primeira verdadeira
-  # 2b. Se NUMERICAL procurar <ul> <li> ... </li> </ul> sendo a primeira 100% e as outras logo se vê (valor, tol, percentagem) ?
+  # 2b. Se NUMERICAL procurar <ul> <li> ... </li> </ul> sendo a primeira 100% e as
+  #     outras logo se vê (valor, tol, percentagem) ?
   # 2c. Se CLOZE ou OPENQUESTION só passar
   # 3. Procurar feedback, como sendo level3, como sendo o feedback ao estudante.
 
@@ -373,19 +397,19 @@ question_with_variants <- function(question_title, question_html, main_question_
 
   #first node was the question title
   #Other nodes are expected to contain 'variants'
-  for( node in 1:num_of_nodes ) {
+  for (node in seq_len(num_of_nodes)) {
 
     question_part <- question_html[node]
 
 
-    if ( is_level(question_part, 'section level2', 'variante')==TRUE ) {
+    if (is_level(question_part, "section level2", "variante") == TRUE) {
       #mesmo que: if (html_name(question_part)=='div' && html_attrs(question_part)[[2]] == "section level2") {
       # Se <div variante ....class = "section level2":
 
       variant_contents <- html_children(question_part)
 
       #Será algo como <h2>variante 1</h2> será o 1º "filho" dentro do <div>
-      variant_title <- html_text( variant_contents[1] )
+      variant_title <- html_text(variant_contents[1])
 
       # Pode ser:
       # se multichoice: enunciado da variante nas células 2 a n-2; a célula n-1 tem a resposta <ul> e n tem o feeback
@@ -395,18 +419,19 @@ question_with_variants <- function(question_title, question_html, main_question_
 
       #Se a questão tem um tipo de questão "indefinido" então
       # as variantes devem definir o tipo.
-      if (main_question_type == 'indefinido') {
+      if (main_question_type == "indefinido") {
 
-        if ( grepl("MULTICHOICE", variant_title, ignore.case = TRUE) ) {
+        if (grepl("MULTICHOICE", variant_title, ignore.case = TRUE)) {
           question_type <- "MULTICHOICE"
-        } else if ( grepl("NUMERICAL", variant_title, ignore.case = TRUE) ) {
+        } else if (grepl("NUMERICAL", variant_title, ignore.case = TRUE)) {
           question_type <- "NUMERICAL"
-        } else if ( grepl("CLOZE", variant_title, ignore.case = TRUE) ) {
+        } else if (grepl("CLOZE", variant_title, ignore.case = TRUE)) {
           question_type <- "CLOZE"
-        } else if ( grepl("ESSAY", variant_title, ignore.case = TRUE) ) {
+        } else if (grepl("ESSAY", variant_title, ignore.case = TRUE)) {
           question_type <- "ESSAY"
         } else {
-          stop( cat(question_title,"(or the variant title) must have MULTICHOICE, NUMERICAL, CLOZE, ESSAY tag\n") )
+          stop(cat(question_title,
+                   "(or the variant title) must have MULTICHOICE, NUMERICAL, CLOZE, ESSAY tag\n"))
         }
       } else {
         question_type <- main_question_type
@@ -414,57 +439,58 @@ question_with_variants <- function(question_title, question_html, main_question_
 
 
       if (question_type == "MULTICHOICE") {
-        cat(' Processing', variant_title, '\n')
+        cat(" Processing", variant_title, "\n")
         total_variants <- total_variants + 1
         variants[[total_variants]] <- multichoice(variant_title, variant_contents)
       } else if (question_type == "NUMERICAL") {
-        cat(' Processing', variant_title, '\n')
+        cat(" Processing", variant_title, "\n")
         total_variants <- total_variants + 1
         variants[[total_variants]] <- numerical(variant_title, variant_contents)
       } else if (question_type == "CLOZE") {
-        cat(' Processing', variant_title, '\n')
+        cat(" Processing", variant_title, "\n")
         total_variants <- total_variants + 1
         variants[[total_variants]] <- cloze(variant_title, variant_contents)
       } else if (question_type == "ESSAY") {
-        cat(' Processing', variant_title, '\n')
+        cat(" Processing", variant_title, "\n")
         total_variants <- total_variants + 1
         variants[[total_variants]] <- essay(variant_title, variant_contents)
       } else {
-        warning(paste("Tipo de questão ('question_type') não existente.\nDeve ser: MULTICHOICE, NUMERICAL, CLOZE, ESSAY. Rever a questão:", question_title,"\n"))
+        warning(paste("Tipo de questão ('question_type') não existente.\nDeve ser: MULTICHOICE, NUMERICAL, CLOZE, ESSAY. Rever a questão:", question_title, "\n"))
       }
     }
     #else: ignora (para já) e nada diz ao autor!
   }
 
-  if (total_variants<1) {
+  if (total_variants < 1) {
     stop("Esperada uma questão com variantes: uma secção definida por '##' deve ter a sintaxe '## variante <and some text>'.\nOu este ficheiro Rmd não é um teste isolado mas é parte de uma base de questões (formato rmdmoodle).")
   }
 
-  return( list(question_title=question_title, variants=variants) )
+  return(list(question_title = question_title,
+              variants = variants))
 }
 
 
 
 numerical <- function(variant_title, variant_contents) {
 
-  n <- length( variant_contents )
+  n <- length(variant_contents)
 
-  enunciado <- paste0( variant_contents[2:(n-2)], collapse = '\n')
+  enunciado <- paste0(variant_contents[2:(n - 2)], collapse = "\n")
 
   # resposta - deve ocorrer sempre na posição n-1
-  if ( is_level(variant_contents[n-1], "section level3", "respostas") ) {
+  if (is_level(variant_contents[n - 1], "section level3", "respostas")) {
 
     #Formato a usar no Rmd:
     #
     # * "answer": 100.1, "tol": 0.001, "fraction": 100, "feedback" : "Aqui uma longa frase 1."
     # * "answer": 100.1, "tol": 0.001, "fraction": 100, "feedback" : "Aqui uma longa frase 2."
 
-    r <- html_children(variant_contents[n-1])
+    r <- html_children(variant_contents[n - 1])
     ulist_items <- html_children(r[2])
 
     # Debug
     # nr <- length(ulist_items)
-    # resposta <- paste( r[2:nr], collapse = '\n')
+    # resposta <- paste( r[2:nr], collapse = "\n")
 
 
     # Debug
@@ -476,41 +502,48 @@ numerical <- function(variant_title, variant_contents) {
     #   No html surge:      “coisa”: 10
     #
     #[1] "{\"answer”: 100.1, \"tol”: 0.001, \"fraction”: 100, \"feedback” : \"Aqui um alonga resposta 1”}"
-    #> xx = gsub('“', '\"', '{“answer”: 100.1, “tol”: 0.001, “fraction”: 100, “feedback” : “Aqui um alonga resposta 1”}' )
+    #> xx = gsub('“', '\"', '{“answer”: 100.1, “tol”: 0.001, “fraction”: 100, “feedback” : “Aqui um alonga resposta 1”}' ) # nolint
     #> xx
     #[1] "{\"answer”: 100.1, \"tol”: 0.001, \"fraction”: 100, \"feedback” : \"Aqui um alonga resposta 1”}"
     #> xx = gsub('“', '\"', '{“answer”: 100.1, “tol”: 0.001, “fraction”: 100, “feedback” : “Aqui um alonga resposta 1”}' ); xx
     #[1] "{\"answer”: 100.1, \"tol”: 0.001, \"fraction”: 100, \"feedback” : \"Aqui um alonga resposta 1”}"
     #> xx = gsub('“', "'", '{“answer”: 100.1, “tol”: 0.001, “fraction”: 100, “feedback” : “Aqui um alonga resposta 1”}' ); xx
     #[1] "{'answer”: 100.1, 'tol”: 0.001, 'fraction”: 100, 'feedback” : 'Aqui um alonga resposta 1”}"
-    #> xx2 = gsub('”', "'", '{“answer”: 100.1, “tol”: 0.001, “fraction”: 100, “feedback” : “Aqui um alonga resposta 1”}' ); xx2
+    #> xx2 = gsub('”', "'", '{“answer”: 100.1, “tol”: 0.001, “fraction”: 100, “feedback” : “Aqui um alonga resposta 1”}' ); xx2 # nolint
     #[1] "{“answer': 100.1, “tol': 0.001, “fraction': 100, “feedback' : “Aqui um alonga resposta 1'}"
 
 
 
-    respostas <- lapply( ulist_items, html_to_json_protected )
-    RESPOSTAS <<- respostas
+    respostas <- lapply(ulist_items, html_to_json_protected)
+
+    #Debug
+    #RESPOSTAS <<- respostas
+
   } else {
-    stop("Numa questão 'NUMERICAL' tem que existir a secção '### respostas' e a secção '### feedback' em cada variante.\nApós a modificação tem que fazer 'knitr'.")
+    stop("Numa questão 'NUMERICAL' tem que existir a secção '### respostas' e a secção '### feedback' em cada variante.\nApós a modificação tem que fazer 'knitr'.") # nolint
   }
 
   # feedback global - deve ocorrer sempre na posição n
-  if ( is_level(variant_contents[n], "section level3", "feedback") ) {
+  if (is_level(variant_contents[n], "section level3", "feedback")) {
     #coleciona todo o feedback
     h <- html_children(variant_contents[n])
     nh <- length(h)
-    if (nh==1) {
-      feedbackglobal <- '\n\n\n'
+    if (nh == 1) {
+      feedbackglobal <- "\n\n\n"
       cat("    Variante 'NUMERICAL' com feedback vazio.\n")
     } else {
-      feedbackglobal <- paste0( h[2:nh], collapse = '\n')
+      feedbackglobal <- paste0(h[2:nh], collapse = "\n")
     }
   } else {
     stop("Numa questão 'NUMERICAL' tem que existir a secção '### respostas' e a secção '### feedback' em cada variante.\nApós a modificação tem que fazer 'knitr'.")
   }
 
 
-  return(list(variant_title=variant_title,variant_type='NUMERICAL',enunciado=enunciado,respostas=respostas,feedbackglobal=feedbackglobal))
+  return(list(variant_title = variant_title,
+              variant_type = "NUMERICAL",
+              enunciado = enunciado,
+              respostas = respostas,
+              feedbackglobal = feedbackglobal))
 
 }
 
@@ -524,12 +557,13 @@ multichoice <- function(variant_title, variant_contents) {
   # feedback "feedback" for each student
 
   # verificações no caso de multichoice
-  # se multichoice: enunciado da variante nas células 2 a n-2; a célula n-1 tem a resposta <ul> e n tem o feeback
+  # se multichoice: enunciado da variante nas células 2 a n-2;
+  # a célula n-1 tem a resposta <ul> e n tem o feeback
 
-  n <- length( variant_contents )
+  n <- length(variant_contents)
 
   # enunciado - ocorre da 2 a n-2; requer (n-2)
-  enunciado <- paste0( variant_contents[2:(n-2)], collapse = '\n')
+  enunciado <- paste0(variant_contents[2:(n - 2)], collapse = "\n")
   #debug - ainda não se entende o 4 na linha acima
   #cat("\n\n\n--------------------\n\n")
   #VC <<- variant_contents
@@ -539,12 +573,22 @@ multichoice <- function(variant_title, variant_contents) {
   #cat("\n--------------------\n\n")
 
   # resposta - deve ocorrer sempre na posição n-1
-  if ( is_level(variant_contents[n-1], "section level3", "respostas") ) {
+  if (is_level(variant_contents[n - 1], "section level3", "respostas")) {
 
-    r <- html_children(variant_contents[n-1])
+    r <- html_children(variant_contents[n - 1])
     ulist_items <- html_children(r[2])
-    respostas <- sapply( ulist_items, html_text )
+    for (u in ulist_items) {
+      if (grepl("start=", u)) {
+        warning("In ## respostas, please avoid using '* 9.' (with .) because a bug. Use only '* 9' without a dot.")
+      }
+    }
+
+    #respostas <- sapply(ulist_items, html_text) skip_li
+    respostas <- lapply(ulist_items, skip_li)
+
+
     #Debug
+    #browser()
     #RESPOSTAS <<- respostas
 
   } else {
@@ -552,22 +596,27 @@ multichoice <- function(variant_title, variant_contents) {
   }
 
   # feedback - deve ocorrer sempre na posição n
-  if ( is_level(variant_contents[n], "section level3", "feedback") ) {
+  if (is_level(variant_contents[n], "section level3", "feedback")) {
     #coleciona todo o feedback
     h <- html_children(variant_contents[n])
     nh <- length(h)
-    if (nh==1) {
-      feedbackglobal <- '\n\n\n'
+    if (nh == 1) {
+      feedbackglobal <- "\n\n\n"
       cat("    Variante 'MULTICHOICE' com feedback vazio.\n")
     } else {
-      feedbackglobal <- paste0( h[2:nh], collapse = '\n')
+      feedbackglobal <- paste0(h[2:nh], collapse = "\n")
     }
+
   } else {
     stop("Numa questão 'MULTICHOICE' tem que existir a secção '### respostas' e a secção '### feedback' em cada variante.\nApós a modificação tem que fazer 'knitr'.")
   }
 
 
-  return(list(variant_title=variant_title,variant_type='MULTICHOICE',enunciado=enunciado,respostas=respostas,feedbackglobal=feedbackglobal))
+  return(list(variant_title = variant_title,
+              variant_type = "MULTICHOICE",
+              enunciado = enunciado,
+              respostas = respostas,
+              feedbackglobal = feedbackglobal))
 
 }
 
@@ -575,18 +624,15 @@ multichoice <- function(variant_title, variant_contents) {
 
 #' @title cloze - joins text and verify moodle-cloze {....} instructions
 #'
-#' @param variant_title
-#' @param variant_contents
+#' @param variant_title a string
+#' @param variant_contents a string
 #'
-#' @return
-#' @export
-#'
-#' @examples
+#' @return alist with several attributes
 cloze <- function(variant_title, variant_contents) {
 
-  n <- length( variant_contents )
+  n <- length(variant_contents)
 
-  enunciado <- paste0( variant_contents[2:(n-1)], collapse = "\n")
+  enunciado <- paste0(variant_contents[2:(n - 1)], collapse = "\n")
   enunciado <- gsub("\x0D\x0D\x0A", "", enunciado)
   #debug
   #cat("enunciado:\n",enunciado,"\n")
@@ -596,24 +642,28 @@ cloze <- function(variant_title, variant_contents) {
 
 
   # feedback global - deve ocorrer sempre na posição n
-  if ( is_level(variant_contents[n], "section level3", "feedback") ) {
+  if (is_level(variant_contents[n], "section level3", "feedback")) {
     #coleciona todo o feedback
     h <- html_children(variant_contents[n])
     nh <- length(h)
-    if (nh==1) {
-      feedbackglobal <- '\n\n\n'
-      if (pkg.env$WARNINGS.BOOLEAN) {
+    if (nh == 1) {
+      feedbackglobal <- "\n\n\n"
+      if (pkg_env$WARNINGS.BOOLEAN) {
         cat("    Há uma variante 'CLOZE' com feedback vazio.\n")
       }
     } else {
-      feedbackglobal <- paste0( h[2:nh], collapse = '\n')
+      feedbackglobal <- paste0(h[2:nh], collapse = "\n")
     }
   } else {
-    stop("Numa questão 'cloze' tem que existir a secção '### feedback' em cada variante (ainda que possa estar vazia).\nApós a modificação tem que fazer 'knitr'.")
+    stop("In a 'cloze' question, it must exist a section '### feedback', possibly empty, in each variant.\n")
+    #stop(_("Numa questão 'cloze' tem que existir a secção '### feedback' em cada variante (ainda que possa estar vazia).\nApós a modificação tem que fazer 'knitr'."))
   }
 
 
-  return(list(variant_title=variant_title,variant_type='CLOZE',enunciado=enunciado,feedbackglobal=feedbackglobal))
+  return(list(variant_title = variant_title,
+              variant_type = "CLOZE",
+              enunciado = enunciado,
+              feedbackglobal = feedbackglobal))
 
 }
 
@@ -622,43 +672,44 @@ cloze <- function(variant_title, variant_contents) {
 
 essay <- function(variant_title, variant_contents) {
 
-  n <- length( variant_contents )
-  enunciado <- paste( variant_contents[2:(n-1)], collapse = '\n')
+  n <- length(variant_contents)
+  enunciado <- paste(variant_contents[2:(n - 1)], collapse = "\n")
 
   # feedback global - deve ocorrer sempre na posição n
-  if ( is_level(variant_contents[n], "section level3", "feedback") ) {
+  if (is_level(variant_contents[n], "section level3", "feedback")) {
     #coleciona todo o feedback
     h <- html_children(variant_contents[n])
     nh <- length(h)
-    if (nh==1) {
-      feedbackglobal <- '\n\n\n'
+    if (nh == 1) {
+      feedbackglobal <- "\n\n\n"
       cat("    Variante 'ESSAY' com feedback vazio.\n")
     } else {
-      feedbackglobal <- paste( h[2:nh], collapse = '\n')
+      feedbackglobal <- paste(h[2:nh], collapse = "\n")
     }
   } else {
     stop("Numa questão questão 'ESSAY' tem que existir a secção '### feedback' em cada variante (ainda que possa estar vazia).\nApós a modificação tem que fazer 'knitr'.")
   }
 
 
-  return(list(variant_title=variant_title,variant_type='ESSAY',enunciado=enunciado,feedbackglobal=feedbackglobal))
+  return(list(variant_title = variant_title,
+              variant_type = "ESSAY",
+              enunciado = enunciado,
+              feedbackglobal = feedbackglobal))
 
 }
 
 
 
 
-
 #' From a list of questions produce a xml file
-#' to be imported in Moodle.
+#'
+#' The xml file is to be imported in Moodle.
 #'
 #' @param exam_title - name of the future file
 #' @param all_questions - a list
 #'
 #' @return - a saved file in system
-#'
-#' @examples
-export_to_moodlexml <- function(exam_title, all_questions) {
+saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions) {
 
 
   #<?xml version="1.0" encoding="UTF-8"?>
@@ -667,9 +718,9 @@ export_to_moodlexml <- function(exam_title, all_questions) {
 
   xml_str <- '<?xml version="1.0" encoding="UTF-8"?>\n<quiz>\n'
 
-  nquestions <- length(all_questions)
+  #nquestions <- length(all_questions)
 
-  for(q in 1:nquestions) {
+  for (q in seq_along(all_questions)) {
 
     question <- all_questions[[q]]
 
@@ -682,21 +733,21 @@ export_to_moodlexml <- function(exam_title, all_questions) {
     nvariants <- length(variants)
 
 
-    for(v in 1:nvariants) {
+    for(v in seq_len(nvariants)) {
 
       #variant <- question[[v+2]]
       variant <- variants[[v]]
 
-      if (variant$variant_type == 'MULTICHOICE') {
+      if (variant$variant_type == "MULTICHOICE") {
 
         #debug
         #TODO inventar um relatório promenorizado do teste
         #e colocar lá esta informação
-        #cat("Nr. de opções obtidas =", length(variant$respostas),'\n')
+        #cat("Nr. de opções obtidas =", length(variant$respostas),"\n")
 
-        if (length(variant$respostas)==4) {
+        if (length(variant$respostas) == 4) {
           xml_str <- paste(xml_str,
-                          whisker.render(MULTICHOICE_template4,list(
+                          whisker.render(MULTICHOICE_template4, list(
                             exam_title        = exam_title,
                             question_title    = question[[1]],
                             variant_title     = variant$variant_title,
@@ -707,12 +758,12 @@ export_to_moodlexml <- function(exam_title, all_questions) {
                             answer_incorrect3 = variant$respostas[4], #"incorreta 3",
                             feedbackglobal    = variant$feedbackglobal)
                           ),
-                          sep='\n'
+                          sep = "\n"
           )
         } else {
           xml_str <- paste(xml_str,
-                          whisker.render(MULTICHOICE_template5,list(
-                            exam_title        = exam_title,
+                          whisker.render(MULTICHOICE_template5, list(
+                            exam_title        = exam_title, # nolint
                             question_title    = question[[1]],
                             variant_title     = variant$variant_title,
                             question_problem  = variant$enunciado,
@@ -723,12 +774,12 @@ export_to_moodlexml <- function(exam_title, all_questions) {
                             answer_incorrect4 = variant$respostas[5], #"incorreta 4",
                             feedbackglobal    = variant$feedbackglobal)
                           ),
-                          sep='\n'
+                          sep = "\n"
           )
         }
-      } else if (variant$variant_type == 'NUMERICAL') {
+      } else if (variant$variant_type == "NUMERICAL") {
 
-        NUMERICAL_ANSWER_xml <- ''
+        NUMERICAL_ANSWER_xml <- ""
 
         # Debug
         #print("A exportar numerical para xml:")
@@ -747,14 +798,14 @@ export_to_moodlexml <- function(exam_title, all_questions) {
                 TOLERANCE        = r$tol
               )
             ),
-            sep='\n'
+            sep = "\n"
           )
         }
 
         #nr <- length(variant$respostas)
 
         xml_str <- paste(xml_str,
-                         whisker.render(NUMERICAL_template,list(
+                         whisker.render(NUMERICAL_template, list(
                            exam_title        = exam_title,
                            question_title    = question[[1]],
                            variant_title     = variant$variant_title,
@@ -763,57 +814,55 @@ export_to_moodlexml <- function(exam_title, all_questions) {
                            feedbackglobal    = variant$feedbackglobal
                          )
                          ),
-                         sep='\n'
+                         sep = "\n"
         )
 
-      } else if (variant$variant_type == 'CLOZE') {
+      } else if (variant$variant_type == "CLOZE") {
 
         xml_str <- paste(xml_str,
-                         whisker.render(CLOZE_template,list(
+                         whisker.render(CLOZE_template, list(
                            exam_title        = exam_title,
                            question_title    = question[[1]],
                            variant_title     = variant$variant_title,
                            question_problem  = variant$enunciado,
                            feedbackglobal    = variant$feedbackglobal)
                          ),
-                         sep='\n'
+                         sep = "\n"
         )
 
-      } else if (variant$variant_type == 'ESSAY') {
+      } else if (variant$variant_type == "ESSAY") {
 
         xml_str <- paste(xml_str,
-                         whisker.render(ESSAY_template,list(
+                         whisker.render(ESSAY_template, list(
                            exam_title        = exam_title,
                            question_title    = question[[1]],
                            variant_title     = variant$variant_title,
                            question_problem  = variant$enunciado,
                            feedbackglobal    = variant$feedbackglobal)
                          ),
-                         sep='\n'
+                         sep = "\n"
         )
       } else {
-        warning("megua.R: unknown variant$variant_type\n")
+        warning(paste0("Unknown variant$variant_type: ", variant$variant_type, "\n"))
       }
-
 
     } #end for variants
 
   } #end for questions
 
 
-  xml_str <- c(xml_str, '</quiz>\n')
+  xml_str <- c(xml_str, "</quiz>\n")
 
   #debug
-  #cat(xml_str,'\n')
+  #cat(xml_str,"\n")
 
-  f <- file(paste(exam_title,'.xml',sep=''), open = "wt", encoding = 'utf8')
-  write(xml_str, file=f)
+  f <- file(paste0(filename_no_extension, ".xml"),
+            open = "wt",
+            encoding = "utf8")
+  write(xml_str, file = f)
   close(f)
 
 }
-
-
-
 
 
 
@@ -825,9 +874,12 @@ export_to_moodlexml <- function(exam_title, all_questions) {
 #' @param noneiscorrect
 #'
 #' @return - a list with "moodle questions"
-make_moodlexml <- function(filename) {
+extractquestions_fromhtml <- function(filename_no_extension) {
+
+  filename <- paste0(filename_no_extension, ".html")
 
   #read_html is a function from rvest library
+  #`html
   html <- read_html(filename, encoding = "UTF-8")
 
   # Extracts section <body> ... </body>
@@ -843,7 +895,7 @@ make_moodlexml <- function(filename) {
 
   # Get "title:" now in <h1> tag
   all_h1_elements <- html_elements(conteudo, "h1")
-  exam_title = html_text( all_h1_elements[1] )
+  exam_title <- html_text(all_h1_elements[1])
 
   # Debug
   #cat("\n\nNome do teste/exame: ", exam_title, '\n\n')
@@ -855,22 +907,22 @@ make_moodlexml <- function(filename) {
   # position 1 of all_h1_elements has the "title:" (originally in RMarkdown)
   # position 2 of all_h1_elements has the name of the first question
   # etc
-  first_question_title <- html_text( all_h1_elements[2] )
+  first_question_title <- html_text(all_h1_elements[2])
   start <- 1
-  text_on_h1 <- html_text( html_children(conteudo)[start] )
-  while ( grepl(first_question_title,
-                text_on_h1,
-                ignore.case=TRUE) == FALSE) {
+  text_on_h1 <- html_text(html_children(conteudo)[start])
+  while (grepl(first_question_title,
+               text_on_h1,
+               ignore.case = TRUE) == FALSE) {
     start <- start + 1
-    text_on_h1 <- html_text( html_children(conteudo)[start] )
+    text_on_h1 <- html_text(html_children(conteudo)[start])
   }
 
 
   # TODO: why?
   # Only 3rd <h1> and after has questions.
-  for( i in seq(2,length(all_h1_elements)) ) { #i=1 é o título do exame, i=2 será a primeira questão "h1"
+  for (i in seq(2, length(all_h1_elements))) { #i=1 é o título do exame, i=2 será a primeira questão "h1"
 
-    question_title <- html_text( all_h1_elements[i] )
+    question_title <- html_text(all_h1_elements[i])
 
     #debug
     #cat("----------------\n")
@@ -878,7 +930,7 @@ make_moodlexml <- function(filename) {
     #cat("----------------\n")
 
     cat("\n------------------\n")
-    cat("Processing question:", question_title, '\n')
+    cat("Processing question:", question_title, "\n")
     cat("--------------------\n\n")
 
     if (grepl("MULTICHOICE", question_title, ignore.case = TRUE)) {
@@ -894,10 +946,10 @@ make_moodlexml <- function(filename) {
       main_question_type <- "indefinido" #deixa-se para as variantes
     }
 
-    question_div_h1 <- html_children(html_children(conteudo)[start+i-2])
+    question_div_h1 <- html_children(html_children(conteudo)[start + i - 2])
     total_questions <- total_questions + 1
     all_questions[[total_questions]] <-
-         question_with_variants(question_title, question_div_h1, main_question_type)
+     question_with_variants(question_title, question_div_h1, main_question_type)
 
   }
 
@@ -907,11 +959,47 @@ make_moodlexml <- function(filename) {
 
   # Escreve informação no "moodle xml".
 
-  export_to_moodlexml(exam_title, all_questions)
 
-  return(all_questions)
+  return(list(all_questions = all_questions,
+              exam_title = exam_title))
 }
 
+
+
+
+
+
+#' `find_setwd()` search for instructions `setwd()`
+#'
+#' The idea is to warn user to put data and images files in same path
+#' or to add an absolut path.
+#'
+#' Called in `xmlmoodle()`
+#'
+#' @return nothing
+find_setwd <- function(filename_no_extension) {
+
+  filename <- paste0(filename_no_extension, ".Rmd")
+
+  all_lines <- readLines(filename)
+
+  lineno <- 0
+
+  for (l in all_lines) {
+
+    lineno <- lineno + 1
+
+    if (grepl("setwd",l)) {
+
+      cat(paste0("\nIn line ", lineno,
+                 " of ", filename,
+                 " there is a setwd() call.\n"))
+      cat("Avoid use of setwd() and place data or images files in same folder, or a subfolder, of Rmd files.\n")
+      cat("Another option is to use global path like 'c://users//name//etc//data.csv' or for images 'c://users//name//etc//an_image.png'\n\n")
+    }
+  }
+
+}
 
 
 html_to_json_protected <- function(html_code) {
@@ -922,26 +1010,26 @@ html_to_json_protected <- function(html_code) {
   # rigorous syntax.
   # This function warns the user (at least).
 
-  txt <- html_text( html_code )
-  txt1 <- gsub('“', '"', txt)
-  txt2 <- gsub('”', '"', txt1)
-  txt3 <- paste( '{', txt2, '}', sep='' )
+  txt <- html_text(html_code)
+  txt1 <- gsub('“', '"', txt) # nolint
+  txt2 <- gsub('”', '"', txt1)# nolint
+  txt3 <- paste('{', txt2, '}', sep="") # nolint
 
   #Debug
-  #cat(txt3,'\n')
+  #cat(txt3,"\n")
 
   # Source: https://stackoverflow.com/questions/12193779/how-to-write-trycatch-in-r
   out <- tryCatch(
     rjson::fromJSON(txt3),  #para várias linhas de código incluir {...linhas...}
-    error=function(cond) {
-      message(paste('É preciso rever a sintaxe nesta linha:\n', txt,'\n'))
+    error = function(cond) {
+      message(paste('É preciso rever a sintaxe nesta linha:\n"', txt, "\n"))
       message('Espera-se a notação assim:\n   "palavrachave": 123.456\n   "palavrachave": "texto entre aspas"\n   apenas uma "," entre palavrashcave.\n')
       message('Cada linha deve ser igualzinha a:\n* "answer": 100.1, "tol": 0.001, "fraction": 100, "feedback" : "Aqui um alonga resposta 1"\n')
-      message('\nA mensagem de erro do código R pode ajudar:')
+      message("\nA mensagem de erro do código R pode ajudar:")
       message(cond)
       stop()
     },
-    warning=function(cond) {
+    warning = function(cond) {
       message(paste("É preciso rever a sintaxe nesta linha:", txt))
       message(cond)
       stop()
@@ -962,22 +1050,39 @@ html_to_json_protected <- function(html_code) {
 }
 
 
+
+#' Exam in R Markdown to XML Moodle exam.
+#'
 #' Convert an Rmd file containing questions and variants
 #' to xml moodle file to be imported for the "exam" tool
 #' in moodle.
 #'
 #' @param filename_no_extension
-#' @param noneiscorrect string like "None of the other is correct."
 #'
 #' @return A xml file to be imported in moodle.
 #' @export
 #'
 #' @examples
+#' \dontrun{xmlmoodle("my_exam.Rmd")}
+#' \dontrun{xmlmoodle("my_exam")}
 xmlmoodle <- function(filename_no_extension) {
 
-  #
-  # Método sem multivariantes
-  #
+  if (grepl(".", filename_no_extension)) {
+    filename_no_extension <- tools::file_path_sans_ext(filename_no_extension)
+  }
+
+
+  #' Warn author if `setwd()` is used.
+  #' Search for `setwd()` in order to warn
+  #' user to put data and images files in same path
+  #' or to add an absolut path.
+  find_setwd(filename_no_extension)
+
+
+
+  #' Método sem multivariantes
+  #' TODO: o que são multivariantes ??
+  #'
   tryCatch(
     {
       # Just to highlight: if you want to use more than one
@@ -986,6 +1091,7 @@ xmlmoodle <- function(filename_no_extension) {
       # 'tryCatch()' will return the last evaluated expression
       # in case the "try" part was completed successfully
 
+      cat(paste0("\nProduzindo ", filename_no_extension, ".html\n\n"))
       rmarkdown::render(paste(filename_no_extension, ".Rmd", sep = ""),
                         output_format = "html_document", quiet = TRUE)
 
@@ -996,31 +1102,45 @@ xmlmoodle <- function(filename_no_extension) {
       # in the "try" part is not wrapped inside a function (unlike that
       # for the condition handlers for warnings and error below)
     },
-    error=function(cond) {
-      if (grepl("Duplicate chunk label",cond)) {
+    error = function(cond) {
+
+      #DEBUG
+      #A palavra "Quitting" não surge no cond$message
+      #"at("Quitting is", grepl("Quitting", cond$message), "\n")
+      #print(str(cond))
+
+      if (grepl("Duplicate chunk label", cond)) {
         message("\nAvoid using code chunk labels. Code chunks from several files could have same name and `knitr()` does not accept two equal named code chunks. Find information about the code chunk in the next message.\n")
-      }
-      if (grepl("not found",cond)){
+      } else if (grepl("not found", cond)) {
         #message("\nAn used variable has no declaration. Probably the code declared in an item, that contains that variable, must be relocated to '# code' where common code resides.\n")
         message("\nAn used variable was not found. Probably some code must be relocated to '# code' where common code resides.\n")
+      } else if (grepl("cannot open the connection", cond)) {
+        stop(paste0("\nRun knitr on file '", filename_no_extension, ".Rmd' and check for missing files (probably data files).\n"))
+      } else {
+        cat(paste0("Please, open '", filename_no_extension, ".Rmd' and execute `knitr` to check possible errors.\n\n"))
+        message(cond)
+        cat("\n\n")
       }
-      if (grepl("cannot open the connection",cond)) {
-        stop(paste0("\nRun knitr on file '", filename_no_extension,".Rmd' and check for missing files (probably data files).\n"))
-      }
-      message(cond)
+
       #message(paste("URL does not seem to exist:", url))
       #message("Here's the original error message:")
       # Choose a return value in case of error
       #return(NA)
     },
-    warning=function(cond) {
+    warning = function(cond) {
       #message(paste("URL caused a warning:", url))
       #message("Here's the original warning message:")
-      message(cond)
+      #message(cond)
+      #Debug
+      if (grepl("fetch resource", cond)) {
+        cat(paste0("Copiar a imagem para a pasta de ", filename_no_extension, ".Rmd\n"))
+      } else {
+        print(class(cond))
+      }
       # Choose a return value in case of warning
       #return(NULL)
     },
-    finally={
+    finally = {
       # NOTE:
       # Here goes everything that should be executed at the end,
       # regardless of success or error.
@@ -1032,7 +1152,18 @@ xmlmoodle <- function(filename_no_extension) {
     }
   )
 
-  make_moodlexml(paste(filename_no_extension,".html", sep=""))
+
+
+  cat(paste0("\nProduzindo ", filename_no_extension, ".xml\n\n"))
+
+  #Produce a list() with all questions
+  q_t <- extractquestions_fromhtml(filename_no_extension)
+
+  slug_exam_title <- slugify(q_t$exam_title, space_replace = " ") #espaços ok!
+
+  saveto_xmlmoodle(filename_no_extension, slug_exam_title, q_t$all_questions)
+
+
 
   cat(paste0("\n"))
   cat(paste0("Import into Moodle: ", filename_no_extension, ".xml", "\n"))
@@ -1040,4 +1171,3 @@ xmlmoodle <- function(filename_no_extension) {
   #return('ok')
   #return()
 }
-

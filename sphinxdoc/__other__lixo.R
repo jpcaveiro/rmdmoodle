@@ -5,7 +5,7 @@
 # -----------------------
 
 
-exshow = function(filename) {
+exshow <- function(filename) {
   cat(knitr::knit_child(filename,quiet = TRUE));
 }
 
@@ -13,7 +13,7 @@ exshow = function(filename) {
 # -----------
 # HERE
 # -----------
-variants = function(nrep, enredo, alineas) {
+variants <- function(nrep, enredo, alineas) {
 
   # TODO: melhorar
   # tempfile(fileext = ".Rmd")

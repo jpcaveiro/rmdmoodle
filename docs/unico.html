@@ -231,10 +231,10 @@ Ideia
 <div>
 <pre class="mermaid mermaid-js">flowchart LR
     T[Teacher] --&gt;|creates| A
-    A[R Markdown\n'exam.Rmd'] --&gt;|knitr| B[HTML file]
+    A[R Markdown\n'exam01.Rmd'] --&gt;|knitr\nHTML| B[HTML file]
     B --&gt;|review| A
-    A --&gt;|"export\n(...)"| M[Moodle]
-    M --&gt; S[Student]
+    A --&gt;|"instruções\nxmlmoodle(exam01)"| M[Moodle]
+    M --&gt; S[Students]
 </pre>
 </div>
 <p></p></figure><p></p>
@@ -535,8 +535,9 @@ Processing question: Questão 2 - Natureza e escalas - MULTICHOICE
     C[R console] --&gt;|"&gt; library(rmdmoodle)\n&gt; xmlmoodle('exam')"| D[xml file\n'exam.xml']
     D --&gt;|import| E[Moodle]
     E --&gt;|"review,\n(rarely)"| A
-    E --&gt; F[Real test moment]
-    F --&gt;|improvements| A
+    E --&gt; F[Examination day]
+    F --&gt; G[Result analysis] 
+    G --&gt;|improvements| A
 </pre>
 </div>
 <p></p></figure><p></p>

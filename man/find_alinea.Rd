@@ -7,7 +7,7 @@
 find_alinea(alinea_tag, ex_struct)
 }
 \arguments{
-\item{alinea_tag}{}
+\item{alinea_tag}{Each question file has items and \code{alinea_tag} names the item.}
 
 \item{ex_struct}{see return value of \code{parse_exrmdfile()}}
 }

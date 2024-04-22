@@ -1,84 +1,106 @@
 
+# global variables ====
 
-
-# environment local mas que permite mudar
-# o valor da variável dentro deste package.
-pkg.env <- new.env()
-pkg.env$EXERCISE_ROOT <- ""
-pkg.env$WARNINGS.BOOLEAN <- FALSE
-
-
-# EXERCISE_ROOT <- "C:/Users/pedrocruz/Documents/GitHub/bioestatistica/rmdmoodle"
+#' TODO: Isto não funciona quando colocado no ficheiro .lintr:
+#' `indentation_linter(indent = 2L, hanging_indent_style = c("tidy", "always", "never"), assignment_as_infix = TRUE)`
 
 
 
-#' Set a global variable with the OS path of the questions
-#' "database" in the filesystem .
+#' Ativa alguns `cat()` espalhados pelo código que
+#' processa os exercícios. Este módulo faz parse
+#' de texto: ativando esta flag passam a ser vistos
+#' muitos `cat()` no processo de debug.
+DBG_rmdexam <- F
+
+
+
+# functions ====
+
+
+#' Get VARCOUNT <- 6 or VARCOUNT = 6.
+#' Search in the line for that pattern.
 #'
-#' @param pathstr string
-#'
-#' @return string
-#' @export
-#'
-#' @examples
-#' set_exercise_root("c:/Users/name/Documents/rmdmoodle")
-set_exercise_root <- function(pathstr) {
-  pkg.env$EXERCISE_ROOT <- pathstr
-  return(pkg.env$EXERCISE_ROOT)
-}
+#' @return numeric>0 or 0 if no varcount
+varcount_line <- function(text_line) {
 
 
-#' Turn TRUE or FALSE the
-#' printing of warnings.
-#'
-#' @param b - a boolean TRUE or FALSE
-#'
-#' @return
-#' @export
-set.warnings <- function(b) {
-  pkg.env$WARNINGS.BOOLEAN <- b
-}
+  # exemplo "[^{^}]{\\d*:NUMERICAL:=(?<inside>[^}]*)}"
+  # (?:regex) digere mas ignora a regex
+  parsed <- regexpr("^\\s*VARCOUNT\\s*(?:<-|=)\\s*(?<VC>\\d+)",
+                    text_line, perl = TRUE,
+                    ignore.case = FALSE)
 
+  #print(parsed)
 
+  if (attr(parsed, "match.length") > 0) {
+    cs <- attr(parsed, "capture.start")
+    cl <- attr(parsed, "capture.length")
 
-#' Get a global variable with the OS path of the questions
-#' "database" in the filesystem .
-#'
-#' @return A string containing a OS path.
-#' @export
-#'
-get_exercise_root <- function() {
-  return(pkg.env$EXERCISE_ROOT)
-}
+    #maybe it's not needed
+    tryCatch(
+      varcount <- as.numeric(substring(text_line, cs, cs + cl - 1))
+    )
 
-
-#Talvez esta função não seja ainda útil
-#porque o autor deve especificar quantas variantes pretende.
-# Se pretender mais que VARCOUNT vai surgir erro quando VAR>VARCOUNT.
-get_varcount <- function(curr_line) {
-    # parse: VARCOUNT = 6 or VARCOUNT    <-   3
-
-    #produce a list with one element: r[[1]]
-    #r[[1] is a c() of strings
-    #nchar() is the lengths of each string
-    r <- strsplit(curr_line, " ")
-    clean_r <- r[[1]][nchar(r[[1]])!=0]
-
-    if (length(clean_r)<3) {
-        stop("VARCOUNT as no value")
+    if (is.na(varcount)) {
+      varcount <- 0
     }
-    return(as.integer(clean_r[3]))
+
+  } else {
+    varcount <- 0
+  }
+
+  return(varcount)
 }
 
 
 
+#' Search for a pattern like "VARCOUNT <- 6"
+#' in all lines (already read from rmdfile)
+#'
+#' @param all_lines
+#'
+#' @return integer (varcount value)
+get_varcount <- function(all_lines) {
 
-next_line <- function(curr_lineno, lines) {
+  varcount <- 0
+
+  #Before parsing an file with question and items
+  #a serach for a pattern like "VARCOUNT <- 6"
+  for (lineno in seq_along(all_lines)) {
+
+    #debug
+    #cat(paste0(all_lines[curr_lineno]," : ", varcount,"\n"))
+
+    varcount <- varcount_line(all_lines[lineno])
+    if (varcount) break
+
+  }
+
+  if (!varcount) {
+    stop(paste0("Please add: VARCOUNT <- 6, or other number of variants, to the '# code' section in file ",
+                rmdfilename,
+                "\n"))
+  }
+
+  return(varcount)
+}
+
+
+
+#' Increases `curr_lineno`
+#'
+#' But it `cat()` if debug is activated.
+#'
+#' @param curr_lineno current line number
+#' @param all_lines vector of lines of text
+#'
+#' @return integer
+next_line <- function(curr_lineno, all_lines) {
 
   curr_lineno <- curr_lineno + 1
 
-  if (DEBUGRMDMOODLE) {
-    cat("next line", curr_lineno, "is:", lines[curr_lineno], '\n')
+  if (DBG_rmdexam) {
+    cat("next line", curr_lineno, "is:", all_lines[curr_lineno], "\n")
   }
   return(curr_lineno)
 
@@ -87,49 +109,70 @@ next_line <- function(curr_lineno, lines) {
 
 
 
+#' To avoid search a pattern ^# Código or ^# enredo
+#' etc, this function skips until a chunk ends.
+#'
+#' @return integer (line number after chunk ends)
+skip_chunk <- function(curr_lineno, all_lines, rmdfilename) {
 
-skip_chunk <- function(curr_lineno, lines, rmdfilename) {
+  nlines <- length(all_lines)
 
-    nlines <- length(lines)
-
-    if (grepl("^```", lines[curr_lineno])) {
-        if (DEBUGRMDMOODLE) {
-          cat("chunk starts in line ", curr_lineno, '\n')
-        }
-        curr_lineno <- curr_lineno + 1
-        while (curr_lineno <= nlines && !grepl("^```", lines[curr_lineno])) {
-          curr_lineno <- next_line(curr_lineno,lines)
-        }
-        if (curr_lineno > nlines) {
-          stop(paste0("There is a Rmarkdown chunk ```{r} ... ``` that seems does not has an end in file ",rmdfilename))
-        } else {
-          curr_lineno <- next_line(curr_lineno,lines)
-        }
-        if (DEBUGRMDMOODLE) {
-          cat("chunk end in line ", curr_lineno-1, '\n')
-        }
-
+  if (grepl("^```", all_lines[curr_lineno])) {
+    if (DBG_rmdexam) {
+      cat("chunk starts in line ", curr_lineno, "\n")
+    }
+    curr_lineno <- curr_lineno + 1
+    while (curr_lineno <= nlines && !grepl("^```", all_lines[curr_lineno])) {
+      curr_lineno <- next_line(curr_lineno, all_lines)
+    }
+    if (curr_lineno > nlines) {
+      stop(paste0("There is a Rmarkdown chunk ```{r} ... ``` that seems does not has an end in file ",
+                  rmdfilename))
     } else {
-        curr_lineno <- next_line(curr_lineno,lines)
+      curr_lineno <- next_line(curr_lineno, all_lines)
+    }
+    if (DBG_rmdexam) {
+      cat("chunk end in line ", curr_lineno - 1, "\n")
     }
 
+  } else {
+    curr_lineno <- next_line(curr_lineno, all_lines)
+  }
 
-    return(curr_lineno)
+
+  return(curr_lineno)
 }
 
 
 
 
+#' Parser depends on states.
+#'
+#' This function prints the next state if it changes.
+#'
+#' @param to next state number
+#' @param debug_str textual name of the next state number
+#'
+#' @return integer (a state is an integer)
 change_state <- function(to, debug_str) {
 
-  if (DEBUGRMDMOODLE) {
-    cat("   change parser state to ", debug_str, '\n')
+  if (DBG_rmdexam) {
+    cat("   change parser state to ", debug_str, "\n")
   }
 
   return(to)
 }
 
 
+
+#' Get exercise type (cloze, essay, multichoice).
+#'
+#' It is not working.
+#' TODO: implement ex type.
+#'
+#' @param curr_line current line
+#'
+#' @return character
 get_ex_type <- function(curr_line) {
   #TODO: improve
   #line with #enredo can have a type:
@@ -137,8 +180,8 @@ get_ex_type <- function(curr_line) {
   # enredo cloze
   # enredo essay
   # etc
-  ty <- trimws( substr(curr_line, start = 8, stop = nchar(curr_line)) ) #enredo
-  if (length(ty)==0) {
+  ty <- trimws(substr(curr_line, start = 8, stop = nchar(curr_line))) #enredo
+  if (length(ty) == 0) {
     ty <- "cloze"
   }
   return(ty)
@@ -147,17 +190,22 @@ get_ex_type <- function(curr_line) {
 
 
 
-#' Parse an Rmd file containing an exercise ()
+
+#' Parse an Rmd file containing an exercise
+#'
+#' `varcount` is the number of variants of a question
+#' from which a random one is selected to be presented to student.
 #'
 #' `parse_exrmdfile`
 #'
 #'
-#' @param rmdfilename
+#' @param rmdfilename R Markdown file name.
+#' @param varcount if null it extracts varcount from file in rmdfilename
 #'
 #' @return list(ex_title, ex_type, code, enredo, alineas, alineas_title)
 #'
 #' @examples
-parse_exrmdfile <- function(rmdfilename) {
+parse_exrmdfile <- function(rmdfilename, varcount = NULL) { # nolint: cyclocomp_linter.
 
 
   # inside no code yet
@@ -173,18 +221,38 @@ parse_exrmdfile <- function(rmdfilename) {
   S_ALINEAS <- 40
 
   # Loop through each line of the Rmd file
-  # Read the Rmd file into lines
-  lines <- readLines(rmdfilename)
-  nlines <- length(lines)
+  # Read the Rmd file into all_lines
+
+
+  # tryCatch({
+  #   fileConn <- file(rmdfilename, encoding = "UTF-8")
+  #   all_lines <- readLines(fileConn, ok = FALSE, warn = TRUE, skipNul = TRUE)
+  # },
+  #
+  # error = function(e) {
+  #   cat("Check" ,rmdfilename, "\n")
+  #   stop(e)
+  #   return(e)
+  # },
+  #
+  # finally = {
+  #   close(fileConn)
+  # })
+
+  all_lines <- readLines(rmdfilename, encoding = "UTF-8", warn=FALSE)
+
+
+
+  nlines <- length(all_lines)
   curr_state <- change_state(S_BEFORECODE, "S_BEFORECODE")
-  curr_lineno <- next_line(0,lines)
+  curr_lineno <- next_line(0, all_lines)
 
 
   #variáveis resultantes do parse
   #varcount <- FALSE
   line_start_code <- NULL
   line_end_code <- NULL
-  ex_type <- NULL
+  #ex_type <- NULL #not yet used
   ex_title <- NULL
   line_start_enredo <- NULL
   line_end_enredo <- NULL
@@ -193,14 +261,33 @@ parse_exrmdfile <- function(rmdfilename) {
   no_of_alineas <- 0
 
 
+  #' varcount is the number of
+  #' repetitions of a question
+  if (is.null(varcount)) {
+    varcount <- get_varcount(all_lines)
+  }
+
+
+
+
+
 
   #This "while()" it's a state machine whose states are:
   # S_BEFORECODE, S_CODE, S_ENREDO, S_ALINEAS
   while (curr_lineno <= nlines) {
 
-    #if (DEBUGRMDMOODLE) {
+    curr_line <- all_lines[curr_lineno]
+
+    #debug
+    #cat("curr_lineno=", curr_lineno, "with state", curr_state, "\n")
+    #cat(">>>", class(curr_line), "\n")
+    #cat(">>>", grepl("código", curr_line), "\n")
+
+
+    #if (DBG_rmdexam) {
     #  browser()
     #}
+
 
     #to avoid infinite loops
     protect_counter <- curr_lineno
@@ -208,50 +295,48 @@ parse_exrmdfile <- function(rmdfilename) {
 
     if (curr_state == S_BEFORECODE) {
 
-      curr_line <- lines[curr_lineno]
-
-      if (grepl("^title:",curr_line)) {
-        if (DEBUGRMDMOODLE) {
-          cat("DEBUGRMDMOODLE: entou na linha 'title' do ficheiro *.Rmd\n")
+      if (grepl("^title:", curr_line)) {
+        if (DBG_rmdexam) {
+          cat("DBG_rmdexam: entou na linha 'title' do ficheiro *.Rmd\n")
         }
         ex_title <- substr(curr_line, start = 8, stop = nchar(curr_line))
-        ex_title <- gsub('"', ' ', ex_title)
+        ex_title <- gsub('"', ' ', ex_title) # nolint
         ex_title <- trimws(ex_title)
-        curr_lineno <- next_line(curr_lineno,lines)
-      } else if (grepl("^#", curr_line) &&
-                 ( grepl("código", tolower(curr_line)) || grepl("codigo", tolower(curr_line)) ) ) {
+        curr_lineno <- next_line(curr_lineno, all_lines)
+      } else if (grepl("^# ", curr_line) ) {
+                 # &&
+                 # ( grepl("código", tolower(curr_line)) || grepl("codigo", tolower(curr_line)) ) ) { # nolint
         curr_state <- change_state(S_CODE, "S_CODE")
-        curr_lineno <- next_line(curr_lineno,lines)
+        curr_lineno <- next_line(curr_lineno, all_lines)
         line_start_code <- curr_lineno
       } else {
-        curr_lineno <- next_line(curr_lineno,lines)
+        curr_lineno <- next_line(curr_lineno, all_lines)
       }
 
     } else if (curr_state == S_CODE) {
 
-      curr_line <- lines[curr_lineno]
-
       #if (grepl("VARCOUNT",curr_line)) {
       #
       #  varcount <- get_varcount(curr_line)
-      #  curr_lineno <- next_line(curr_lineno,lines)
+      #  curr_lineno <- next_line(curr_lineno,all_lines)
       #
       #} else
 
-      if (grepl("^#", curr_line) && #line # enredo
-                 grepl("enredo", tolower(curr_line))) {
+      if (grepl("^# ", curr_line) ) {
+            # && #line # enredo
+            # grepl("enredo", tolower(curr_line))) {
 
-        ex_type <- get_ex_type(curr_line)
+        # ex_type <- get_ex_type(curr_line) #not used
 
         line_end_code <- curr_lineno - 1
 
         curr_state  <- change_state(S_ENREDO, "S_ENREDO")
-        curr_lineno <- next_line(curr_lineno,lines)
+        curr_lineno <- next_line(curr_lineno, all_lines)
         line_start_enredo <- curr_lineno
 
         #if (!varcount) {
         #  #improve this message
-        #  #paste() is used to break into smaller lines
+        #  #paste() is used to break into smaller all_lines
         #  stop(paste0("Missing chunk with 'VARCOUNT = 6' ",
         #              "or any other value."))
         #}
@@ -259,98 +344,103 @@ parse_exrmdfile <- function(rmdfilename) {
 
       } else {
 
-        curr_lineno <- skip_chunk(curr_lineno, lines, rmdfilename)
+        curr_lineno <- skip_chunk(curr_lineno, all_lines, rmdfilename)
 
       }
 
     } else if (curr_state == S_ENREDO) {
 
-      curr_line <- lines[curr_lineno]
-
-      if (grepl("^#", curr_line)) {
+      if (grepl("^# ", curr_line)) {
 
         line_end_enredo <- curr_lineno - 1
 
         curr_state  <- change_state(S_ALINEAS, "S_ALINEAS")
 
-        curr_lineno <- next_line(curr_lineno,lines)
+        curr_lineno <- next_line(curr_lineno, all_lines)
         line_start_alinea <- curr_lineno
         #debug
 
         #store the next alinea title
-        list_of_alineas_title[[no_of_alineas+1]] <- curr_line
+        list_of_alineas_title[[no_of_alineas + 1]] <- curr_line
 
 
       } else {
 
-        curr_lineno <- skip_chunk(curr_lineno, lines, rmdfilename)
+        curr_lineno <- skip_chunk(curr_lineno, all_lines, rmdfilename)
 
       }
 
 
     } else if (curr_state == S_ALINEAS) {
 
-      curr_line <- lines[curr_lineno]
-
-      if (grepl("^#", curr_line)) {
+      if (grepl("^# ", curr_line)) {
 
         line_end_alinea <- curr_lineno - 1
+
+        #Debug
+        if (!exists("line_start_alinea")) {
+          cat("curr_state é S_ALINEAS. Linha atual é:", curr_lineno, "\n")
+          stop()
+        }
 
         #store previous alínea
         no_of_alineas <- no_of_alineas + 1
         list_of_alineas[[no_of_alineas]] <-
-          paste(lines[line_start_alinea:line_end_alinea],
-                collapse = '\n')
+          paste(all_lines[line_start_alinea:line_end_alinea],
+                collapse = "\n")
 
         #store the next alinea title
-        list_of_alineas_title[[no_of_alineas+1]] <- curr_line
+        list_of_alineas_title[[no_of_alineas + 1]] <- curr_line
 
 
-        curr_lineno <- next_line(curr_lineno,lines)
+        curr_lineno <- next_line(curr_lineno, all_lines)
 
         line_start_alinea <- curr_lineno
 
 
       } else {
 
-        curr_lineno <- skip_chunk(curr_lineno, lines, rmdfilename)
+        curr_lineno <- skip_chunk(curr_lineno, all_lines, rmdfilename)
 
       }
 
 
     } else {
+      #TODO: melhorar este erro
       stop("curr_state is unknown.")
     }
 
-    if (DEBUGRMDMOODLE &&   protect_counter == curr_lineno) {
+    if (DBG_rmdexam &&   protect_counter == curr_lineno) {
       stop("probably, infinite loop")
     }
 
 
   } #end while
 
+  #Debug
+  #if (!exists("line_start_alinea")) {
+  #  print("Já fora do ciclo principal. Linha atual é:", curr_lineno, "\n")
+  #  browser()
+  #}
+
   if (line_start_alinea <= nlines) {
     #store alínea
     no_of_alineas <- no_of_alineas + 1
     # See https://github.com/jpcaveiro/rmdmoodle/issues/17
     # TODO: maybe add "\n\n" adding newline in case the user don't press "enter" after last line.
-    list_of_alineas[[no_of_alineas]] <- paste(lines[line_start_alinea:nlines],collapse='\n')
+    list_of_alineas[[no_of_alineas]] <- paste(all_lines[line_start_alinea:nlines], collapse = "\n")
   }
 
-
   return(list(title = ex_title,
-              type = "cloze",
-              code    = paste0(lines[line_start_code:line_end_code], collapse='\n'),
-              enredo  = paste0(lines[line_start_enredo:line_end_enredo], collapse='\n'),
+              varcount = varcount,
+              type = "cloze", #TODO: e se o autor quiser um ESSAY sem alíneas?
+              code    = paste0(all_lines[line_start_code:line_end_code], collapse = "\n"),
+              enredo  = paste0(all_lines[line_start_enredo:line_end_enredo], collapse = "\n"),
               alineas = list_of_alineas,
               alineas_title = list_of_alineas_title))
 
 }
 
-
-#DEBUG
-#res <- parse_exrmdfile("c3-estimativa.Rmd")
-#print(res)
 
 
 
@@ -360,24 +450,22 @@ parse_exrmdfile <- function(rmdfilename) {
 #' * `ex_struct$alineas_title` is a list of titles (containing an `alinea_tag`).
 #'
 #' @param ex_struct see return value of `parse_exrmdfile()`
-#' @param alinea_tag
+#' @param alinea_tag Each question file has items and `alinea_tag` names the item.
 #'
 #' @return string (rmd string)
-#'
-#' @examples
-find_alinea <- function(alinea_tag,ex_struct) {
+find_alinea <- function(alinea_tag, ex_struct) {
 
-  #if (DEBUGRMDMOODLE) {
+  #if (DBG_rmdexam) {
   #  print("exercise structure:")
   #  print(ex_struct)
   #}
 
   nalineas <- length(ex_struct$alineas)
   i <- 1
-  found <- F
-  while (!found && i<=nalineas) {
-    if (grepl(alinea_tag,ex_struct$alineas_title[[i]])) {
-      found <- T
+  found <- FALSE
+  while (!found && i <= nalineas) {
+    if (grepl(alinea_tag, ex_struct$alineas_title[[i]])) {
+      found <- TRUE
     } else {
       i <- i + 1
     }
@@ -391,78 +479,203 @@ find_alinea <- function(alinea_tag,ex_struct) {
 
 
 
-# Templating
-#library(whisker)
-
-
-part1_header <- paste0("---",
-                      "title: \"2022-2023 1o teste (turno 1)\"",
-                      "author: \"(preencher)\"",
-                      "date: \"(preencher)\"",
-                      "output: html_document",
-                      "---",
-                      collapse='\n')
-#cat(part1_header,'\n')
-
-
-# https://www.statology.org/turn-off-scientific-notation-in-r
-# opções por defeito nos chunks
-# str(knitr::opts_chunk$get())
-part2_show <- paste0( "Para controlar o que globalmente surge:",
-                      "```{r setup, include = F, echo = F, results = F}",
-                      "#todo - improve",
-                      "knitr::opts_chunk$set(echo = TRUE, results='show', message=FALSE, fig.show='show')",
-                      "options(scipen = 999)", #turn-off-scientific-notation-in-r
-                      "SHOWCODE <- F",
-                      "SHOWRESULTS <- F",
-                      "```",
-                      collapse = '\n')
-#cat(part2_show,'\n')
-
-
-
-
-
-
-
-
-#' exer2rmdstring
+#' `random_q()` ("random question") Extracts items from a given question.
 #'
-#' @param nvar number of variants (nrep <= VARCOUNT defined inside exercise)
-#' @param ... ex. "cap3/c3-estimativa.Rmd", "alinea01", "alinea04"
+#' Since it's a "random" question, code is replicated before each variant.
+#' There is no need to use access `.[[VAR]]` or `.[VAR]` because there
+#' is no pre calculated problems.
+#'
+#' Optional arguments are:
+#'
+#' - seed (default a random integer): sets seed
+#' - varcount (default is 10): number of variants to be exported to moodle
+#'
+#' A seed can help an author to revise an exam after it is verified or delivered
+#' and corrected later.
+#'
+#' @param ... optional arguments and vector like "cap3/c3-estimativa.Rmd", "alinea01", "alinea04"
 #'
 #' @return string containing Rmd with # and ## sections (exercise title and variants)
+#' @export
 #'
 #' @examples
-#'    exerc2rmdstring(6, "cap3/c3-estimativa.Rmd", "alinea01", "alinea04")
-exer2rmdstring <- function(nvar, ...) {
+#' \dontrun{random_q(seed = 90, varcount = 10, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
+#' \dontrun{random_q(varcount = 10, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
+#' \dontrun{random_q(seed = 90, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
+#' \dontrun{random_q("cap3/c3-estimate.Rmd", "mean-item", "var-item")}
+random_q <- function(...) {
 
+  arglist <- list(...)
 
-  #list(ex_title = ex_title,
-  #     ex_type = "cloze",
-  #     code = lines[line_start_code:line_end_code],
-  #     enredo = lines[line_start_enredo:line_end_enredo],
-  #     alineas = list_of_alineas))
-
-
-  exrequest = list(...)[[1]]
-
-  if (grepl(".Rmd", exrequest[[1]])) {
-    rmdfilename <- exrequest[[1]]
+  # varcount
+  if (is.null(arglist$varcount)) {
+    varcount <- 10
   } else {
-    rmdfilename <- paste0(exrequest[[1]],".Rmd", collapse="")
+    #store
+    varcount <- arglist$varcount
+
+    #delete varcount
+    arglist["varcount"] <- NULL
   }
 
-  ex <- parse_exrmdfile(file.path(pkg.env$EXERCISE_ROOT,rmdfilename))
+
+  # seed
+  if (is.null(arglist$seed)) {
+    seed <- 10
+  } else {
+    #store
+    seed <- arglist$seed
+
+    #delete seed
+    arglist["seed"] <- NULL
+  }
+
+  #debug
+  #cat("varcount is", varcount, "\n")
+
+  #new name
+  exrequest <- arglist
+
+  rmdfilename <- add_extension(exrequest[[1]], "Rmd")
+
+
+  question_path <- file.path(pkg_env$EXERCISE_ROOT, rmdfilename)
+  #debug
+  #print(question_path)
+
+  #ex is a list:
+  # list(title = ex_title,
+  #            varcount = varcount,
+  #            type = "cloze", #TODO: e se o autor quiser um ESSAY sem alíneas?
+  #            code    = paste0(all_lines[line_start_code:line_end_code], collapse="\n"),
+  #            enredo  = paste0(all_lines[line_start_enredo:line_end_enredo], collapse="\n"),
+  #            alineas = list_of_alineas,
+  #            alineas_title = list_of_alineas_title))
+  ex <- parse_exrmdfile(question_path, varcount = varcount)
 
 
   # output string containing Rmd (headerless) to be joint with other exercises
+  #DEBUG
   ex_rmdtext <- ""
 
   # A # section is an exercise in Rmd.
   # antes: ex_header  <- paste0("# ", ex$title, "-", toupper(ex$type), collapse = " ")
   #now:
-  ex_header  <- paste0("# ", rmdfilename, "-", toupper(ex$type), collapse = " ")
+  ex_header  <- paste0("# ", slugify(ex$title), "-", toupper(ex$type), "\n\n")
+  ex_seed <- paste0("```{r}\nset.seed(", seed, ")\n```\n\n")
+  ex_rmdtext <- paste0(ex_rmdtext, ex_header, ex_seed, "\n\n")
+
+  #code (vai para entro de cada variante)
+  #ex_rmdtext <- paste0(ex_rmdtext, ex$code, collapse = "\n\n")
+
+
+  #alíneas
+  al_request_number <- length(exrequest) - 1 #sem o rmdfilename
+  #al_total <- length(ex$alineas) #not used
+  al_string <- ""
+
+  for (al in seq_len(al_request_number)) {
+
+    al_rmdtext <- find_alinea(
+      alinea_tag = exrequest[[al + 1]],
+      ex_struct = ex)
+
+    # Generate variant: enredo (1) blá blá \n\n (2) blá blá \n\n etc
+    al_string <- paste0(al_string,
+                        paste0("\n\n**(", as.character(al), ")**\n\n", al_rmdtext),
+                        collapse = "\n\n")
+
+  }
+
+
+  al_string <- paste0(al_string,
+                      "\n\n### feedback\n\n\n",
+                      collapse = "\n\n")
+
+
+  #O número de variantes é lido
+  #dentro de cada exercício numa
+  #linha: VARCOUNT <- 6 ou VARCOUNT = 6
+  for (v in seq_len(ex$varcount)) {
+
+    #section ## Variante `r VAR<- v;VAR`
+
+    #debug
+    #cat( sprintf("for (v in seq_len(ex$varcount)): %d, %d",v,ex$varcount))
+
+    #sec_text <- sprintf("\n## variante `r VAR <- %d; VAR`\n\n", v)
+    sec_text <- sprintf("\n## variante %02d\n\n", v)
+
+    #generate variants
+    ex_rmdtext <- paste0(ex_rmdtext,
+                         sec_text,
+                         ex$code, "\n\n",
+                         ex$enredo,
+                         al_string,
+                         collapse = "\n\n")
+
+  }
+
+
+  return(ex_rmdtext)
+}
+
+
+
+
+
+
+
+#' `planned_q()` ("planned question") Extracts items from a given question. Since it's a planned
+#' question, values inside its variants are accessible using `.[[VAR]]` or `.[VAR]`.
+#'
+#' @param ... vector like "cap3/c3-estimativa.Rmd", "alinea01", "alinea04"
+#'
+#' @return string containing Rmd with # and ## sections (exercise title and variants)
+#' @export
+#'
+#' @examples
+#' \dontrun{planned_q("cap3/c3-estimativa.Rmd", "alinea01", "alinea04")}
+planned_q <- function(...) {
+
+  #o argumento nvar seria o autor a pedir mas foi removido
+
+  #list(ex_title = ex_title,
+  #     ex_type = "cloze",
+  #     code = all_lines[line_start_code:line_end_code],
+  #     enredo = all_lines[line_start_enredo:line_end_enredo],
+  #     alineas = list_of_alineas))
+
+
+  exrequest <- list(...)[[1]]
+
+  rmdfilename <- add_extension(exrequest[[1]], "Rmd")
+
+
+  #ex is a list:
+  # list(title = ex_title,
+  #            varcount = varcount,
+  #            type = "cloze", #TODO: e se o autor quiser um ESSAY sem alíneas?
+  #            code    = paste0(all_lines[line_start_code:line_end_code], collapse="\n"),
+  #            enredo  = paste0(all_lines[line_start_enredo:line_end_enredo], collapse="\n"),
+  #            alineas = list_of_alineas,
+  #            alineas_title = list_of_alineas_title))
+
+  ex_path <- file.path(pkg_env$EXERCISE_ROOT, rmdfilename)
+
+  #debug
+  #print(ex_path)
+  ex <- parse_exrmdfile(ex_path)
+
+
+  # output string containing Rmd (headerless) to be joint with other exercises
+  #DEBUG
+  ex_rmdtext <- ""
+
+  # A # section is an exercise in Rmd.
+  # antes: ex_header  <- paste0("# ", ex$title, "-", toupper(ex$type), collapse = " ")
+  #now:
+  ex_header  <- paste0("# ", slugify(ex$title), "-", toupper(ex$type), collapse = " ")
   ex_rmdtext <- paste0(ex_rmdtext, ex_header, collapse = "\n\n")
 
   #code
@@ -480,40 +693,46 @@ exer2rmdstring <- function(nvar, ...) {
 
   #alíneas
   al_request_number <- length(exrequest) - 1 #sem o rmdfilename
-  al_total <- length(ex$alineas)
-  al_string = ""
+  #al_total <- length(ex$alineas) #not used
+  al_string <- ""
 
-  for (al in 1:al_request_number) {
+  for (al in seq_len(al_request_number)) {
 
     al_rmdtext <- find_alinea(
-                    alinea_tag = exrequest[[al+1]],
+                    alinea_tag = exrequest[[al + 1]],
                     ex_struct = ex)
 
     # Generate variant: enredo (1) blá blá \n\n (2) blá blá \n\n etc
     al_string <- paste0(al_string,
                         paste0("\n\n**(", as.character(al), ")**\n\n", al_rmdtext),
-                        collapse = '\n\n')
+                        collapse = "\n\n")
 
   }
 
 
   al_string <- paste0(al_string,
-                      "\n\n### feedback\n\n",
-                      collapse = '\n\n')
+                      "\n\n### feedback\n\n\n",
+                      collapse = "\n\n")
 
-
-  for (v in 1:nvar) {
+  #O número de variantes é lido
+  #dentro de cada exercício numa
+  #linha: VARCOUNT <- 6 ou VARCOUNT = 6
+  for (v in seq_len(ex$varcount)) {
 
     #section ## Variante `r VAR<- v;VAR`
 
-    sec_text <- sprintf("\n## variante `r VAR <- %d; VAR`\n\n", v)
+    #debug
+    #cat( sprintf("for (v in seq_len(ex$varcount)): %d, %d",v,ex$varcount))
+
+    #sec_text <- sprintf("\n## variante `r VAR <- %d; VAR`\n\n", v)
+    sec_text <- sprintf("\n## variante `r (VAR <- %d)`\n\n", v)
 
     #generate variants
     ex_rmdtext <- paste0(ex_rmdtext,
                          sec_text,
                          ex$enredo,
                          al_string,
-                         collapse = '\n\n')
+                         collapse = "\n\n")
 
   }
 
@@ -532,7 +751,6 @@ exer2rmdstring <- function(nvar, ...) {
 #'  the xml file. Importing to moodle has its own
 #'  "tricks" to be described elsewhere.
 #'
-#' @param nvariants numeric (number of variants for each question)
 #' @param rmdfilename filename to store the "rmd exam"
 #' @param ... each argument is a `c()` of strings;
 #'
@@ -540,15 +758,26 @@ exer2rmdstring <- function(nvar, ...) {
 #' @export
 #'
 #' @examples
-#' make_rmdmoodle(6,
-#'                "my-new-moodle-exam.Rmd",
+#' \dontrun{make_rmdmoodle("my-new-moodle-exam.Rmd",
 #'                c("cap1/c1-estimation.Rmd","est-mean","est-var"),
-#'                c("cap2/c2-normalprob.Rmd","prob-less", "prob-greater", "prob-between"))
-rmdexam <- function(nvariants, rmdfilename, ...) {
+#'                c("cap2/c2-normalprob.Rmd","prob-less", "prob-greater", "prob-between"))}
+rmdexam <- function(rmdfilename, ...) {
 
-  cat("\nConstruindo",rmdfilename,"\n\n")
 
-  #args is a list of lists
+  #' Remove 6 from rmdexam(6, "2022-2023-exame.Rmd",...)
+  #' TODO: maybe remove after all testing on new exams.
+  if (is.numeric(rmdfilename)) {
+    #it will print an integer (before april/2024 it uses a number in 1st arg)
+    stop(paste0("Please remove first argument ",
+                rmdfilename, #is an integer (see above)
+                " from instruction 'rmdexam(", rmdfilename, "...)'.\n  Use VARCOUNT <- ",
+                rmdfilename, " in code.\n"))
+  }
+
+  cat("\nBuilding", rmdfilename, "\n\n")
+
+
+  #args is a list
   #args[[1]][[1]] access the first exercise-filename to be written
   #to the new Rmd
   argslist <- list(...)
@@ -556,50 +785,67 @@ rmdexam <- function(nvariants, rmdfilename, ...) {
   ex_rmdtext <- ""
 
   # Runs all requested questions
-  for (qnum in 1:length(argslist)) {
-    res <- exer2rmdstring(nvariants, argslist[[qnum]])
+  for (qnum in seq_along(argslist)) {
+
+    arg <- argslist[[qnum]]
+
+    #' What is the argument type?
+    if (length(arg)==1) {  #se o vector arg só tem um elemento
+      #' if it is a character then
+      #' it could came from execution of functions like:
+      #' 1. `planned_q("c3-zinterval.Rmd", "ic01","interp01")`, or from
+      #' 2. `random_q(seed = 10, varcount = 90, "c3-zinterval.Rmd", "ic01","interp01")`
+
+      res <- arg #above functions already produce a character
+
+    } else {
+
+      res <- planned_q(arg)
+
+    }
+
+
+    #' Join every question into a big string
     ex_rmdtext <- paste0(ex_rmdtext,
                          res,
-                         collapse = '\n\n')
+                         collapse = "\n\n")
   }
 
 
-  comando_txt <- sprintf("rmdexam(%d,\n\"%s\",\n%s)\n",
-                         nvariants,
+  #' Reproduce the instruction that
+  #' originates the exam for later
+  #' reproducibility.
+  make_exam_script <- sprintf("rmdexam(\"%s\",\n%s)\n", #precisa pelo menos 2 \n
                          rmdfilename,
-                         paste( argslist, collapse=", \n" ))
+                         paste(argslist, collapse = ", \n"))
 
 
   head_txt <- paste0(
     "---\n",
     "title: \"", rmdfilename, "\"\n",
-    "author: \"(autores)\"\n",
+    "author: \"User '", Sys.info()["user"], "' compilou este exame\"\n",
     "date: \"", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\"\n",
     "output: html_document\n",
-    "---\n\n",
-    "A versão inicial deste documento foi construída com:\n",
-    "```\n",
-    "library(rmdmoodle)\n",
-    "set_exercise_root(\"", pkg.env$EXERCISE_ROOT   , "\")\n",
-    #"set_exercise_root( \"C:/Users/USERNAME/<Where is the exercise folder?>\" )\n",
-    comando_txt,
-    "```\n",
-    "\n",
-    "**Configuração do que se vê no HTML de verificação**\n",
-    "\n",
-    "\n",
-    "```{r echo=TRUE, results=FALSE}\n",
-    "VARCOUNT    = ", nvariants, "  # total de variantes\n",
-    "SHOWCODE    = FALSE  # Se mostra o código R (no HTML de verificação)\n",
-    "SHOWRESULTS = FALSE  # Se mostra o output do R (no HTML de verificação)\n",
-    "SET.SEED    = ", round(runif(1,1000,3000),0), " # set.seed(SET.SEED)\n",
-    "#Avoid scientific notation in all document\n",
-    "options(scipen = 999)\n",
-    "#Na commandline: str(knitr::opts_chunk$get())\n",
-    "knitr::opts_chunk$set(echo = TRUE) \n",
-    "```\n",
-    "\n\n",
-    collapse = '\n\n')
+    "---\n\n\n")
+
+
+  #TODO: remove this commented lines
+  # "**Configuração do que se vê no HTML de verificação**\n",
+  # "\n",
+  # "\n",
+  # "```{r echo=TRUE, results=FALSE}\n",
+  # "VARCOUNT    = ", nvariants, "  # total de variantes\n",
+  # "SHOWCODE    = FALSE  # Se mostra o código R (no HTML de verificação)\n",
+  # "SHOWRESULTS = FALSE  # Se mostra o output do R (no HTML de verificação)\n",
+  # "SET.SEED    = ", round(runif(1,1000,3000),0), " # set.seed(SET.SEED)\n",
+  # "#Avoid scientific notation in all document\n",
+  # "options(scipen = 999)\n",
+  # "#Na commandline: str(knitr::opts_chunk$get())\n",
+  # "knitr::opts_chunk$set(echo = TRUE) \n",
+  # "```\n",
+  # "\n\n",
+  # collapse = "\n\n")
+
 
   #debug
   #cat(head_txt)
@@ -607,22 +853,29 @@ rmdexam <- function(nvariants, rmdfilename, ...) {
 
   ex_rmdtext <- paste0(head_txt,
                        ex_rmdtext,
-                       collapse = '\n\n')
+                       collapse = "\n\n")
 
 
-  # Open and write
-  con <- file(rmdfilename, "w", encoding = "UTF-8")
-  cat(ex_rmdtext, file = con)
+  #' Save exam in `rmdfilename`
+  #' Open and write
+  con <- file(rmdfilename, "wt", encoding = "UTF-8")
+  #cat(ex_rmdtext, file = con)
+
+  #Debug
+  #cat("class(ex_rmdtext)=", class(ex_rmdtext), "\n")
+
+  writeLines(ex_rmdtext, con = con) #, useBytes = TRUE)
   close(con)
 
 
-  cat("The author of the exam can check file", rmdfilename, "and search for eventual problems.\n")
+  cat("Check file \"", rmdfilename, "\" and search for eventual problems or change for needs.\n", sep="")
+  cat("Then, run `xmlmoodle(\"", rmdfilename, "\")` to produce the xml file to be exported.\n\n\n",sep="")
 
   rmdfilename_no_ext <- substr(rmdfilename, 1, nchar(rmdfilename) - 4)
 
-  xmlmoodle(  rmdfilename_no_ext )
+  xmlmoodle(rmdfilename_no_ext)
 
-  cat("\nPlease, import file ", rmdfilename_no_ext, ".xml to moodle.\n\n", sep='')
+  cat("\nPlease, import file ", rmdfilename_no_ext, ".xml into moodle.\n\n", sep = "")
 
   return(rmdfilename)
 }

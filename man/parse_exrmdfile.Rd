@@ -2,16 +2,26 @@
 % Please edit documentation in R/rmdexam.R
 \name{parse_exrmdfile}
 \alias{parse_exrmdfile}
-\title{Parse an Rmd file containing an exercise ()}
+\title{Parse an Rmd file containing an exercise}
 \usage{
-parse_exrmdfile(rmdfilename)
+parse_exrmdfile(rmdfilename, varcount = NULL)
 }
 \arguments{
-\item{rmdfilename}{}
+\item{rmdfilename}{R Markdown file name.}
+
+\item{varcount}{if null it extracts varcount from file in rmdfilename}
 }
 \value{
 list(ex_title, ex_type, code, enredo, alineas, alineas_title)
 }
 \description{
+\code{varcount} is the number of variants of a question
+from which a random one is selected to be presented to student.
+}
+\details{
 \code{parse_exrmdfile}
+}
+\examples{
+varcount is the number of
+repetitions of a question
 }

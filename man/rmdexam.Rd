@@ -4,11 +4,9 @@
 \alias{rmdexam}
 \title{Joins questions and items in an Rmd file (to be compiled).}
 \usage{
-rmdexam(nvariants, rmdfilename, ...)
+rmdexam(rmdfilename, ...)
 }
 \arguments{
-\item{nvariants}{numeric (number of variants for each question)}
-
 \item{rmdfilename}{filename to store the "rmd exam"}
 
 \item{...}{each argument is a \code{c()} of strings;}
@@ -25,8 +23,20 @@ the xml file. Importing to moodle has its own
 "tricks" to be described elsewhere.
 }
 \examples{
-make_rmdmoodle(6,
-               "my-new-moodle-exam.Rmd",
+\dontrun{make_rmdmoodle("my-new-moodle-exam.Rmd",
                c("cap1/c1-estimation.Rmd","est-mean","est-var"),
-               c("cap2/c2-normalprob.Rmd","prob-less", "prob-greater", "prob-between"))
+               c("cap2/c2-normalprob.Rmd","prob-less", "prob-greater", "prob-between"))}
+Remove 6 from rmdexam(6, "2022-2023-exame.Rmd",...)
+TODO: maybe remove after all testing on new exams.
+What is the argument type?
+if it is a character then
+it could came from execution of functions like:
+1. `planned_q("c3-zinterval.Rmd", "ic01","interp01")`, or from
+2. `random_q(seed = 10, varcount = 90, "c3-zinterval.Rmd", "ic01","interp01")`
+Join every question into a big string
+Reproduce the instruction that
+originates the exam for later
+reproducibility.
+Save exam in `rmdfilename`
+Open and write
 }
