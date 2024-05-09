@@ -58,9 +58,10 @@ varcount_line <- function(text_line) {
 #' in all lines (already read from rmdfile)
 #'
 #' @param all_lines
+#' @param rmdfilename
 #'
 #' @return integer (varcount value)
-get_varcount <- function(all_lines) {
+get_varcount <- function(all_lines, rmdfilename) {
 
   varcount <- 0
 
@@ -77,9 +78,8 @@ get_varcount <- function(all_lines) {
   }
 
   if (!varcount) {
-    stop(paste0("Please add: VARCOUNT <- 6, or other number of variants, to the '# code' section in file ",
-                rmdfilename,
-                "\n"))
+    stop(paste0("Please add something like VARCOUNT <- 6, or other number of variants,\nto the '# code' section in file:\n",
+                rmdfilename,"\n"))
   }
 
   return(varcount)
@@ -200,12 +200,13 @@ get_ex_type <- function(curr_line) {
 #'
 #'
 #' @param rmdfilename R Markdown file name.
+#' @param number minimum 1
 #' @param varcount if null it extracts varcount from file in rmdfilename
 #'
 #' @return list(ex_title, ex_type, code, enredo, alineas, alineas_title)
 #'
 #' @examples
-parse_exrmdfile <- function(rmdfilename, varcount = NULL) { # nolint: cyclocomp_linter.
+parse_exrmdfile <- function(rmdfilename, varcount = NULL, number = 1) { # nolint: cyclocomp_linter.
 
 
   # inside no code yet
@@ -264,7 +265,10 @@ parse_exrmdfile <- function(rmdfilename, varcount = NULL) { # nolint: cyclocomp_
   #' varcount is the number of
   #' repetitions of a question
   if (is.null(varcount)) {
-    varcount <- get_varcount(all_lines)
+    varcount <- get_varcount(all_lines, rmdfilename)
+    if (is.null(number)) {
+      number <- varcount
+    }
   }
 
 
@@ -432,12 +436,14 @@ parse_exrmdfile <- function(rmdfilename, varcount = NULL) { # nolint: cyclocomp_
   }
 
   return(list(title = ex_title,
-              varcount = varcount,
+              varcount = varcount, #available number of variants
+              number = number, #request number of variants
               type = "cloze", #TODO: e se o autor quiser um ESSAY sem alíneas?
               code    = paste0(all_lines[line_start_code:line_end_code], collapse = "\n"),
               enredo  = paste0(all_lines[line_start_enredo:line_end_enredo], collapse = "\n"),
               alineas = list_of_alineas,
-              alineas_title = list_of_alineas_title))
+              alineas_title = list_of_alineas_title,
+              filename = rmdfilename))
 
 }
 
@@ -471,7 +477,7 @@ find_alinea <- function(alinea_tag, ex_struct) {
     }
   }
   if (!found) {
-    stop(sprintf("`alinea_tag = %s` cannot be found in exercise %s", alinea_tag, ex_struct$title))
+    stop(sprintf("Item `%s` cannot be found in question %s.", alinea_tag, ex_struct$filename))
   }
   return(ex_struct$alineas[[i]])
 }
@@ -479,7 +485,7 @@ find_alinea <- function(alinea_tag, ex_struct) {
 
 
 
-#' `random_q()` ("random question") Extracts items from a given question.
+#' `rq()` ("Random Question") Extracts items from a given question.
 #'
 #' Since it's a "random" question, code is replicated before each variant.
 #' There is no need to use access `.[[VAR]]` or `.[VAR]` because there
@@ -499,23 +505,23 @@ find_alinea <- function(alinea_tag, ex_struct) {
 #' @export
 #'
 #' @examples
-#' \dontrun{random_q(seed = 90, varcount = 10, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
-#' \dontrun{random_q(varcount = 10, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
-#' \dontrun{random_q(seed = 90, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
-#' \dontrun{random_q("cap3/c3-estimate.Rmd", "mean-item", "var-item")}
-random_q <- function(...) {
+#' \dontrun{rq(seed = 90, number = 10, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
+#' \dontrun{rq(number = 10, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
+#' \dontrun{rq(seed = 90, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
+#' \dontrun{rq("cap3/c3-estimate.Rmd", "mean-item", "var-item")}
+rq <- function(...) {
 
   arglist <- list(...)
 
   # varcount
-  if (is.null(arglist$varcount)) {
-    varcount <- 10
+  if (is.null(arglist$number)) {
+    number <- 10
   } else {
     #store
-    varcount <- arglist$varcount
+    number <- arglist$number
 
     #delete varcount
-    arglist["varcount"] <- NULL
+    arglist["number"] <- NULL
   }
 
 
@@ -546,12 +552,13 @@ random_q <- function(...) {
   #ex is a list:
   # list(title = ex_title,
   #            varcount = varcount,
+  #            number = number,
   #            type = "cloze", #TODO: e se o autor quiser um ESSAY sem alíneas?
   #            code    = paste0(all_lines[line_start_code:line_end_code], collapse="\n"),
   #            enredo  = paste0(all_lines[line_start_enredo:line_end_enredo], collapse="\n"),
   #            alineas = list_of_alineas,
   #            alineas_title = list_of_alineas_title))
-  ex <- parse_exrmdfile(question_path, varcount = varcount)
+  ex <- parse_exrmdfile(question_path, varcount = number, number = number)
 
 
   # output string containing Rmd (headerless) to be joint with other exercises
@@ -582,7 +589,7 @@ random_q <- function(...) {
 
     # Generate variant: enredo (1) blá blá \n\n (2) blá blá \n\n etc
     al_string <- paste0(al_string,
-                        paste0("\n\n**(", as.character(al), ")**\n\n", al_rmdtext),
+                        paste0("\n\n**(", letters[al], ")**\n\n", al_rmdtext),
                         collapse = "\n\n")
 
   }
@@ -593,10 +600,7 @@ random_q <- function(...) {
                       collapse = "\n\n")
 
 
-  #O número de variantes é lido
-  #dentro de cada exercício numa
-  #linha: VARCOUNT <- 6 ou VARCOUNT = 6
-  for (v in seq_len(ex$varcount)) {
+  for (v in seq_len(ex$number)) {
 
     #section ## Variante `r VAR<- v;VAR`
 
@@ -626,7 +630,7 @@ random_q <- function(...) {
 
 
 
-#' `planned_q()` ("planned question") Extracts items from a given question. Since it's a planned
+#' `pq()` ("Planned Question") Extracts items from a given question. Since it's a planned
 #' question, values inside its variants are accessible using `.[[VAR]]` or `.[VAR]`.
 #'
 #' @param ... vector like "cap3/c3-estimativa.Rmd", "alinea01", "alinea04"
@@ -636,7 +640,7 @@ random_q <- function(...) {
 #'
 #' @examples
 #' \dontrun{planned_q("cap3/c3-estimativa.Rmd", "alinea01", "alinea04")}
-planned_q <- function(...) {
+pq <- function(...) {
 
   #o argumento nvar seria o autor a pedir mas foi removido
 
@@ -646,10 +650,38 @@ planned_q <- function(...) {
   #     enredo = all_lines[line_start_enredo:line_end_enredo],
   #     alineas = list_of_alineas))
 
+  arglist <- list(...)
 
-  exrequest <- list(...)[[1]]
+  #Debug
+  #cat("pq(...)\n")
+  #print(arglist)
 
-  rmdfilename <- add_extension(exrequest[[1]], "Rmd")
+
+  # number
+  if (is.null(arglist$number)) {
+    number <- NULL
+  } else {
+    #store
+    number <- arglist$number
+
+    #delete number
+    arglist["number"] <- NULL
+  }
+
+
+  # seed
+  if (is.null(arglist$seed)) {
+    seed <- NULL
+  } else {
+    seed <- arglist$seed
+
+    #delete seed
+    arglist["seed"] <- NULL
+  }
+
+  #arglist should be like list("question.Rmd", "itemX", "itemZ")
+  exrequest <- arglist
+  rmdfilename <- add_extension(arglist[[1]], "Rmd")
 
 
   #ex is a list:
@@ -665,21 +697,32 @@ planned_q <- function(...) {
 
   #debug
   #print(ex_path)
-  ex <- parse_exrmdfile(ex_path)
+  ex <- parse_exrmdfile(ex_path, number = number) #number will be put on ex$number
 
 
   # output string containing Rmd (headerless) to be joint with other exercises
   #DEBUG
   ex_rmdtext <- ""
 
+
   # A # section is an exercise in Rmd.
   # antes: ex_header  <- paste0("# ", ex$title, "-", toupper(ex$type), collapse = " ")
   #now:
   ex_header  <- paste0("# ", slugify(ex$title), "-", toupper(ex$type), collapse = " ")
-  ex_rmdtext <- paste0(ex_rmdtext, ex_header, collapse = "\n\n")
 
-  #code
+
+  if (!is.null(seed)) {
+    ex_seed <- paste0("```{r}\nset.seed(", seed, ")\n```\n\n")
+  } else {
+    ex_seed <- "\n"
+  }
+
+  # introduce ex_seed and ex_header
+  ex_rmdtext <- paste0(ex_rmdtext, ex_seed, ex_header, collapse = "\n\n")
+
+  # introduce code
   ex_rmdtext <- paste0(ex_rmdtext, ex$code, collapse = "\n\n")
+
 
   # FAZER
   #   ## variante 1
@@ -704,7 +747,7 @@ planned_q <- function(...) {
 
     # Generate variant: enredo (1) blá blá \n\n (2) blá blá \n\n etc
     al_string <- paste0(al_string,
-                        paste0("\n\n**(", as.character(al), ")**\n\n", al_rmdtext),
+                        paste0("\n\n**(", letters[al], ")**\n\n", al_rmdtext),
                         collapse = "\n\n")
 
   }
@@ -717,7 +760,8 @@ planned_q <- function(...) {
   #O número de variantes é lido
   #dentro de cada exercício numa
   #linha: VARCOUNT <- 6 ou VARCOUNT = 6
-  for (v in seq_len(ex$varcount)) {
+
+  for (v in seq_len(ex$number)) {
 
     #section ## Variante `r VAR<- v;VAR`
 
@@ -725,9 +769,21 @@ planned_q <- function(...) {
     #cat( sprintf("for (v in seq_len(ex$varcount)): %d, %d",v,ex$varcount))
 
     #sec_text <- sprintf("\n## variante `r VAR <- %d; VAR`\n\n", v)
-    sec_text <- sprintf("\n## variante `r (VAR <- %d)`\n\n", v)
 
-    #generate variants
+    if (ex$number <= ex$varcount) {
+      # Se forem pedidas igual ou menos que as variantes
+      VAR_is <- v  #v in 1 ... ex$number
+    } else {
+      # Se forem pedidas mais questões que as ex$varcount variantes
+      VAR_is <- (v %% ex$varcount)  #v in 1 ... ex$number
+      if (VAR_is == 0) {
+        VAR_is <- ex$varcount
+      }
+    }
+
+    sec_text <- sprintf("\n## variante `r (VAR <- %d)`\n\n", VAR_is)
+
+    #generate variant `r (VAR <- VAR_is)`
     ex_rmdtext <- paste0(ex_rmdtext,
                          sec_text,
                          ex$enredo,

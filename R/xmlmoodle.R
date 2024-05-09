@@ -930,7 +930,7 @@ extractquestions_fromhtml <- function(filename_no_extension) {
     #cat("----------------\n")
 
     cat("\n------------------\n")
-    cat("Processing question:", question_title, "\n")
+    cat(paste0("Processing question: ", question_title, " (", filename_no_extension, ".Rmd)\n"))
     cat("--------------------\n\n")
 
     if (grepl("MULTICHOICE", question_title, ignore.case = TRUE)) {
