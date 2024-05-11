@@ -652,6 +652,14 @@ pq <- function(...) {
 
   arglist <- list(...)
 
+
+  if (length(arglist)==1) {
+    # Happens when c("Question.Rmd", "Items1", "Item2") is
+    # used instead of pq("Question.Rmd", "Items1", "Item2")
+    # for convenience of the first rmdexam version
+    arglist <- as.list(arglist[[1]])
+  }
+
   #Debug
   #cat("pq(...)\n")
   #print(arglist)
@@ -679,9 +687,12 @@ pq <- function(...) {
     arglist["seed"] <- NULL
   }
 
-  #arglist should be like list("question.Rmd", "itemX", "itemZ")
+  # Arglist should be like:
+  # list("question.Rmd", "itemX", "itemZ")
+  # list("question", "itemX", "itemZ")
   exrequest <- arglist
-  rmdfilename <- add_extension(arglist[[1]], "Rmd")
+  #rmdfilename_no_ext <- remove_extension(arglist[[1]][1], "Rmd")
+  rmdfilename <- add_extension(arglist[[1]][1], "Rmd")
 
 
   #ex is a list:
@@ -849,14 +860,14 @@ rmdexam <- function(rmdfilename, ...) {
     if (length(arg)==1) {  #se o vector arg só tem um elemento
       #' if it is a character then
       #' it could came from execution of functions like:
-      #' 1. `planned_q("c3-zinterval.Rmd", "ic01","interp01")`, or from
-      #' 2. `random_q(seed = 10, varcount = 90, "c3-zinterval.Rmd", "ic01","interp01")`
+      #' 1. `pq("c3-zinterval.Rmd", "ic01","interp01")`, or from
+      #' 2. `rq(seed = 10, number = 90, "c3-zinterval.Rmd", "ic01","interp01")`
 
       res <- arg #above functions already produce a character
 
     } else {
 
-      res <- planned_q(arg)
+      res <- pq(arg)  #planned question
 
     }
 

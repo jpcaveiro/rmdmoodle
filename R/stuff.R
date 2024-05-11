@@ -126,3 +126,36 @@ add_extension <- function(filename, extension) {
 
 
 
+#' Remove an extension to a file name
+#'
+#' If the file name has the extension then
+#' nothing is added.
+#'
+#' @param filename possibly with or without extension
+#' @param extension Rmd, R, .Rmd, .R, or any other
+#'
+#' @return character file name with extension
+#'
+#' @examples
+#' \dontrun{remove_extension("f",".Rmd")}
+#' \dontrun{remove_extension("f",".R")}
+#' \dontrun{remove_extension("f.Rmd","R")}
+remove_extension <- function(filename, extension) {
+
+  if(!grepl("\\.",extension)) {
+    filename_no_ext <- filename
+  }
+
+  nlen_ext <- nchar(extension)
+  nlen_filename <- nchar(filename)
+
+  if (nlen_filename >= nlen_ext) {
+    filename_no_ext <- substr(filename, 1, nlen_filename - (nlen_ext-1))
+  } else {
+    stop(paste0("Filename '", filename, "' should be greater than '", extension, "'.\n"))
+  }
+
+  return(filename_no_ext)
+}
+
+
