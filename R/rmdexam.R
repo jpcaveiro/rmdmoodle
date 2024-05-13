@@ -536,7 +536,17 @@ rq <- function(...) {
     arglist["seed"] <- NULL
   }
 
-  #debug
+  # params
+  if (is.null(arglist$params)) {
+    ex_params <- NULL
+  } else {
+    ex_params <- arglist$params
+
+    #delete seed
+    arglist["params"] <- NULL
+  }
+
+    #debug
   #cat("varcount is", varcount, "\n")
 
   #new name
@@ -621,7 +631,7 @@ rq <- function(...) {
   }
 
 
-  return(ex_rmdtext)
+  return(list(rmdtext = ex_rmdtext, params = ex_params))
 }
 
 
@@ -686,6 +696,18 @@ pq <- function(...) {
     #delete seed
     arglist["seed"] <- NULL
   }
+
+
+  # params
+  if (is.null(arglist$params)) {
+    ex_params <- NULL
+  } else {
+    ex_params <- arglist$params
+
+    #delete seed
+    arglist["params"] <- NULL
+  }
+
 
   # Arglist should be like:
   # list("question.Rmd", "itemX", "itemZ")
@@ -804,7 +826,7 @@ pq <- function(...) {
   }
 
 
-  return(ex_rmdtext)
+  return(list(rmdtext = ex_rmdtext, params = ex_params))
 }
 
 
@@ -841,43 +863,50 @@ rmdexam <- function(rmdfilename, ...) {
                 rmdfilename, " in code.\n"))
   }
 
+
   cat("\nBuilding", rmdfilename, "\n\n")
 
 
   #args is a list
   #args[[1]][[1]] access the first exercise-filename to be written
   #to the new Rmd
+  # ... is something like
+  # list( list(rmdtext="...",params=...), ... )
   argslist <- list(...)
 
   ex_rmdtext <- ""
 
+  all_params <- list()
+
   # Runs all requested questions
   for (qnum in seq_along(argslist)) {
 
+    #' "arg" is like list(rmdtext="...", params=...)
     arg <- argslist[[qnum]]
 
-    #' What is the argument type?
-    if (length(arg)==1) {  #se o vector arg só tem um elemento
-      #' if it is a character then
-      #' it could came from execution of functions like:
-      #' 1. `pq("c3-zinterval.Rmd", "ic01","interp01")`, or from
-      #' 2. `rq(seed = 10, number = 90, "c3-zinterval.Rmd", "ic01","interp01")`
-
-      res <- arg #above functions already produce a character
-
-    } else {
-
-      res <- pq(arg)  #planned question
-
+    # Tells user to stop using c(...) notation
+    # and use What is the argument type?
+    if (class(arg) == "character") {
+      stop(paste0("Stop using c(...) and use pq(...) or rq(...)."))
     }
 
+    # Concat all parameters to be used
+    # in knitr::render
+    if (!is.null(arg$params)) {
+      all_params <- c(all_params, arg$params)
+    }
 
-    #' Join every question into a big string
+    # Join every question into a big string
     ex_rmdtext <- paste0(ex_rmdtext,
-                         res,
+                         arg["rmdtext"],
                          collapse = "\n\n")
   }
 
+
+  if (length( unique( names(all_params) ) ) < length( all_params )) {
+    print(all_params)
+    stop("There are yaml params with same names in different R Markdown files.")
+  }
 
   #' Reproduce the instruction that
   #' originates the exam for later
@@ -886,6 +915,7 @@ rmdexam <- function(rmdfilename, ...) {
                          rmdfilename,
                          paste(argslist, collapse = ", \n"))
 
+  paramsstr <- as.yaml(list(params = all_params), indent = 4, indent.mapping.sequence = TRUE)
 
   head_txt <- paste0(
     "---\n",
@@ -893,6 +923,7 @@ rmdexam <- function(rmdfilename, ...) {
     "author: \"User '", Sys.info()["user"], "' compilou este exame\"\n",
     "date: \"", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\"\n",
     "output: html_document\n",
+    paramsstr,
     "---\n\n\n")
 
 
@@ -935,12 +966,12 @@ rmdexam <- function(rmdfilename, ...) {
   close(con)
 
 
-  cat("Check file \"", rmdfilename, "\" and search for eventual problems or change for needs.\n", sep="")
-  cat("Then, run `xmlmoodle(\"", rmdfilename, "\")` to produce the xml file to be exported.\n\n\n",sep="")
+  cat("File \"", rmdfilename, "\" is produced with an exam. It could be useful to search for eventual problems or change for needs.\n", sep="")
+  cat("In case of changes, please run `xmlmoodle(\"", rmdfilename, "\")` to produce the xml file to be exported.\n\n\n",sep="")
 
   rmdfilename_no_ext <- substr(rmdfilename, 1, nchar(rmdfilename) - 4)
 
-  xmlmoodle(rmdfilename_no_ext)
+  xmlmoodle(rmdfilename_no_ext, params = NULL) #all_params)
 
   cat("\nPlease, import file ", rmdfilename_no_ext, ".xml into moodle.\n\n", sep = "")
 

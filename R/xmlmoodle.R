@@ -1058,6 +1058,7 @@ html_to_json_protected <- function(html_code) {
 #' in moodle.
 #'
 #' @param filename_no_extension
+#' @param params list with same yaml params at top of R Markdown file
 #'
 #' @return A xml file to be imported in moodle.
 #' @export
@@ -1065,7 +1066,7 @@ html_to_json_protected <- function(html_code) {
 #' @examples
 #' \dontrun{xmlmoodle("my_exam.Rmd")}
 #' \dontrun{xmlmoodle("my_exam")}
-xmlmoodle <- function(filename_no_extension) {
+xmlmoodle <- function(filename_no_extension, params = NULL) {
 
   if (grepl(".", filename_no_extension)) {
     filename_no_extension <- tools::file_path_sans_ext(filename_no_extension)
@@ -1078,6 +1079,8 @@ xmlmoodle <- function(filename_no_extension) {
   #' or to add an absolut path.
   find_setwd(filename_no_extension)
 
+  #debug
+  #print(params)
 
 
   #' Método sem multivariantes
@@ -1092,8 +1095,21 @@ xmlmoodle <- function(filename_no_extension) {
       # in case the "try" part was completed successfully
 
       cat(paste0("\nProduzindo ", filename_no_extension, ".html\n\n"))
-      rmarkdown::render(paste(filename_no_extension, ".Rmd", sep = ""),
-                        output_format = "html_document", quiet = TRUE)
+      if (is.null(params)) {
+        #debug
+        cat("rmarkdown::render sem params\n")
+        rm(params)
+        rmarkdown::render(paste0(filename_no_extension, ".Rmd"),
+                          output_format = "html_document",
+                          quiet = TRUE)
+      } else {
+        #debug
+        cat("rmarkdown::render COM params\n")
+        rmarkdown::render(paste0(filename_no_extension, ".Rmd"),
+                          params = params,
+                          output_format = "html_document",
+                          quiet = TRUE)
+      }
 
       # The return value of `rmarkdown::render()` is the actual value
       # that will be returned in case there is no condition
