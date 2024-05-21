@@ -212,29 +212,6 @@ Ideia
 <p>Usufruir de uma base de questões, com alíneas, para criar um novo teste, escolhendo questões e que alíneas vão estar no teste.</p>
 </div>
 </div>
-<p>Uma “variante” (definida dentro de uma subsecção markdown <code>##</code>) é uma questão concreta que pode “calhar” a um estudante no exame Moodle. O esquema exemplo, para questões tipo CLOZE, é:</p>
-<pre><code># Questão sobre Capítulo 1 - CLOZE
-
-(aqui notas e código comum a todas as variantes)
-
-## Variante 1
-
-Texto CLOZE e código a ser mostrado ao estudante.
-
-### Feedback
-
-
-## Variante 2
-
-Texto CLOZE e código a ser mostrado ao estudante.
-
-### Feedback</code></pre>
-<p>O número da variantes de uma questão</p>
-<p>As questões podem ser:</p>
-<ul>
-<li><p>planeadas: é calculado um vetor (ou vários) com os valores e textos a serem usados em cada variante.</p></li>
-<li><p>aleatorizadas</p></li>
-</ul>
 <section id="composição-de-uma-questão" class="level1">
 <h1>Composição de uma questão</h1>
 <p>É frequente uma questão ser composta de um enredo e alíneas sobre esse enredo. Esta base de questões segue esse esquema com uma condição: as alíneas serem independentes, ou de algum modo, grupos de alíneas serem independentes entre si.</p>
@@ -250,18 +227,21 @@ Texto CLOZE e código a ser mostrado ao estudante.
 <section id="criar-um-teste" class="level2">
 <h2 class="anchored" data-anchor-id="criar-um-teste">Criar um teste</h2>
 <p>Num pasta de testes proceder assim:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("rmdmoodle")</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmdmoodle)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Indica onde está a base de questões com alíneas</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set_exercise_root</span>( <span class="st">"~/GitHub/rmdmoodle/examples/questions"</span> )</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an exam from exercises.</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rmdexam</span>(<span class="st">"exame-para-amanha.Rmd"</span>,</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(<span class="st">"cap3/c3-estimativa.Rmd"</span>, <span class="st">"alinea01"</span>, <span class="st">"alinea04"</span>),</span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">c</span>(<span class="st">"cap4/c4-anova-1fator-com-dados.Rmd"</span>, <span class="st">"id01"</span>, <span class="st">"concept01"</span>) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Neste código, o novo teste desigando por “exame-de-hoje.Rmd”, contém duas questões, uma sobre estimativa e outra sobre anova, e respectivas alíneas.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("rmdmoodle")</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmdmoodle)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Indica onde está a base de questões com alíneas</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set_exercise_root</span>( <span class="st">"~/banco_de_questoes"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an exam from exercises.</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rmdexam</span>(<span class="st">"exame-para-amanha.Rmd"</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pq</span>(<span class="st">"cap3/c3-estimativa.Rmd"</span>, <span class="st">"alinea01"</span>, <span class="st">"alinea04"</span>),</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pq</span>(<span class="st">"cap4/c4-anova-1fator-com-dados.Rmd"</span>, <span class="st">"id01"</span>, <span class="st">"concept01"</span>) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Neste código o novo teste, desigando por <code>exame-de-amanha.Rmd</code>, contém duas questões. Uma sobre estimativa e outra sobre anova, e respectivas alíneas selecionadas.</p>
+<ul>
+<li><code>pq(...)</code> designa “planned question” (ver )</li>
+</ul>
 
 
 </section>

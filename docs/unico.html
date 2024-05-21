@@ -100,9 +100,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script src="site_libs/quarto-diagram/mermaid.min.js"></script>
-<script src="site_libs/quarto-diagram/mermaid-init.js"></script>
-<link href="site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
 
 <link rel="stylesheet" href="styles.css">
@@ -230,23 +227,7 @@ Ideia
 </ul></li>
 </ul>
 <p>O fluxo de etapas é a seguinte:</p>
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart LR
-    T[Teacher] --&gt;|creates| A
-    A[R Markdown\n'exam01.Rmd'] --&gt;|knitr\nHTML| B[HTML file]
-    B --&gt;|review| A
-    A --&gt;|"instruções\nxmlmoodle(exam01)"| M[Moodle]
-    M --&gt; S[Students]
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<p><img src="img/fluxo01.png" class="img-fluid"></p>
 <section id="detalhes" class="level2">
 <h2 class="anchored" data-anchor-id="detalhes">Detalhes</h2>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
@@ -528,28 +509,7 @@ Processing question: Questão 2 - Natureza e escalas - MULTICHOICE
 <p><img src="img/moodle_import_teste_unico.png" class="img-fluid"></p>
 </div>
 <div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
-<div class="cell" data-layout-align="default">
-<div class="cell-output-display">
-<div>
-<p></p><figure class="figure"><p></p>
-<div>
-<pre class="mermaid mermaid-js">flowchart TD
-    S[start] --&gt;|docs and\nexamples| A
-    A[R Markdown\n'exam.Rmd'] --&gt;|knitr| B[HTML file]
-    B --&gt;|review\nfrequently| A
-    A --&gt;|open| C
-    C[R console] --&gt;|"&gt; library(rmdmoodle)\n&gt; xmlmoodle('exam')"| D[xml file\n'exam.xml']
-    D --&gt;|import| E[Moodle]
-    E --&gt;|"review,\n(rarely)"| A
-    E --&gt; F[Examination day]
-    F --&gt; G[Result analysis] 
-    G --&gt;|improvements| A
-</pre>
-</div>
-<p></p></figure><p></p>
-</div>
-</div>
-</div>
+<p><img src="img/fluxo02.png" class="img-fluid"></p>
 </div>
 <div id="tabset-1-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-5-tab">
 <p><strong>Teste como categoria moodle</strong></p>
