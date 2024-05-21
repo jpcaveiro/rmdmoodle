@@ -1,0 +1,414 @@
+---
+title: "2022-2023-Teste1-Turno2.Rmd"
+author: "User 'pedrocruz' compilou este exame"
+date: "2024-05-21 15:32:41"
+output: html_document
+---
+
+
+
+# c1-descritiva-CLOZE
+
+```{r echo=FALSE, results=FALSE}
+#  Optional mostrar ou não:
+#  echo=FALSE, results=FALSE
+
+
+# Obrigatório no método de variantes planeadas
+VAR         = 1  # Faz knitr com a variante escolhida em VAR
+VARCOUNT    = 3  # Total de variantes
+
+# Avoid scientific notation in all document
+options(scipen = 999)
+
+# No geral, não mostra "code chunks"
+knitr::opts_chunk$set(echo = FALSE) 
+
+# Fixar as variantes produzidas
+set.seed(11)
+
+# Dimensão das amostras (quantidade em VARCOUNT)
+dimX <- c(4, 5, 6)
+
+# Inventa amostras (quantidade em VARCOUNT)
+amostra <- list(
+  round(rnorm(dimX[1], 8, 2),1),
+  round(rnorm(dimX[2], 10, 2),1),
+  round(rnorm(dimX[3], 12, 2),1)
+)
+
+
+# Tabelas e matrizes bem expostas no Moodle
+library(kableExtra)
+
+
+# Produz uma "R matrix" para ficar bem no Moodle
+create_matrix <- function(v) {
+  # "v" é a variante 1, 2, 3, 
+  
+  matriz_linha <- matrix(amostra[[v]], ncol = dimX[v])
+  
+  rownames(matriz_linha) <- "volume (em m3)"
+  
+  # Não é necessário
+  #colnames(matriz_linha) <- as.character(seq(1,dimX[v]))
+  
+  return(matriz_linha)
+}
+
+```
+
+
+## variante `r (VAR <- 1)`
+
+
+
+Considere a seguinte variável aleatória:
+
+**X** : Volume (em \(m^3\)) ocupado por uma acácia com 50cm de altura
+
+e a amostra
+
+```{r echo=F}
+create_matrix(VAR) %>%
+  kbl() %>%
+  kable_styling() %>%
+  kable_paper(full_width = FALSE)
+```
+
+
+
+**(a)**
+
+
+O desvio padrão corrigido é: {:NUMERICAL:=`r sd(amostra[[VAR]])`:0.1} (1 casa decimal)
+
+
+
+
+**(b)**
+
+
+A média amostral é uma medida de {:MULTICHOICE_S:=localização central\~%-25%dispersão central\~%-25%localização relativa\~%-25%dispersão relativa} (desconta 25% do valor se errar).
+
+
+
+
+
+
+
+
+
+
+
+### feedback
+
+
+
+## variante `r (VAR <- 2)`
+
+
+
+Considere a seguinte variável aleatória:
+
+**X** : Volume (em \(m^3\)) ocupado por uma acácia com 50cm de altura
+
+e a amostra
+
+```{r echo=F}
+create_matrix(VAR) %>%
+  kbl() %>%
+  kable_styling() %>%
+  kable_paper(full_width = FALSE)
+```
+
+
+
+**(a)**
+
+
+O desvio padrão corrigido é: {:NUMERICAL:=`r sd(amostra[[VAR]])`:0.1} (1 casa decimal)
+
+
+
+
+**(b)**
+
+
+A média amostral é uma medida de {:MULTICHOICE_S:=localização central\~%-25%dispersão central\~%-25%localização relativa\~%-25%dispersão relativa} (desconta 25% do valor se errar).
+
+
+
+
+
+
+
+
+
+
+
+### feedback
+
+
+
+## variante `r (VAR <- 3)`
+
+
+
+Considere a seguinte variável aleatória:
+
+**X** : Volume (em \(m^3\)) ocupado por uma acácia com 50cm de altura
+
+e a amostra
+
+```{r echo=F}
+create_matrix(VAR) %>%
+  kbl() %>%
+  kable_styling() %>%
+  kable_paper(full_width = FALSE)
+```
+
+
+
+**(a)**
+
+
+O desvio padrão corrigido é: {:NUMERICAL:=`r sd(amostra[[VAR]])`:0.1} (1 casa decimal)
+
+
+
+
+**(b)**
+
+
+A média amostral é uma medida de {:MULTICHOICE_S:=localização central\~%-25%dispersão central\~%-25%localização relativa\~%-25%dispersão relativa} (desconta 25% do valor se errar).
+
+
+
+
+
+
+
+
+
+
+
+### feedback
+
+
+
+# c3-proptest-CLOZE
+
+```{r echo=FALSE, results=FALSE}
+# Obrigatório
+VAR         = 1  # Só mostra a variante escolhida em VAR
+VARCOUNT    = 3  # total de variantes
+
+#Avoid scientific notation in all document
+options(scipen = 999)
+
+#Na commandline: str(knitr::opts_chunk$get())
+knitr::opts_chunk$set(echo = TRUE) 
+
+
+VAR      <- 1  # Só mostra a variante escolhida em VAR
+VARCOUNT <- 6  # total de variantes
+
+
+SET.SEED <- 10
+set.seed(SET.SEED)
+
+
+PROPTEST_P0 <- c(0.60, 0.65, 0.70)
+
+PROPTEST_SUCESSOS  <- c(23, 27, 22)
+PROPTEST_DIM       <- c(30, 35, 40)
+
+R_PROPTEST_PESTIMADO = PROPTEST_SUCESSOS / PROPTEST_DIM
+
+PROPTEST_H1 <- c(
+             "significativamente maior",
+             "significativamente maior",
+             "significativamente menor"
+)
+
+PROPTEST_H1_SINAL <- c(">", ">", "<")
+
+ALPHA_PROPTEST <- c(10,  5,  5)
+               #  H1  H0  H0 (ver abaixo)
+
+# Estes cat() não aparecem no Moodle. Só o enredo e alíneas escolhidas.
+cat(PROPTEST_P0 * PROPTEST_DIM,'\n') #escolher os valores de PROPTEST_SUCESSOS
+cat(R_PROPTEST_PESTIMADO,'\n') #obj: existirem mais de 3 casas decimais
+
+
+R_PROPOBS <- (R_PROPTEST_PESTIMADO - PROPTEST_P0)/sqrt(PROPTEST_P0*(1-PROPTEST_P0)/PROPTEST_DIM)
+
+R_PVALUE_PROP <- c()
+R_PVALUE_PROP[1] <- 1 - pnorm( R_PROPOBS[1], 0, 1)
+R_PVALUE_PROP[2] <- 1 - pnorm(R_PROPOBS[2], 0, 1)
+R_PVALUE_PROP[3] <- pnorm(R_PROPOBS[3], 0, 1)
+
+
+#Não surge no Moodle.
+cat(R_PVALUE_PROP,'\n')
+
+
+
+Outro_AlphaCorreto    <- c(5,5,10)
+Outro_AlphaIncorreto  <- c(1,10,1)
+
+
+R_PROPTEST_CONCLUSAO <- c(
+  "é significativamente superior",
+  "não é significativamente superior",
+  "é significativamente inferior"
+) 
+
+R_PROPTEST_CONCLUSAO_ERRADA1 <- c(
+  "não é significativamente superior",
+  "é significativamente superior",
+  "não é significativamente inferior",
+  "é significativamente inferior"
+)
+
+R_PROPTEST_CONCLUSAO_ERRADA2 <- c(
+  "não é significativamente igual",
+  "é significativamente igual",
+  "não é significativamente igual",
+  "é significativamente igual"
+)  
+
+
+```
+
+
+## variante `r (VAR <- 1)`
+
+
+
+Numa pequena amostra de `r PROPTEST_DIM[VAR]` árvores foram observadas `r PROPTEST_SUCESSOS[VAR]` árvores com galhas em vez de sementes.
+
+Pretende-se saber se a proporção de árvores infetadas é `r PROPTEST_H1[VAR]` face à proporção de árvores infetadas há 20 anos.
+
+
+
+Formulário:
+
+![](pvalue_formula.png)
+
+
+
+**(a)**
+
+
+Com base nos dados observados, a proporção estimada de árvores infetadas é {:NUMERICAL:=`r R_PROPTEST_PESTIMADO[VAR]`:0.001} (escreve um número entre 0 e 1, e com 3 casas decimais).
+
+
+
+**(b)**
+
+
+
+O valor observado da estatística de teste associado ao teste pretendido é {2:NUMERICAL:=`r R_PROPOBS[VAR]`:0.001} (3 casas decimais).
+
+
+
+**(c)**
+
+
+Ao nível de significância de {1:MULTICHOICE_S:=`r Outro_AlphaCorreto[VAR]`% \~`r Outro_AlphaIncorreto[VAR]`%} , a conclusão do teste de hipóteses é que a proporção de árvores infetadas agora
+`r R_PROPTEST_CONCLUSAO[VAR]` comparado à proporção de árvores infetadas no passado.
+
+
+
+### feedback
+
+
+
+## variante `r (VAR <- 2)`
+
+
+
+Numa pequena amostra de `r PROPTEST_DIM[VAR]` árvores foram observadas `r PROPTEST_SUCESSOS[VAR]` árvores com galhas em vez de sementes.
+
+Pretende-se saber se a proporção de árvores infetadas é `r PROPTEST_H1[VAR]` face à proporção de árvores infetadas há 20 anos.
+
+
+
+Formulário:
+
+![](pvalue_formula.png)
+
+
+
+**(a)**
+
+
+Com base nos dados observados, a proporção estimada de árvores infetadas é {:NUMERICAL:=`r R_PROPTEST_PESTIMADO[VAR]`:0.001} (escreve um número entre 0 e 1, e com 3 casas decimais).
+
+
+
+**(b)**
+
+
+
+O valor observado da estatística de teste associado ao teste pretendido é {2:NUMERICAL:=`r R_PROPOBS[VAR]`:0.001} (3 casas decimais).
+
+
+
+**(c)**
+
+
+Ao nível de significância de {1:MULTICHOICE_S:=`r Outro_AlphaCorreto[VAR]`% \~`r Outro_AlphaIncorreto[VAR]`%} , a conclusão do teste de hipóteses é que a proporção de árvores infetadas agora
+`r R_PROPTEST_CONCLUSAO[VAR]` comparado à proporção de árvores infetadas no passado.
+
+
+
+### feedback
+
+
+
+## variante `r (VAR <- 3)`
+
+
+
+Numa pequena amostra de `r PROPTEST_DIM[VAR]` árvores foram observadas `r PROPTEST_SUCESSOS[VAR]` árvores com galhas em vez de sementes.
+
+Pretende-se saber se a proporção de árvores infetadas é `r PROPTEST_H1[VAR]` face à proporção de árvores infetadas há 20 anos.
+
+
+
+Formulário:
+
+![](pvalue_formula.png)
+
+
+
+**(a)**
+
+
+Com base nos dados observados, a proporção estimada de árvores infetadas é {:NUMERICAL:=`r R_PROPTEST_PESTIMADO[VAR]`:0.001} (escreve um número entre 0 e 1, e com 3 casas decimais).
+
+
+
+**(b)**
+
+
+
+O valor observado da estatística de teste associado ao teste pretendido é {2:NUMERICAL:=`r R_PROPOBS[VAR]`:0.001} (3 casas decimais).
+
+
+
+**(c)**
+
+
+Ao nível de significância de {1:MULTICHOICE_S:=`r Outro_AlphaCorreto[VAR]`% \~`r Outro_AlphaIncorreto[VAR]`%} , a conclusão do teste de hipóteses é que a proporção de árvores infetadas agora
+`r R_PROPTEST_CONCLUSAO[VAR]` comparado à proporção de árvores infetadas no passado.
+
+
+
+### feedback
+
+
+

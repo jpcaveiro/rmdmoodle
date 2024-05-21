@@ -9,11 +9,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Pedro Cruz" />
+<meta name="author" content="rmdmoodle" />
 
-<meta name="date" content="2024-04-05" />
 
-<title>Single test, Single file</title>
+<title>c3-proptest</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -350,84 +349,57 @@ display: none;
 
 
 
-<h1 class="title toc-ignore">Single test, Single file</h1>
-<h4 class="author">Pedro Cruz</h4>
-<h4 class="date">2024-04-05</h4>
+<h1 class="title toc-ignore">c3-proptest</h1>
+<h4 class="author">rmdmoodle</h4>
+<h4 class="date">2024/05/21</h4>
 
 </div>
 
 
-<div id="question-1---estatística-descritiva---cloze" class="section level1">
-<h1>Question 1 - Estatística Descritiva - CLOZE</h1>
-<div id="variante-1" class="section level2">
-<h2>Variante 1</h2>
-<p>Considere a amostra <span class="math inline">\(2.2, 5.6,
-3.8\)</span>:</p>
-<p><strong>(a)</strong> A média amostral é {:NUMERICAL:=3.866667:0.005}
-(use 2 casas decimais).</p>
-<p><strong>(b)</strong> O valor máximo é {:NUMERICAL:=5.6}.</p>
-<p><strong>(c)</strong> A média é uma medida de
-{:MULTICHOICE_S:=localização central~localização relativa~dispersão}</p>
-<div id="feedback" class="section level3">
-<h3>feedback</h3>
-<p>Consulte o Capítulo 1 - Estatística Descritiva.</p>
+<p>Objetivo: Teste a uma proporção</p>
+<div id="código" class="section level1">
+<h1>código</h1>
 </div>
+<div id="enredo" class="section level1">
+<h1>enredo</h1>
+<p>Numa pequena amostra de 30 árvores foram observadas 23 árvores com
+galhas em vez de sementes.</p>
+<p>Pretende-se saber se a proporção de árvores infetadas é
+significativamente maior face à proporção de árvores infetadas há 20
+anos.</p>
+<p>Formulário:</p>
+<p><img src="data:image/png;base64,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" /></p>
 </div>
-<div id="variante-2" class="section level2">
-<h2>Variante 2</h2>
-<p>Considere a amostra <span class="math inline">\(2.2, 5.6,
-1.1\)</span>:</p>
-<p><strong>(a)</strong> A média amostral é {:NUMERICAL:=2.966667:0.005}
-(use 2 casas decimais).</p>
-<p><strong>(b)</strong> O valor mínimo é {:NUMERICAL:=2.2}.</p>
-<p><strong>(c)</strong> O desvio padrão corrigido é uma medida de
-{:MULTICHOICE_S:=dispersão~localização central~localização relativa}</p>
-<div id="feedback-1" class="section level3">
-<h3>feedback</h3>
-<p>Consulte o Capítulo 1 - Estatística Descritiva.</p>
+<div id="alínea-prop01" class="section level1">
+<h1>alínea prop01</h1>
+<p>Com base nos dados observados, a proporção estimada de árvores
+infetadas é {:NUMERICAL:=0.7666667:0.001} (escreve um número entre 0 e
+1, e com 3 casas decimais).</p>
 </div>
+<div id="alínea-th01" class="section level1">
+<h1>alínea th01</h1>
+<p>O valor-p do teste pretendido é {2:NUMERICAL:=0.0312037:0.001} (3
+casas decimais).</p>
 </div>
+<div id="alínea-tobs01" class="section level1">
+<h1>alínea Tobs01</h1>
+<p>O valor observado da estatística de teste associado ao teste
+pretendido é {2:NUMERICAL:=1.86339:0.001} (3 casas decimais).</p>
 </div>
-<div id="questão-2---natureza-e-escalas---multichoice" class="section level1">
-<h1>Questão 2 - Natureza e escalas - MULTICHOICE</h1>
-<div id="variante-01" class="section level2">
-<h2>Variante 01</h2>
-<p>Seja “N.º diário de pagamentos numa loja de roupas” uma variável
-estatística. Esta é uma variável é</p>
-<div id="respostas" class="section level3">
-<h3>Respostas</h3>
-<ul>
-<li>quantitativa, discreta, classificada em escala de razão.<br />
-</li>
-<li>qualitativa, classificada em escala ordinal.</li>
-<li>quantitativa, contínua, classificada em escala de intervalos.</li>
-<li>quantitativa, discreta, classificada em escala nominal.</li>
-</ul>
+<div id="alínea-concl01" class="section level1">
+<h1>alínea concl01</h1>
+<p>Ao nível de significância de 10%, a conclusão do teste de hipóteses é
+que a proporção de árvores infetadas agora {:MULTICHOICE_S:= é
+significativamente superior ~ não é significativamente superior ~ não é
+significativamente igual } comparado à proporção de árvores infetadas em
+África do Sul.</p>
 </div>
-<div id="feedback-2" class="section level3">
-<h3>Feedback</h3>
-<p>Consulte o Capítulo 1 - Estatística Descritiva.</p>
-</div>
-</div>
-<div id="variante-02" class="section level2">
-<h2>Variante 02</h2>
-<p>Seja “peso de uma enguia (em kg)” uma variável estatística. Esta é
-uma variável é</p>
-<div id="respostas-1" class="section level3">
-<h3>Respostas</h3>
-<ul>
-<li>quantitativa, contínua, classificada em escala de razão.</li>
-<li>quantitativa, discreta, classificada em escala de intervalos.<br />
-</li>
-<li>qualitativa, classificada em escala ordinal.</li>
-<li>quantitativa, discreta, classificada em escala nominal.</li>
-</ul>
-</div>
-<div id="feedback-3" class="section level3">
-<h3>Feedback</h3>
-<p>Consulte o Capítulo 1 - Estatística Descritiva.</p>
-</div>
-</div>
+<div id="alínea-concl02" class="section level1">
+<h1>alínea concl02</h1>
+<p>Ao nível de significância de {1:MULTICHOICE_S:=5% ~1%} , a conclusão
+do teste de hipóteses é que a proporção de árvores infetadas agora é
+significativamente superior comparado à proporção de árvores infetadas
+no passado.</p>
 </div>
 
 

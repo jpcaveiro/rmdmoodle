@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+
+
+  <question type="category">
+    <category>
+      <text>$course$/top/importados/Exam With Question and their variants/Question 01 - Descriptive Statistics - CLOZE</text>
+    </category>
+    <info format="html">
+      <text></text>
+    </info>
+    <idnumber></idnumber>
+  </question>
+  <question type="cloze">
+    <name>
+      <text>Variante 01 de Question 01 - Descriptive Statistics - CLOZE</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Consider the following sample:</p>
+<pre><code>## 10 9.6 7.3 8.8 10.6 10.8 7.6 9.3 6.7 9.5</code></pre>
+<p><strong>(a)</strong></p>
+<p>The sample mean is {:NUMERICAL:=9.02:0.1} (round to 1 decimal
+place).</p>
+<p><strong>(b)</strong></p>
+<p>The maximum value of the sample is {:NUMERICAL:=10.8}.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Provide here some feedback.</p>]]></text>
+    </generalfeedback>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+  </question>
+
+
+  <question type="category">
+    <category>
+      <text>$course$/top/importados/Exam With Question and their variants/Question 01 - Descriptive Statistics - CLOZE</text>
+    </category>
+    <info format="html">
+      <text></text>
+    </info>
+    <idnumber></idnumber>
+  </question>
+  <question type="cloze">
+    <name>
+      <text>Variante 02 de Question 01 - Descriptive Statistics - CLOZE</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Consider the following sample:</p>
+<pre><code>## 22.2 21.5 19.5 22 21.5 20.2 18.1 19.6 21.9 21</code></pre>
+<p><strong>(a)</strong></p>
+<p>The sample mean is {:NUMERICAL:=20.75:0.1} (round to 1 decimal
+place).</p>
+<p><strong>(b)</strong></p>
+<p>The minimum value of the sample is {:NUMERICAL:=22.2}.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Provide here some feedback.</p>]]></text>
+    </generalfeedback>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+  </question>
+
+
+  <question type="category">
+    <category>
+      <text>$course$/top/importados/Exam With Question and their variants/Question 01 - Descriptive Statistics - CLOZE</text>
+    </category>
+    <info format="html">
+      <text></text>
+    </info>
+    <idnumber></idnumber>
+  </question>
+  <question type="cloze">
+    <name>
+      <text>Variante 03 de Question 01 - Descriptive Statistics - CLOZE</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Consider the following sample:</p>
+<pre><code>## 28.8 25.6 28.7 25.8 27.5 29.3 28.6 28.3 29.8 29.5</code></pre>
+<p><strong>(a)</strong></p>
+<p>The sample mean is {:NUMERICAL:=28.19:0.1} (round to 1 decimal
+place).</p>
+<p><strong>(b)</strong></p>
+<p>The value of <span class="math inline">\(x_2\)</span> is
+{:NUMERICAL:=25.6}.</p>]]></text>
+    </questiontext>
+    <generalfeedback format="html">
+      <text><![CDATA[<p>Provide here some feedback.</p>]]></text>
+    </generalfeedback>
+    <penalty>0.3333333</penalty>
+    <hidden>0</hidden>
+    <idnumber></idnumber>
+  </question>
+
+</quiz>
+

@@ -1,0 +1,116 @@
+---
+title: "c1-descritiva"
+author: "rmdmoodle"
+date: "2024/05/21"
+output: html_document
+---
+
+Este ficheiro define uma "questão aleatória" para o Moodle.
+
+Objetivo de avaliação: Capítulo 1 - Estatística Descritiva
+
+Questão de variantes planeadas em que se predefine 
+todos os casos a serem sorteados pelos estudantes 
+no momento do teste.
+
+
+# código
+
+
+```{r echo=FALSE, results=FALSE}
+#  Optional mostrar ou não:
+#  echo=FALSE, results=FALSE
+
+
+# Obrigatório no método de variantes planeadas
+VAR         = 1  # Faz knitr com a variante escolhida em VAR
+VARCOUNT    = 3  # Total de variantes
+
+# Avoid scientific notation in all document
+options(scipen = 999)
+
+# No geral, não mostra "code chunks"
+knitr::opts_chunk$set(echo = FALSE) 
+
+# Fixar as variantes produzidas
+set.seed(11)
+
+# Dimensão das amostras (quantidade em VARCOUNT)
+dimX <- c(4, 5, 6)
+
+# Inventa amostras (quantidade em VARCOUNT)
+amostra <- list(
+  round(rnorm(dimX[1], 8, 2),1),
+  round(rnorm(dimX[2], 10, 2),1),
+  round(rnorm(dimX[3], 12, 2),1)
+)
+
+
+# Tabelas e matrizes bem expostas no Moodle
+library(kableExtra)
+
+
+# Produz uma "R matrix" para ficar bem no Moodle
+create_matrix <- function(v) {
+  # "v" é a variante 1, 2, 3, 
+  
+  matriz_linha <- matrix(amostra[[v]], ncol = dimX[v])
+  
+  rownames(matriz_linha) <- "volume (em m3)"
+  
+  # Não é necessário
+  #colnames(matriz_linha) <- as.character(seq(1,dimX[v]))
+  
+  return(matriz_linha)
+}
+
+```
+
+
+# enredo 
+
+
+Considere a seguinte variável aleatória:
+
+**X** : Volume (em \(m^3\)) ocupado por uma acácia com 50cm de altura
+
+e a amostra
+
+```{r echo=F}
+create_matrix(VAR) %>%
+  kbl() %>%
+  kable_styling() %>%
+  kable_paper(full_width = FALSE)
+```
+
+
+# Pedir a média (Variante `r VAR`) - "média"
+
+A média amostra é: {:NUMERICAL:=`r mean(amostra[[VAR]])`:0.1} (1 casa decimal)
+
+
+
+# Pedir o desvio-padrão (Variante `r VAR`) - "desvio-padrão"
+
+O desvio padrão corrigido é: {:NUMERICAL:=`r sd(amostra[[VAR]])`:0.1} (1 casa decimal)
+
+
+
+# Pedir a dimensão da amostra  (Variante `r VAR`) - "dimensão"
+
+A dimnensão da amostra é: {:NUMERICAL:=`r dimX[[VAR]]`:0}
+
+
+# "conceito1"
+
+A média amostral é uma medida de {:MULTICHOICE_S:=localização central\~%-25%dispersão central\~%-25%localização relativa\~%-25%dispersão relativa} (desconta 25% do valor se errar).
+
+
+
+
+
+
+
+
+
+

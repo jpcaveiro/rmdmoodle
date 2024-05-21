@@ -1,7 +1,7 @@
 ---
 title: "Single test, Single file"
-author: "Pedro Cruz"
-date: "2024-04-05"
+author: "rmdmoodle"
+date: "2024-05-21"
 output: html_document
 ---
 
@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-# Question 1 - Estatística Descritiva - CLOZE
+# Questão aleatória 1 - Estatística Descritiva - CLOZE
 
 
 ## Variante 1
@@ -48,7 +48,9 @@ Considere a amostra \(2.2, 5.6, 1.1\):
 Consulte o Capítulo 1 - Estatística Descritiva.
 
 
-# Questão 2 - Natureza e escalas - MULTICHOICE
+
+
+# Questão aleatória 2 - Natureza e escalas - MULTICHOICE
 
 
 ## Variante 01  
@@ -67,6 +69,8 @@ Esta é uma variável é
 
 Consulte o Capítulo 1 - Estatística Descritiva.
 
+
+
 ## Variante 02  
 
 
@@ -83,3 +87,4 @@ Esta é uma variável é
 ### Feedback
 
 Consulte o Capítulo 1 - Estatística Descritiva.
+

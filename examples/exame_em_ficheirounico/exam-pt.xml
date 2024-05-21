@@ -4,7 +4,7 @@
 
   <question type="category">
     <category>
-      <text>$course$/top/importados/Single test, Single file/Question 1 - Estatística Descritiva - CLOZE</text>
+      <text>$course$/top/importados/Single test- Single file/Questão aleatória 1 - Estatística Descritiva - CLOZE</text>
     </category>
     <info format="html">
       <text></text>
@@ -13,7 +13,7 @@
   </question>
   <question type="cloze">
     <name>
-      <text>Variante 1 de Question 1 - Estatística Descritiva - CLOZE</text>
+      <text>Variante 1 de Questão aleatória 1 - Estatística Descritiva - CLOZE</text>
     </name>
     <questiontext format="html">
       <text><![CDATA[<p>Considere a amostra <span class="math inline">\(2.2, 5.6,
@@ -33,10 +33,9 @@
   </question>
 
 
-
   <question type="category">
     <category>
-      <text>$course$/top/importados/Single test, Single file/Question 1 - Estatística Descritiva - CLOZE</text>
+      <text>$course$/top/importados/Single test- Single file/Questão aleatória 1 - Estatística Descritiva - CLOZE</text>
     </category>
     <info format="html">
       <text></text>
@@ -45,7 +44,7 @@
   </question>
   <question type="cloze">
     <name>
-      <text>Variante 2 de Question 1 - Estatística Descritiva - CLOZE</text>
+      <text>Variante 2 de Questão aleatória 1 - Estatística Descritiva - CLOZE</text>
     </name>
     <questiontext format="html">
       <text><![CDATA[<p>Considere a amostra <span class="math inline">\(2.2, 5.6,
@@ -64,11 +63,10 @@
     <idnumber></idnumber>
   </question>
 
-
-
+/
   <question type="category">
     <category>
-      <text>$course$/top/importados/Single test, Single file/Questão 2 - Natureza e escalas - MULTICHOICE</text>
+      <text>$course$/top/importados/Single test- Single file/Questão aleatória 2 - Natureza e escalas - MULTICHOICE</text>
     </category>
     <info format="html">
       <text></text>
@@ -77,7 +75,7 @@
   </question>
   <question type="multichoice">
     <name>
-      <text>Variante 01 de Questão 2 - Natureza e escalas - MULTICHOICE</text>
+      <text>Variante 01 de Questão aleatória 2 - Natureza e escalas - MULTICHOICE</text>
     </name>
     <questiontext format="html">
       <text><![CDATA[<p>Seja “N.º diário de pagamentos numa loja de roupas” uma variável
@@ -104,7 +102,8 @@ estatística. Esta é uma variável é</p>]]></text>
     </incorrectfeedback>
     <shownumcorrect/>
     <answer fraction="100" format="html">
-      <text><![CDATA[quantitativa, discreta, classificada em escala de razão.]]></text>
+      <text><![CDATA[quantitativa, discreta, classificada em escala de razão.<br>
+]]></text>
       <feedback format="html">
         <text></text>
       </feedback>
@@ -130,10 +129,10 @@ estatística. Esta é uma variável é</p>]]></text>
   </question>
 
   
-
+/
   <question type="category">
     <category>
-      <text>$course$/top/importados/Single test, Single file/Questão 2 - Natureza e escalas - MULTICHOICE</text>
+      <text>$course$/top/importados/Single test- Single file/Questão aleatória 2 - Natureza e escalas - MULTICHOICE</text>
     </category>
     <info format="html">
       <text></text>
@@ -142,7 +141,7 @@ estatística. Esta é uma variável é</p>]]></text>
   </question>
   <question type="multichoice">
     <name>
-      <text>Variante 02 de Questão 2 - Natureza e escalas - MULTICHOICE</text>
+      <text>Variante 02 de Questão aleatória 2 - Natureza e escalas - MULTICHOICE</text>
     </name>
     <questiontext format="html">
       <text><![CDATA[<p>Seja “peso de uma enguia (em kg)” uma variável estatística. Esta é
@@ -175,7 +174,8 @@ uma variável é</p>]]></text>
       </feedback>
     </answer>
     <answer fraction="0" format="html">
-      <text><![CDATA[quantitativa, discreta, classificada em escala de intervalos.]]></text>
+      <text><![CDATA[quantitativa, discreta, classificada em escala de intervalos.<br>
+]]></text>
       <feedback format="html">
         <text></text>
       </feedback>

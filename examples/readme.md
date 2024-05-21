@@ -1,2 +1,12 @@
-* folder `exams` contains an example of how to build an exam inside a Rmd file with `# Questions` and `## Variants`.
-* folder `questions` contains an example of how to build files with questions and their items, ready to be incorporated in an exam 
+Documentação
+
+* https://jpcaveiro.github.io/rmdmoodle
+
+Pasta "banco-de-questoes"
+
+* Compor um teste baseado em questões previamente construídas.
+
+Pasta "exame-em-ficheirounico"
+
+* Exemplos de ficheiros Rmd contendo todo um teste Moodle.
+
