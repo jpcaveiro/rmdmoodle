@@ -2,5 +2,6 @@
 .Rhistory
 .RData
 .Rbuildignore
+.lintr
 build
 exame-de-hoje.Rmd
