@@ -1,7 +1,7 @@
 # rmdmoodle
 
+Tornar a criação de exercícios mais amiga do autor.
 
-* [página de documentação](https://jpcaveiro.github.io/rmdmoodle/)
-* gitpages https://quarto.org/docs/publishing/github-pages.html
+[página de documentação](https://jpcaveiro.github.io/rmdmoodle/)
 
 
