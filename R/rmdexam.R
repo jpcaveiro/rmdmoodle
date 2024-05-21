@@ -13,6 +13,7 @@
 DBG_rmdexam <- F
 
 
+library(yaml) #use yaml::as.yaml
 
 # functions ====
 
@@ -382,10 +383,10 @@ parse_exrmdfile <- function(rmdfilename, varcount = NULL, number = 1) { # nolint
         line_end_alinea <- curr_lineno - 1
 
         #Debug
-        if (!exists("line_start_alinea")) {
-          cat("curr_state é S_ALINEAS. Linha atual é:", curr_lineno, "\n")
-          stop()
-        }
+        #if (!exists("line_start_alinea")) {
+        #  cat("DEBUG: curr_state is S_ALINEAS. Linha atual é:", curr_lineno, "\n")
+        #  stop()
+        #}
 
         #store previous alínea
         no_of_alineas <- no_of_alineas + 1
@@ -887,7 +888,7 @@ rmdexam <- function(rmdfilename, ...) {
     # Tells user to stop using c(...) notation
     # and use What is the argument type?
     if (class(arg) == "character") {
-      stop(paste0("Stop using c(...) and use pq(...) or rq(...)."))
+      stop(paste0("Do not use `c(...)`. Use pq(...) or rq(...), for [p]lanned [q]uestion or [r]andom [q]uestion types."))
     }
 
     # Concat all parameters to be used
@@ -915,17 +916,26 @@ rmdexam <- function(rmdfilename, ...) {
                          rmdfilename,
                          paste(argslist, collapse = ", \n"))
 
-  paramsstr <- as.yaml(list(params = all_params), indent = 4, indent.mapping.sequence = TRUE)
+  if (length(all_params)>0) {
+    paramsstr <- as.yaml(list(params = all_params), indent = 4, indent.mapping.sequence = TRUE)
 
-  head_txt <- paste0(
-    "---\n",
-    "title: \"", rmdfilename, "\"\n",
-    "author: \"User '", Sys.info()["user"], "' compilou este exame\"\n",
-    "date: \"", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\"\n",
-    "output: html_document\n",
-    paramsstr,
-    "---\n\n\n")
-
+    head_txt <- paste0(
+      "---\n",
+      "title: \"", rmdfilename, "\"\n",
+      "author: \"User '", Sys.info()["user"], "' compilou este exame\"\n",
+      "date: \"", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\"\n",
+      "output: html_document\n",
+      paramsstr,
+      "---\n\n\n")
+  } else{
+    head_txt <- paste0(
+      "---\n",
+      "title: \"", rmdfilename, "\"\n",
+      "author: \"User '", Sys.info()["user"], "' compilou este exame\"\n",
+      "date: \"", format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "\"\n",
+      "output: html_document\n",
+      "---\n\n\n")
+  }
 
   #TODO: remove this commented lines
   # "**Configuração do que se vê no HTML de verificação**\n",
@@ -966,16 +976,16 @@ rmdexam <- function(rmdfilename, ...) {
   close(con)
 
 
-  cat("File \"", rmdfilename, "\" is produced with an exam. It could be useful to search for eventual problems or change for needs.\n", sep="")
-  cat("In case of changes, please run `xmlmoodle(\"", rmdfilename, "\")` to produce the xml file to be exported.\n\n\n",sep="")
-
   rmdfilename_no_ext <- substr(rmdfilename, 1, nchar(rmdfilename) - 4)
 
   xmlmoodle(rmdfilename_no_ext, params = NULL) #all_params)
 
-  cat("\nPlease, import file ", rmdfilename_no_ext, ".xml into moodle.\n\n", sep = "")
+  cat(paste0(
+    "File \"", rmdfilename, "\" contains a Moodle exam. ",
+    "Eventually, it can be reviewed and then with `xmlmoodle(\"", rmdfilename, "\")`",
+    "a new Moodle XML file is produced to be imported.\n\n"
+  ))
 
-  return(rmdfilename)
 }
 
 

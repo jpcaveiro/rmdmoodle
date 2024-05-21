@@ -1,13 +1,5 @@
 
 
-#' internationalization
-#' `xgettext --language='python' --from-code='UTF-8' --keyword=_ -o pkg.pot *.R`
-#' pthon porque usa "#" para comentários ainda que isso não seja
-#' suficiente
-#' * https://www.gnu.org/software/gettext/manual/index.html
-#'
-
-
 # How it works ====
 
 #' Algoritmo geral:
@@ -455,14 +447,14 @@ question_with_variants <- function(question_title, question_html, main_question_
         total_variants <- total_variants + 1
         variants[[total_variants]] <- essay(variant_title, variant_contents)
       } else {
-        warning(paste("Tipo de questão ('question_type') não existente.\nDeve ser: MULTICHOICE, NUMERICAL, CLOZE, ESSAY. Rever a questão:", question_title, "\n"))
+        warning(paste("Question type ('question_type') not existing.\nMust be: MULTICHOICE, NUMERICAL, CLOZE, ESSAY. Review question:", question_title, "\n"))
       }
     }
     #else: ignora (para já) e nada diz ao autor!
   }
 
   if (total_variants < 1) {
-    stop("Esperada uma questão com variantes: uma secção definida por '##' deve ter a sintaxe '## variante <and some text>'.\nOu este ficheiro Rmd não é um teste isolado mas é parte de uma base de questões (formato rmdmoodle).")
+    stop("A question with variants is expected: a section defined by '##' must have the syntax '## variant <and some text>'.\nOr this Rmd file is not an isolated test but is part of a question base (rmdmoodle format).")
   }
 
   return(list(question_title = question_title,
@@ -478,7 +470,9 @@ numerical <- function(variant_title, variant_contents) {
   enunciado <- paste0(variant_contents[2:(n - 2)], collapse = "\n")
 
   # resposta - deve ocorrer sempre na posição n-1
-  if (is_level(variant_contents[n - 1], "section level3", "respostas")) {
+  if (is_level(variant_contents[n - 1], "section level3", "respostas") ||
+      is_level(variant_contents[n - 1], "section level3", "answers")
+      ) {
 
     #Formato a usar no Rmd:
     #
@@ -520,7 +514,7 @@ numerical <- function(variant_title, variant_contents) {
     #RESPOSTAS <<- respostas
 
   } else {
-    stop("Numa questão 'NUMERICAL' tem que existir a secção '### respostas' e a secção '### feedback' em cada variante.\nApós a modificação tem que fazer 'knitr'.") # nolint
+    stop("In a 'NUMERICAL' question, there must be a '### answers' section and a '### feedback' section in each variant.\nAfter modifying, you have to 'knitr'.") # nolint
   }
 
   # feedback global - deve ocorrer sempre na posição n
@@ -535,7 +529,7 @@ numerical <- function(variant_title, variant_contents) {
       feedbackglobal <- paste0(h[2:nh], collapse = "\n")
     }
   } else {
-    stop("Numa questão 'NUMERICAL' tem que existir a secção '### respostas' e a secção '### feedback' em cada variante.\nApós a modificação tem que fazer 'knitr'.")
+    stop("In a 'NUMERICAL' question, there must be a '### answers' section and a '### feedback' section in each variant.\nAfter modifying, you have to 'knitr'.")
   }
 
 
@@ -579,7 +573,8 @@ multichoice <- function(variant_title, variant_contents) {
     ulist_items <- html_children(r[2])
     for (u in ulist_items) {
       if (grepl("start=", u)) {
-        warning("In ## respostas, please avoid using '* 9.' (with .) because a bug. Use only '* 9' without a dot.")
+        warning("In ## answers, please avoid using '* 9.' (with an explicit dot '.'). Use only '* 9' without a dot.")
+        #TODO: improve this
       }
     }
 
@@ -592,7 +587,7 @@ multichoice <- function(variant_title, variant_contents) {
     #RESPOSTAS <<- respostas
 
   } else {
-    stop("Numa questão 'MULTICHOICE' tem que existir a secção '### respostas' e a secção '### feedback' em cada variante.\nApós a modificação tem que fazer 'knitr'.")
+    stop("In a 'MULTICHOICE' question, there must be a '### answers' section and a '### feedback' section in each variant.\nAfter modifying, you have to 'knitr'.")
   }
 
   # feedback - deve ocorrer sempre na posição n
@@ -602,13 +597,13 @@ multichoice <- function(variant_title, variant_contents) {
     nh <- length(h)
     if (nh == 1) {
       feedbackglobal <- "\n\n\n"
-      cat("    Variante 'MULTICHOICE' com feedback vazio.\n")
+      cat("    Variant 'MULTICHOICE' with empty feedback.\n")
     } else {
       feedbackglobal <- paste0(h[2:nh], collapse = "\n")
     }
 
   } else {
-    stop("Numa questão 'MULTICHOICE' tem que existir a secção '### respostas' e a secção '### feedback' em cada variante.\nApós a modificação tem que fazer 'knitr'.")
+    stop("In a 'MULTICHOICE' question, there must be a '### answers' section and a '### feedback' section in each variant.\nAfter modifying, you have to do 'knitr'.")
   }
 
 
@@ -649,7 +644,7 @@ cloze <- function(variant_title, variant_contents) {
     if (nh == 1) {
       feedbackglobal <- "\n\n\n"
       if (pkg_env$WARNINGS.BOOLEAN) {
-        cat("    Há uma variante 'CLOZE' com feedback vazio.\n")
+        cat("    There is a 'CLOZE' variant with empty feedback.\n")
       }
     } else {
       feedbackglobal <- paste0(h[2:nh], collapse = "\n")
@@ -687,7 +682,7 @@ essay <- function(variant_title, variant_contents) {
       feedbackglobal <- paste(h[2:nh], collapse = "\n")
     }
   } else {
-    stop("Numa questão questão 'ESSAY' tem que existir a secção '### feedback' em cada variante (ainda que possa estar vazia).\nApós a modificação tem que fazer 'knitr'.")
+    stop("In an 'ESSAY' question there must be a '### feedback' section in each variant (even though it may be empty).\nAfter the modification you have to do 'knitr'.")
   }
 
 
@@ -1022,15 +1017,15 @@ html_to_json_protected <- function(html_code) {
   out <- tryCatch(
     rjson::fromJSON(txt3),  #para várias linhas de código incluir {...linhas...}
     error = function(cond) {
-      message(paste('É preciso rever a sintaxe nesta linha:\n"', txt, "\n"))
-      message('Espera-se a notação assim:\n   "palavrachave": 123.456\n   "palavrachave": "texto entre aspas"\n   apenas uma "," entre palavrashcave.\n')
-      message('Cada linha deve ser igualzinha a:\n* "answer": 100.1, "tol": 0.001, "fraction": 100, "feedback" : "Aqui um alonga resposta 1"\n')
-      message("\nA mensagem de erro do código R pode ajudar:")
+      message(paste('You need to revise the syntax in this line:\n"', txt, "\n"))
+      message('The notation is expected to look like this:\n   "palavrachave": 123.456\n   "palavrachave": "texto entre aspas"\n   apenas uma "," entre palavrashcave.\n')
+      message('Each line must be the same as:\n* "answer": 100.1, "tol": 0.001, "fraction": 100, "feedback" : "Aqui um alonga resposta 1"\n')
+      message("\nThe error message in the R code may help:")
       message(cond)
       stop()
     },
     warning = function(cond) {
-      message(paste("É preciso rever a sintaxe nesta linha:", txt))
+      message(paste("You need to revise the syntax in this line:", txt))
       message(cond)
       stop()
     }
@@ -1068,7 +1063,7 @@ html_to_json_protected <- function(html_code) {
 #' \dontrun{xmlmoodle("my_exam")}
 xmlmoodle <- function(filename_no_extension, params = NULL) {
 
-  if (grepl(".", filename_no_extension)) {
+  if (grepl("\\.", filename_no_extension)) {
     filename_no_extension <- tools::file_path_sans_ext(filename_no_extension)
   }
 
@@ -1094,17 +1089,22 @@ xmlmoodle <- function(filename_no_extension, params = NULL) {
       # 'tryCatch()' will return the last evaluated expression
       # in case the "try" part was completed successfully
 
-      cat(paste0("\nProduzindo ", filename_no_extension, ".html\n\n"))
+      cat(paste0("\nMaking ", filename_no_extension, ".html\n\n"))
       if (is.null(params)) {
+
         #debug
-        cat("rmarkdown::render sem params\n")
-        rm(params)
+        #cat("rmarkdown::render without params\n")
+
         rmarkdown::render(paste0(filename_no_extension, ".Rmd"),
                           output_format = "html_document",
                           quiet = TRUE)
       } else {
+
         #debug
-        cat("rmarkdown::render COM params\n")
+        #cat("rmarkdown::render WITH params\n")
+
+        rm(params)
+        cat(paste0("File ", filename_no_extension, ".Rmd has params.\n"))
         rmarkdown::render(paste0(filename_no_extension, ".Rmd"),
                           params = params,
                           output_format = "html_document",
@@ -1129,7 +1129,10 @@ xmlmoodle <- function(filename_no_extension, params = NULL) {
         message("\nAvoid using code chunk labels. Code chunks from several files could have same name and `knitr()` does not accept two equal named code chunks. Find information about the code chunk in the next message.\n")
       } else if (grepl("not found", cond)) {
         #message("\nAn used variable has no declaration. Probably the code declared in an item, that contains that variable, must be relocated to '# code' where common code resides.\n")
-        message("\nAn used variable was not found. Probably some code must be relocated to '# code' where common code resides.\n")
+        print(cond)
+        message(paste0("\nA variable was not found knitting ", filename_no_extension, ".Rmd.\n",
+                       "If `rmdexam(...)` is being used, find in which question the variable is declared and move that declaration code to '# code' section.\n"
+                       ))
       } else if (grepl("cannot open the connection", cond)) {
         stop(paste0("\nRun knitr on file '", filename_no_extension, ".Rmd' and check for missing files (probably data files).\n"))
       } else {
@@ -1149,7 +1152,7 @@ xmlmoodle <- function(filename_no_extension, params = NULL) {
       #message(cond)
       #Debug
       if (grepl("fetch resource", cond)) {
-        cat(paste0("Copiar a imagem para a pasta de ", filename_no_extension, ".Rmd\n"))
+        cat(paste0("Copy the image to ", filename_no_extension, ".Rmd\n"))
       } else {
         print(class(cond))
       }
@@ -1170,7 +1173,7 @@ xmlmoodle <- function(filename_no_extension, params = NULL) {
 
 
 
-  cat(paste0("\nProduzindo ", filename_no_extension, ".xml\n\n"))
+  cat(paste0("\nMaking ", filename_no_extension, ".xml\n\n"))
 
   #Produce a list() with all questions
   q_t <- extractquestions_fromhtml(filename_no_extension)
@@ -1182,8 +1185,7 @@ xmlmoodle <- function(filename_no_extension, params = NULL) {
 
 
   cat(paste0("\n"))
-  cat(paste0("Import into Moodle: ", filename_no_extension, ".xml", "\n"))
-  #O user não quer ver o "ok"
-  #return('ok')
-  #return()
+  cat(paste0("\nPlease, import file ", filename_no_extension, ".xml into moodle.\n\n"))
+
+
 }

@@ -137,7 +137,7 @@ validate_pattern <- function(uclozetext, resultofmaybe) {
 
   # NUMERICAL options situations
   if (grepl("\\^", options, ignore.case = TRUE) && grepl("NUMERICAL", resultofmaybe$pattern, ignore.case = TRUE) ) {
-    cat(paste0("    Error: moodle does not support curly braces in numbers like 10^{2}. See '", options, "'\n"))
+    cat(paste0("    Error: moodle does not support curly braces in numbers like 10^{2}. Use `options(scipen = 999)` in code. See '", options, "' in XML moodle file.\n"))
   }
 
 
