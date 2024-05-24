@@ -398,10 +398,10 @@ question_with_variants <- function(question_title, question_html, main_question_
       #mesmo que: if (html_name(question_part)=='div' && html_attrs(question_part)[[2]] == "section level2") {
       # Se <div variante ....class = "section level2":
 
-      variant_contents <- html_children(question_part)
+      variant_contents <- rvest::html_children(question_part)
 
       #Será algo como <h2>variante 1</h2> será o 1º "filho" dentro do <div>
-      variant_title <- html_text(variant_contents[1])
+      variant_title <- rvest::html_text(variant_contents[1])
 
       # Pode ser:
       # se multichoice: enunciado da variante nas células 2 a n-2; a célula n-1 tem a resposta <ul> e n tem o feeback
@@ -479,8 +479,8 @@ numerical <- function(variant_title, variant_contents) {
     # * "answer": 100.1, "tol": 0.001, "fraction": 100, "feedback" : "Aqui uma longa frase 1."
     # * "answer": 100.1, "tol": 0.001, "fraction": 100, "feedback" : "Aqui uma longa frase 2."
 
-    r <- html_children(variant_contents[n - 1])
-    ulist_items <- html_children(r[2])
+    r <- rvest::html_children(variant_contents[n - 1])
+    ulist_items <- rvest::html_children(r[2])
 
     # Debug
     # nr <- length(ulist_items)
@@ -520,7 +520,7 @@ numerical <- function(variant_title, variant_contents) {
   # feedback global - deve ocorrer sempre na posição n
   if (is_level(variant_contents[n], "section level3", "feedback")) {
     #coleciona todo o feedback
-    h <- html_children(variant_contents[n])
+    h <- rvest::html_children(variant_contents[n])
     nh <- length(h)
     if (nh == 1) {
       feedbackglobal <- "\n\n\n"
@@ -569,8 +569,8 @@ multichoice <- function(variant_title, variant_contents) {
   # resposta - deve ocorrer sempre na posição n-1
   if (is_level(variant_contents[n - 1], "section level3", "respostas")) {
 
-    r <- html_children(variant_contents[n - 1])
-    ulist_items <- html_children(r[2])
+    r <- rvest::html_children(variant_contents[n - 1])
+    ulist_items <- rvest::html_children(r[2])
     for (u in ulist_items) {
       if (grepl("start=", u)) {
         warning("In ## answers, please avoid using '* 9.' (with an explicit dot '.'). Use only '* 9' without a dot.")
@@ -593,7 +593,7 @@ multichoice <- function(variant_title, variant_contents) {
   # feedback - deve ocorrer sempre na posição n
   if (is_level(variant_contents[n], "section level3", "feedback")) {
     #coleciona todo o feedback
-    h <- html_children(variant_contents[n])
+    h <- rvest::html_children(variant_contents[n])
     nh <- length(h)
     if (nh == 1) {
       feedbackglobal <- "\n\n\n"
@@ -639,7 +639,7 @@ cloze <- function(variant_title, variant_contents) {
   # feedback global - deve ocorrer sempre na posição n
   if (is_level(variant_contents[n], "section level3", "feedback")) {
     #coleciona todo o feedback
-    h <- html_children(variant_contents[n])
+    h <- rvest::html_children(variant_contents[n])
     nh <- length(h)
     if (nh == 1) {
       feedbackglobal <- "\n\n\n"
@@ -673,7 +673,7 @@ essay <- function(variant_title, variant_contents) {
   # feedback global - deve ocorrer sempre na posição n
   if (is_level(variant_contents[n], "section level3", "feedback")) {
     #coleciona todo o feedback
-    h <- html_children(variant_contents[n])
+    h <- rvest::html_children(variant_contents[n])
     nh <- length(h)
     if (nh == 1) {
       feedbackglobal <- "\n\n\n"
@@ -904,12 +904,12 @@ extractquestions_fromhtml <- function(filename_no_extension) {
   # etc
   first_question_title <- rvest::html_text(all_h1_elements[2])
   start <- 1
-  text_on_h1 <- rvest::html_text(html_children(conteudo)[start])
+  text_on_h1 <- rvest::html_text(rvest::html_children(conteudo)[start])
   while (grepl(first_question_title,
                text_on_h1,
                ignore.case = TRUE) == FALSE) {
     start <- start + 1
-    text_on_h1 <- rvest::html_text(html_children(conteudo)[start])
+    text_on_h1 <- rvest::html_text(rvest::html_children(conteudo)[start])
   }
 
 
@@ -941,7 +941,7 @@ extractquestions_fromhtml <- function(filename_no_extension) {
       main_question_type <- "indefinido" #deixa-se para as variantes
     }
 
-    question_div_h1 <- html_children(html_children(conteudo)[start + i - 2])
+    question_div_h1 <- rvest::html_children(rvest::html_children(conteudo)[start + i - 2])
     total_questions <- total_questions + 1
     all_questions[[total_questions]] <-
      question_with_variants(question_title, question_div_h1, main_question_type)
