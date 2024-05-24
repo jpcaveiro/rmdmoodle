@@ -79,8 +79,8 @@ get_varcount <- function(all_lines, rmdfilename) {
   }
 
   if (!varcount) {
-    stop(paste0("Please add something like VARCOUNT <- 6, or other number of variants,\nto the '# code' section in file:\n",
-                rmdfilename,"\n"))
+    stop(paste0("If using `pq()`, add VARCOUNT <- 6 (or other number of variants) to the '# code' section in file:\n",
+                rmdfilename,"\nOtherwise use `rq(number=6,...)` (or other number of variants) when building the exam.\n"))
   }
 
   return(varcount)
