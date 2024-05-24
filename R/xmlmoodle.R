@@ -44,10 +44,10 @@
 # library(rmarkdown)  rmarkdown::render
 
 
-library(whisker)  # whisker.render
-library(rvest) # imports read_html, html_children, html_text
-library(stringr)
-library(xml2)
+#library(whisker)  # whisker.render
+#library(rvest) # imports read_html, html_children, html_text
+#library(stringr)
+#library(xml2)
 
 
 

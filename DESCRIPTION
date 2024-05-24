@@ -13,4 +13,8 @@ RoxygenNote: 7.3.1
 Imports:
     rvest,
     rjson,
-    stringdist
+    rmarkdown,
+    stringdist,
+    whisker,
+    xml2,
+    yaml
