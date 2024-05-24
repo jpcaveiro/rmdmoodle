@@ -871,6 +871,8 @@ saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions) {
 #' @return - a list with "moodle questions"
 extractquestions_fromhtml <- function(filename_no_extension) {
 
+  library(rvest)
+
   filename <- paste0(filename_no_extension, ".html")
 
   #read_html is a function from rvest library
