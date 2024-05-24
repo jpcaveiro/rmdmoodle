@@ -58,8 +58,8 @@ varcount_line <- function(text_line) {
 #' Search for a pattern like "VARCOUNT <- 6"
 #' in all lines (already read from rmdfile)
 #'
-#' @param all_lines
-#' @param rmdfilename
+#' @param all_lines - vector of lines
+#' @param rmdfilename - just to inform user of the filename
 #'
 #' @return integer (varcount value)
 get_varcount <- function(all_lines, rmdfilename) {

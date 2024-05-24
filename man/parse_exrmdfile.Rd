@@ -4,12 +4,14 @@
 \alias{parse_exrmdfile}
 \title{Parse an Rmd file containing an exercise}
 \usage{
-parse_exrmdfile(rmdfilename, varcount = NULL)
+parse_exrmdfile(rmdfilename, varcount = NULL, number = 1)
 }
 \arguments{
 \item{rmdfilename}{R Markdown file name.}
 
 \item{varcount}{if null it extracts varcount from file in rmdfilename}
+
+\item{number}{minimum 1}
 }
 \value{
 list(ex_title, ex_type, code, enredo, alineas, alineas_title)

@@ -4,10 +4,12 @@
 \alias{xmlmoodle}
 \title{Exam in R Markdown to XML Moodle exam.}
 \usage{
-xmlmoodle(filename_no_extension)
+xmlmoodle(filename_no_extension, params = NULL)
 }
 \arguments{
-\item{filename_no_extension}{}
+\item{filename_no_extension}{file where an exam in Rmd is stored}
+
+\item{params}{list with same yaml params at top of R Markdown file}
 }
 \value{
 A xml file to be imported in moodle.

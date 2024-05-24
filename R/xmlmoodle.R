@@ -2,26 +2,26 @@
 
 # How it works ====
 
-#' Algoritmo geral:
-#'
-#' 1. Ler via read_html()
-#' 2. Lê o html e coloca numa estrutura "xml_document"
-#'
-#'
-#' References:
-#' 1. templating https://cran.r-project.org/web/packages/whisker/whisker.pdf
-#' 2. json: install.packages("rjson")
+# Algoritmo geral:
+#
+# 1. Ler via read_html()
+# 2. Lê o html e coloca numa estrutura "xml_document"
+#
+#
+# References:
+# 1. templating https://cran.r-project.org/web/packages/whisker/whisker.pdf
+# 2. json: install.packages("rjson")
 
 
 
-#' se multichoice: enunciado da variante nas células 2 a n-2;
-#'    a célula n-1 tem a resposta <ul> e n tem o feeback
-#' se numerical: enunciado da variante nas células 2 a n-2;
-#'    a célula n-1 tem a resposta <ul> com opções numericas e n tem o feeback
-#' se essay: enunciado da variante nas células 2 a n-1;
-#'    a célula  n tem o feeback
-#' se cloze: enunciado da variante nas células 2 a n-1;
-#'    a célula  n tem o feeback
+# se multichoice: enunciado da variante nas células 2 a n-2;
+#    a célula n-1 tem a resposta <ul> e n tem o feeback
+# se numerical: enunciado da variante nas células 2 a n-2;
+#    a célula n-1 tem a resposta <ul> com opções numericas e n tem o feeback
+# se essay: enunciado da variante nas células 2 a n-1;
+#    a célula  n tem o feeback
+# se cloze: enunciado da variante nas células 2 a n-1;
+#    a célula  n tem o feeback
 
 # if (question_type == "MULTICHOICE") {
 #     question_tuple <- moodle_question_multichoice(question_name, partes_da_questao)
@@ -1052,7 +1052,7 @@ html_to_json_protected <- function(html_code) {
 #' to xml moodle file to be imported for the "exam" tool
 #' in moodle.
 #'
-#' @param filename_no_extension
+#' @param filename_no_extension file where an exam in Rmd is stored
 #' @param params list with same yaml params at top of R Markdown file
 #'
 #' @return A xml file to be imported in moodle.

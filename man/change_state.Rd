@@ -2,9 +2,7 @@
 % Please edit documentation in R/rmdexam.R
 \name{change_state}
 \alias{change_state}
-\title{Parser depends on states. This
-function prints the next state if
-it changes.}
+\title{Parser depends on states.}
 \usage{
 change_state(to, debug_str)
 }
@@ -17,7 +15,5 @@ change_state(to, debug_str)
 integer (a state is an integer)
 }
 \description{
-Parser depends on states. This
-function prints the next state if
-it changes.
+This function prints the next state if it changes.
 }

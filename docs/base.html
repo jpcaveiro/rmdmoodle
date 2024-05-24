@@ -170,10 +170,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#composição-de-uma-questão" id="toc-composição-de-uma-questão" class="nav-link active" data-scroll-target="#composição-de-uma-questão">Composição de uma questão</a>
-  <ul class="collapse">
+  <li><a href="#uma-questão-planeada" id="toc-uma-questão-planeada" class="nav-link active" data-scroll-target="#uma-questão-planeada">Uma questão planeada</a></li>
+  <li><a href="#uma-questão-aleatória" id="toc-uma-questão-aleatória" class="nav-link" data-scroll-target="#uma-questão-aleatória">Uma questão aleatória</a></li>
+  <li><a href="#organização" id="toc-organização" class="nav-link" data-scroll-target="#organização">Organização</a></li>
   <li><a href="#criar-um-teste" id="toc-criar-um-teste" class="nav-link" data-scroll-target="#criar-um-teste">Criar um teste</a></li>
-  </ul></li>
   </ul>
 </nav>
     </div>
@@ -212,8 +212,216 @@ Ideia
 <p>Usufruir de uma base de questões, com alíneas, para criar um novo teste, escolhendo questões e que alíneas vão estar no teste.</p>
 </div>
 </div>
-<section id="composição-de-uma-questão" class="level1">
-<h1>Composição de uma questão</h1>
+<p>Na montagem do teste são escolhidas as questões e que alíneas dentro dessas questões vão fazer parte do teste.</p>
+<p>Há duas maneiras de pensar na aleatoriedade:</p>
+<ul>
+<li>questões planeadas (<code>pq()</code>)</li>
+<li>questões aleatórias (<code>rq()</code>)</li>
+</ul>
+<section id="uma-questão-planeada" class="level1">
+<h1>Uma questão planeada</h1>
+<p>Numa “questão planeada” todas as variantes são pré-calculadas, são pensadas no momento de criação do teste e, como tal, em número finito sendo este sempre indicado na variável <code>VARCOUNT &lt;- 6</code> (neste exemplo, podem ser produzidas 6 variantes). Uma questão planeada obriga ao uso de listas ou vetores onde se armazenam valores e textos necessários a cada variante. Por hábito, usa-se esta variável <code>VAR &lt;- 1</code> para especificar qual é a variante a ser produzida quando se faz o “knitr”.</p>
+<p>O R Mardkown seguinte é um modelo de questão planeada.</p>
+<pre><code>---
+title: "c1-descritiva-planeada"
+author: "rmdmoodle"
+date: "2024/05/21"
+output: html_document
+---
+
+Objetivo de avaliação: Capítulo 1 - Estatística Descritiva
+
+Questão de variantes planeadas: predefinem-se
+todos os casos a serem sorteados pelos estudantes 
+no momento do teste.
+
+
+# código
+
+
+"""{r echo=FALSE, results=FALSE}
+
+# Obrigatório no método de variantes planeadas
+VAR         = 1  # Faz knitr com a variante escolhida em VAR
+VARCOUNT    = 3  # Total de variantes
+
+# Avoid scientific notation in all document
+options(scipen = 999)
+
+# No geral, não mostra "code chunks"
+knitr::opts_chunk$set(echo = FALSE) 
+
+# Fixar as variantes produzidas
+set.seed(11)
+
+# Dimensão das amostras (quantidade em VARCOUNT)
+dimX &lt;- c(4, 5, 6)
+
+# Inventa amostras (quantidade em VARCOUNT)
+amostra &lt;- list(
+  round(rnorm(dimX[1], 8, 2),1),
+  round(rnorm(dimX[2], 10, 2),1),
+  round(rnorm(dimX[3], 12, 2),1)
+)
+
+
+# Tabelas e matrizes bem expostas no Moodle
+library(kableExtra)
+
+
+# Produz uma "R matrix" para ficar bem no Moodle
+create_matrix &lt;- function(v) {
+  # "v" é a variante 1, 2, 3, 
+  
+  matriz_linha &lt;- matrix(amostra[[v]], ncol = dimX[v])
+  
+  rownames(matriz_linha) &lt;- "volume (em m3)"
+  
+  # Não é necessário
+  #colnames(matriz_linha) &lt;- as.character(seq(1,dimX[v]))
+  
+  return(matriz_linha)
+}
+"""
+
+
+
+# enredo 
+
+
+Considere a seguinte variável aleatória:
+
+**X** : Volume (em \(m^3\)) ocupado por uma acácia com 50cm de altura
+
+e a amostra
+
+"""{r echo=F}
+create_matrix(VAR) %&gt;%
+  kbl() %&gt;%
+  kable_styling() %&gt;%
+  kable_paper(full_width = FALSE)
+"""
+
+
+# Pedir a média (Variante `r VAR`) - "média"
+
+A média amostra é: {:NUMERICAL:=`r mean(amostra[[VAR]])`:0.1} (1 casa decimal)
+
+
+
+# Pedir o desvio-padrão (Variante `r VAR`) - "desvio-padrão"
+
+O desvio padrão corrigido é: {:NUMERICAL:=`r sd(amostra[[VAR]])`:0.1} (1 casa decimal)
+
+
+
+# Pedir a dimensão da amostra  (Variante `r VAR`) - "dimensão"
+
+A dimnensão da amostra é: {:NUMERICAL:=`r dimX[[VAR]]`:0}
+
+
+# "conceito1"
+
+A média amostral é uma medida de {:MULTICHOICE_S:=localização central\~%-25%dispersão central\~%-25%localização relativa\~%-25%dispersão relativa} (desconta 25% do valor se errar).
+</code></pre>
+</section>
+<section id="uma-questão-aleatória" class="level1">
+<h1>Uma questão aleatória</h1>
+<p>Numa “questão aleatória” não ocorre pré-calculo. Cada nova variante pedida, em número ilimitado, tem um gerador aleatório a produzir valores.</p>
+<p>O R Mardkown seguinte é um modelo de questão aleatória.</p>
+<pre><code>---
+title: "c1-descritiva-aleatoria"
+author: "rmdmoodle"
+date: "2024/05/21"
+output: html_document
+---
+
+Objetivo de avaliação: Capítulo 1 - Estatística Descritiva
+
+Questão de variantes aleatórias.
+
+
+# código
+
+
+"""{r echo=FALSE, results=FALSE}
+
+# Avoid scientific notation in all document
+options(scipen = 999)
+
+# No geral, não mostra "code chunks"
+knitr::opts_chunk$set(echo = FALSE) 
+
+# Fixar as variantes produzidas
+# em número infinito.
+set.seed(11)
+
+# Dimensão das amostras (quantidade em VARCOUNT)
+dimX &lt;- sample(x = c(4, 5, 6), size = 1)
+
+# Inventa amostras (quantidade em VARCOUNT)
+amostra &lt;- round(rnorm(dimX, 8, 2), 1)
+
+# Tabelas e matrizes bem expostas no Moodle
+library(kableExtra)
+
+# Produz uma "R matrix" para ficar bem no Moodle
+create_matrix &lt;- function() {
+
+  matriz_linha &lt;- matrix(amostra, ncol = dimX)
+  
+  rownames(matriz_linha) &lt;- "volume (em m3)"
+  
+  # Não é necessário
+  #colnames(matriz_linha) &lt;- as.character(seq(1,dimX))
+  
+  return(matriz_linha)
+}
+"""
+
+
+
+# enredo 
+
+
+Considere a seguinte variável aleatória:
+
+**X** : Volume (em \(m^3\)) ocupado por uma acácia com 50cm de altura
+
+e a amostra
+
+"""{r echo=F}
+create_matrix() %&gt;%
+  kbl() %&gt;%
+  kable_styling() %&gt;%
+  kable_paper(full_width = FALSE)
+"""
+
+
+# Pedir a média - "média"
+
+A média amostra é: {:NUMERICAL:=`r mean(amostra)`:0.1} (1 casa decimal)
+
+
+
+# Pedir o desvio-padrão - "desvio-padrão"
+
+O desvio padrão corrigido é: {:NUMERICAL:=`r sd(amostra)`:0.1} (1 casa decimal)
+
+
+
+# Pedir a dimensão da amostra  - "dimensão"
+
+A dimnensão da amostra é: {:NUMERICAL:=`r dimX`:0}
+
+
+# "conceito1"
+
+A média amostral é uma medida de {:MULTICHOICE_S:=localização central\~%-25%dispersão central\~%-25%localização relativa\~%-25%dispersão relativa} (desconta 25% do valor se errar).
+</code></pre>
+</section>
+<section id="organização" class="level1">
+<h1>Organização</h1>
 <p>É frequente uma questão ser composta de um enredo e alíneas sobre esse enredo. Esta base de questões segue esse esquema com uma condição: as alíneas serem independentes, ou de algum modo, grupos de alíneas serem independentes entre si.</p>
 <p>A estrutura de ficheiros, que segue a ideia da imagem, baseia-se numa pasta raiz e subpastas com questões por capítulos:</p>
 <p><img src="img/questions-folder-structure.png" class="img-fluid"></p>
@@ -224,27 +432,27 @@ Ideia
 </ol>
 <p><img src="img/questions-with-items.png" class="img-fluid"></p>
 <p>Pode ser usado um sistema de controlo de versões (por exemplo, github) tornando a gestão acessível aos autores.</p>
-<section id="criar-um-teste" class="level2">
-<h2 class="anchored" data-anchor-id="criar-um-teste">Criar um teste</h2>
+</section>
+<section id="criar-um-teste" class="level1">
+<h1>Criar um teste</h1>
 <p>Num pasta de testes proceder assim:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("rmdmoodle")</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmdmoodle)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Indica onde está a base de questões com alíneas</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set_exercise_root</span>( <span class="st">"~/banco_de_questoes"</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an exam from exercises.</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rmdexam</span>(<span class="st">"exame-para-amanha.Rmd"</span>,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pq</span>(<span class="st">"cap3/c3-estimativa.Rmd"</span>, <span class="st">"alinea01"</span>, <span class="st">"alinea04"</span>),</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pq</span>(<span class="st">"cap4/c4-anova-1fator-com-dados.Rmd"</span>, <span class="st">"id01"</span>, <span class="st">"concept01"</span>) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("rmdmoodle")</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmdmoodle)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Indica onde está a base de questões com alíneas</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set_exercise_root</span>( <span class="st">"~/banco_de_questoes"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an exam from exercises.</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rmdexam</span>(<span class="st">"exame-para-amanha.Rmd"</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pq</span>(<span class="st">"cap3/c3-estimativa.Rmd"</span>, <span class="st">"alinea01"</span>, <span class="st">"alinea04"</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pq</span>(<span class="st">"cap4/c4-anova-1fator-com-dados.Rmd"</span>, <span class="st">"id01"</span>, <span class="st">"concept01"</span>) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Neste código o novo teste, desigando por <code>exame-de-amanha.Rmd</code>, contém duas questões. Uma sobre estimativa e outra sobre anova, e respectivas alíneas selecionadas.</p>
 <ul>
 <li><code>pq(...)</code> designa “planned question” (ver )</li>
 </ul>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

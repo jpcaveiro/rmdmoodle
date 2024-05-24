@@ -28,12 +28,7 @@ the xml file. Importing to moodle has its own
                c("cap2/c2-normalprob.Rmd","prob-less", "prob-greater", "prob-between"))}
 Remove 6 from rmdexam(6, "2022-2023-exame.Rmd",...)
 TODO: maybe remove after all testing on new exams.
-What is the argument type?
-if it is a character then
-it could came from execution of functions like:
-1. `planned_q("c3-zinterval.Rmd", "ic01","interp01")`, or from
-2. `random_q(seed = 10, varcount = 90, "c3-zinterval.Rmd", "ic01","interp01")`
-Join every question into a big string
+"arg" is like list(rmdtext="...", params=...)
 Reproduce the instruction that
 originates the exam for later
 reproducibility.

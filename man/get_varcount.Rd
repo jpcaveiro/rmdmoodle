@@ -5,10 +5,16 @@
 \title{Search for a pattern like "VARCOUNT <- 6"
 in all lines (already read from rmdfile)}
 \usage{
-get_varcount(all_lines)
+get_varcount(all_lines, rmdfilename)
 }
 \arguments{
-\item{all_lines}{}
+\item{all_lines}{\itemize{
+\item vector of lines
+}}
+
+\item{rmdfilename}{\itemize{
+\item just to inform user of the filename
+}}
 }
 \value{
 integer (varcount value)
