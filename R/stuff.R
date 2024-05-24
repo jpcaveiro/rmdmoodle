@@ -20,6 +20,7 @@ pkg_env$WARNINGS.BOOLEAN <- FALSE
 #' @param pathstr string
 #'
 #' @return string
+#' @export
 #'
 #' @examples
 #' \dontrun{set_exercise_root("c:/Users/name/Documents/rmdmoodle")}
