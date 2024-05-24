@@ -322,9 +322,9 @@ is_level <- function(html_part, str_level, keyword) {
   # )
   #stop()
 
-  return(html_name(html_part) == "div" &&
+  return(rvest::html_name(html_part) == "div" &&
          grepl(keyword, html_part, ignore.case = TRUE) &&
-         html_attrs(html_part)[2] == str_level)
+         rvest::html_attrs(html_part)[2] == str_level)
 
 }
 
@@ -742,7 +742,7 @@ saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions) {
 
         if (length(variant$respostas) == 4) {
           xml_str <- paste(xml_str,
-                          whisker.render(MULTICHOICE_template4, list(
+                           whisker::whisker.render(MULTICHOICE_template4, list(
                             exam_title        = exam_title,
                             question_title    = question[[1]],
                             variant_title     = variant$variant_title,
@@ -757,7 +757,7 @@ saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions) {
           )
         } else {
           xml_str <- paste(xml_str,
-                          whisker.render(MULTICHOICE_template5, list(
+                           whisker::whisker.render(MULTICHOICE_template5, list(
                             exam_title        = exam_title, # nolint
                             question_title    = question[[1]],
                             variant_title     = variant$variant_title,
@@ -784,7 +784,7 @@ saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions) {
         for(r in variant$respostas) {
           NUMERICAL_ANSWER_xml <- paste(
             NUMERICAL_ANSWER_xml,
-            whisker.render(
+            whisker::whisker.render(
               NUMERICAL_ANSWER_template,
               list(
                 FRACTION         = r$fraction,
@@ -800,7 +800,7 @@ saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions) {
         #nr <- length(variant$respostas)
 
         xml_str <- paste(xml_str,
-                         whisker.render(NUMERICAL_template, list(
+                         whisker::whisker.render(NUMERICAL_template, list(
                            exam_title        = exam_title,
                            question_title    = question[[1]],
                            variant_title     = variant$variant_title,
@@ -815,7 +815,7 @@ saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions) {
       } else if (variant$variant_type == "CLOZE") {
 
         xml_str <- paste(xml_str,
-                         whisker.render(CLOZE_template, list(
+                         whisker::whisker.render(CLOZE_template, list(
                            exam_title        = exam_title,
                            question_title    = question[[1]],
                            variant_title     = variant$variant_title,
@@ -828,7 +828,7 @@ saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions) {
       } else if (variant$variant_type == "ESSAY") {
 
         xml_str <- paste(xml_str,
-                         whisker.render(ESSAY_template, list(
+                         whisker::whisker.render(ESSAY_template, list(
                            exam_title        = exam_title,
                            question_title    = question[[1]],
                            variant_title     = variant$variant_title,
@@ -871,19 +871,17 @@ saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions) {
 #' @return - a list with "moodle questions"
 extractquestions_fromhtml <- function(filename_no_extension) {
 
-  library(rvest)
-
   filename <- paste0(filename_no_extension, ".html")
 
   #read_html is a function from rvest library
   #`html
-  html <- read_html(filename, encoding = "UTF-8")
+  html <- rvest::read_html(filename, encoding = "UTF-8")
 
   # Extracts section <body> ... </body>
-  body <- html_elements(html, "body")
+  body <- rvest::html_elements(html, "body")
 
   # Inside <body> there are sub sections "children":
-  body_children <- html_children(body)
+  body_children <- rvest::html_children(body)
 
   # TODO: melhorar a frase com exemplo
   # Só interessa o primeiro elemento dessas secções
@@ -891,8 +889,8 @@ extractquestions_fromhtml <- function(filename_no_extension) {
   conteudo <- body_children[1]
 
   # Get "title:" now in <h1> tag
-  all_h1_elements <- html_elements(conteudo, "h1")
-  exam_title <- html_text(all_h1_elements[1])
+  all_h1_elements <- rvest::html_elements(conteudo, "h1")
+  exam_title <- rvest::html_text(all_h1_elements[1])
 
   # Debug
   #cat("\n\nNome do teste/exame: ", exam_title, '\n\n')
@@ -904,14 +902,14 @@ extractquestions_fromhtml <- function(filename_no_extension) {
   # position 1 of all_h1_elements has the "title:" (originally in RMarkdown)
   # position 2 of all_h1_elements has the name of the first question
   # etc
-  first_question_title <- html_text(all_h1_elements[2])
+  first_question_title <- rvest::html_text(all_h1_elements[2])
   start <- 1
-  text_on_h1 <- html_text(html_children(conteudo)[start])
+  text_on_h1 <- rvest::html_text(html_children(conteudo)[start])
   while (grepl(first_question_title,
                text_on_h1,
                ignore.case = TRUE) == FALSE) {
     start <- start + 1
-    text_on_h1 <- html_text(html_children(conteudo)[start])
+    text_on_h1 <- rvest::html_text(html_children(conteudo)[start])
   }
 
 
@@ -919,7 +917,7 @@ extractquestions_fromhtml <- function(filename_no_extension) {
   # Only 3rd <h1> and after has questions.
   for (i in seq(2, length(all_h1_elements))) { #i=1 é o título do exame, i=2 será a primeira questão "h1"
 
-    question_title <- html_text(all_h1_elements[i])
+    question_title <- rvest::html_text(all_h1_elements[i])
 
     #debug
     #cat("----------------\n")
