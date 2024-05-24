@@ -3,5 +3,6 @@
 export(pq)
 export(rmdexam)
 export(rq)
+export(set_exercise_root)
 export(verifycloze)
 export(xmlmoodle)
