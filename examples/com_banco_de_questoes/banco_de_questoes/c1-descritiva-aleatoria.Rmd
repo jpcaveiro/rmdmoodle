@@ -1,0 +1,92 @@
+---
+title: "c1-descritiva-aleatoria"
+author: "rmdmoodle"
+date: "2024/05/21"
+output: html_document
+---
+
+Objetivo de avaliação: Capítulo 1 - Estatística Descritiva
+
+Questão de variantes aleatórias.
+
+
+# código
+
+
+```{r echo=FALSE, results=FALSE}
+
+# Avoid scientific notation in all document
+options(scipen = 999)
+
+# No geral, não mostra "code chunks"
+knitr::opts_chunk$set(echo = FALSE) 
+
+# Fixar as variantes produzidas
+# em número infinito.
+set.seed(11)
+
+# Dimensão das amostras (quantidade em VARCOUNT)
+dimX <- sample(x = c(4, 5, 6), size = 1)
+
+# Inventa amostras (quantidade em VARCOUNT)
+amostra <- round(rnorm(dimX, 8, 2), 1)
+
+# Tabelas e matrizes bem expostas no Moodle
+library(kableExtra)
+
+# Produz uma "R matrix" para ficar bem no Moodle
+create_matrix <- function() {
+
+  matriz_linha <- matrix(amostra, ncol = dimX)
+  
+  rownames(matriz_linha) <- "volume (em m3)"
+  
+  # Não é necessário
+  #colnames(matriz_linha) <- as.character(seq(1,dimX))
+  
+  return(matriz_linha)
+}
+```
+
+
+
+
+
+# enredo 
+
+
+Considere a seguinte variável aleatória:
+
+**X** : Volume (em \(m^3\)) ocupado por uma acácia com 50cm de altura
+
+e a amostra
+
+```{r echo=F}
+create_matrix() %>%
+  kbl() %>%
+  kable_styling() %>%
+  kable_paper(full_width = FALSE)
+```
+
+
+# Pedir a média - "média"
+
+A média amostra é: {:NUMERICAL:=`r mean(amostra)`:0.1} (1 casa decimal)
+
+
+
+# Pedir o desvio-padrão - "desvio-padrão"
+
+O desvio padrão corrigido é: {:NUMERICAL:=`r sd(amostra)`:0.1} (1 casa decimal)
+
+
+
+# Pedir a dimensão da amostra  - "dimensão"
+
+A dimnensão da amostra é: {:NUMERICAL:=`r dimX`:0}
+
+
+# "conceito1"
+
+A média amostral é uma medida de {:MULTICHOICE_S:=localização central\~%-25%dispersão central\~%-25%localização relativa\~%-25%dispersão relativa} (desconta 25% do valor se errar).
+

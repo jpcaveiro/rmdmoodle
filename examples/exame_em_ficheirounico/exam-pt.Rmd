@@ -6,8 +6,25 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
+
+
+
+Para produzir a XML Moodle file, primeiro faz-se "knitr" e verifica-se se o exam está bem feito. Depois,
+
+```
+# Install from GitHub
+devtools::install_github("https://github.com/jpcaveiro/rmdmoodle", reset=TRUE)
+
+# Load functions
+library(rmdmoodle)
+
+# Build this exam
+xmlmoodle("exam-pt.Rmd")
+```
+
+Este exame tem duas "questões aleatória", cada uma com 2 variantes. Veja "Outline" no RStudio.
 
 
 

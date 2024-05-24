@@ -6,46 +6,36 @@ output: html_document
 ---
 
 
-This format, called `rmdmoodle exam`, implements the following ideas:
+To produce XML Moodle file first do knitr and check the exam. Then,
 
-* this file contains an exam
-* an exam is made by questions marked with `# Question 01` (example below)
-* each question has variants marked with `## Variant 01` (example below)
-* after each variante could be a tag `### feedback` if it is necessary to give a feedback
+```
+# Install from GitHub
+devtools::install_github("https://github.com/jpcaveiro/rmdmoodle", reset=TRUE)
 
+# Load functions
+library(rmdmoodle)
 
-
-Between the title and up until first question marked with `#`, like this note, one can write:
-
-* code shared by all Questions and their Variants
-* notes that will not appear in moodle
-* one should not start lines with `#` because its reserved to declare questions and variants
-
-
-Code example shared with all Questions and their Variants:
-```{r}
-# fix seed to debug while developing an exam
-set.seed(10)
-# set sample size
-samplesize = 10
+# Build this exam
+xmlmoodle("exam-en.Rmd")
 ```
 
-
-Next, it's the declaration of the first exam question.
-
+This exam has one "Random Question" with 3 variants. Check "Outline" button in RStudio.
 
 
-# Question 01 - Descriptive Statistics - CLOZE
+# Random Question 01 - Descriptive Statistics - CLOZE
 
-Here one can write:
+Here, after `#`, one can write:
 
 * code shared by all variants
-* notes that will no be in moodle
+* notes that will not appear in Moodle
 
-For example, this question has 3 variants.
+
+This question has 3 variants.
 
 
 ```{r}
+samplesize <- 5
+
 ages = list(
   round(rnorm(samplesize, 10,2),1),
   round(rnorm(samplesize, 20,2),1),
@@ -55,7 +45,7 @@ ages = list(
 
 
 
-## Variante  `r VAR=1 ; sprintf("%02d", VAR)`
+## Variante  `r (VAR<-1)`
 
 Consider the following sample:
 
@@ -79,7 +69,7 @@ Provide here some feedback.
 
 
 
-## Variante  `r VAR=2 ; sprintf("%02d", VAR) `
+## Variante  `r (VAR<-2)`
 
 Consider the following sample:
 
@@ -103,7 +93,7 @@ Provide here some feedback.
 
 
 
-## Variante  `r VAR=3 ; sprintf("%02d", VAR) `
+## Variante  `r (VAR<-3)`
 
 Consider the following sample:
 
