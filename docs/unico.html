@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt" xml:lang="pt"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.4.553">
@@ -87,17 +87,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
     "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
   }
 }</script>
 
@@ -116,31 +116,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <span class="navbar-title">rmdmoodle</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Procurar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Alternar de navegação" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link" href="./index.html"> 
-<span class="menu-text">Principal</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./moodle.html"> 
-<span class="menu-text">Moodle</span></a>
+<span class="menu-text">Início</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./unico.html" aria-current="page"> 
 <span class="menu-text">Teste Moodle</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./base.html"> 
-<span class="menu-text">Base de Questões</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./param.html"> 
 <span class="menu-text">Parametrização</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./base.html"> 
+<span class="menu-text">Base de Questões</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./examples.html"> 
@@ -167,7 +163,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+    <h2 id="toc-title">Nesta página</h2>
    
   <ul>
   <li><a href="#detalhes" id="toc-detalhes" class="nav-link active" data-scroll-target="#detalhes">Detalhes</a></li>
@@ -206,13 +202,13 @@ Ideia
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Num único ficheiro R Markdown define-se um exame Moodle explicitando “sacos” de questões em que cada questão aqui se chama “variante” a ser apresentada aleatoriamente ao estudante no momento do exame.</p>
+<p>Num único ficheiro R Markdown define-se um exame Moodle explicitando “Questões aleatórias” em que cada questão concreta se chama, aqui, de “variante”. Uma destas variantes é apresentada, aleatoriamente, ao estudante no momento do exame.</p>
 </div>
 </div>
 <p>Por “Teste Moodle” entende-se que há um ficheiro R Markdown (Rmd):</p>
 <ul>
 <li><p>que contém todas as questões do teste.</p></li>
-<li><p>implementa questões Moodle dos tipos: CLOZE, MULTICHOICE, ESSAY.</p></li>
+<li><p>implementa questões Moodle dos tipos: CLOZE, MULTICHOICE_S, ESSAY.</p></li>
 <li><p>cada secção <code>#</code> define uma “questão aleatória” que pode ser vista como:</p>
 <ul>
 <li>um conjunto de questões, com um prósito similar, e das quais é sorteada uma para um dado estudante no momento do exame;</li>
@@ -487,7 +483,7 @@ Consulte o Capítulo 1 - Estatística Descritiva.
 <p>Primeiro edita-se o ficheiro de nome <code>exam01.Rmd</code>, por exemplo, fazendo knitr até estar pronto.</p>
 <p>Depois produz-se o ficheiro xml para ser importado para as “Categorias” Moodle do seguinte modo:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">library</span>(rmdmoodle)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">xmlmoodle</span>(<span class="st">"exam01"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">xmlmoodle</span>(<span class="st">"exam01"</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>O resultado é este:</p>
 <pre><code>&gt; xmlmoodle("exam01")
 
@@ -584,12 +580,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // flash "checked"
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
+    button.setAttribute("title", "Copiada");
     let tooltip;
     if (window.bootstrap) {
       button.setAttribute("data-bs-toggle", "tooltip");
       button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
+      button.setAttribute("data-bs-title", "Copiada");
       tooltip = new bootstrap.Tooltip(button, 
         { trigger: "manual", 
           customClass: "code-copy-button-tooltip",

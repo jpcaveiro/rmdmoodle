@@ -4,7 +4,7 @@
     "href": "unico.html",
     "title": "Teste Moodle",
     "section": "",
-    "text": "Ideia\n\n\n\nNum único ficheiro R Markdown define-se um exame Moodle explicitando “sacos” de questões em que cada questão aqui se chama “variante” a ser apresentada aleatoriamente ao estudante no momento do exame.\nPor “Teste Moodle” entende-se que há um ficheiro R Markdown (Rmd):\nO fluxo de etapas é a seguinte:"
+    "text": "Ideia\n\n\n\nNum único ficheiro R Markdown define-se um exame Moodle explicitando “Questões aleatórias” em que cada questão concreta se chama, aqui, de “variante”. Uma destas variantes é apresentada, aleatoriamente, ao estudante no momento do exame.\nPor “Teste Moodle” entende-se que há um ficheiro R Markdown (Rmd):\nO fluxo de etapas é a seguinte:"
   },
   {
     "objectID": "unico.html#detalhes",
@@ -46,14 +46,14 @@
     "href": "param.html",
     "title": "Parametrização",
     "section": "",
-    "text": "Ideia\n\n\n\nChama-se “questão parametrizada” quando “espaços reservados” (os parâmetros) numa “questão modelo” são substituídos por valores, ou texto, formando uma questão concreta. Como exemplo: “A soma de `r a` + `r b` é?” requer valores para a e b que são os parâmetros.\nConsideram-se três estilos de parametrização:\n\nplaneadas (ou pré-calculadas) usando “code chunks”;\naleatorizadas usando “code chunks”;\nparametrização externa (sem recurso a “code chunks”).\n\n\n\nAs questões podem ser:\n\nplaneadas: é calculado um vetor (ou vários) com os valores e textos a serem usados em cada variante.\naleatorizadas.\n\n\nQuestões planeadas\nO autor usa “code chunks” para produzir valores pré-preparados para serem usados nas questões. Estes valores são armazenados em vetores, arrays, listas, ou algo que permita um acesso por índice inteiro.\nO objetivo, e vantagem principal, é que há um “controlo” de todas as situações que chegam aos estudantes num momento de avaliação.\nNeste exemplo, o autor pretende controlar a criação de 6 variantes de uma mesma questão usando 6 vetores pre definidos e visualizados para um eventual objetivo:\n# Questão sobre um Capítulo 1 - CLOZE\n\n```{r}\nset.seed(10) #controlo pelo autor\namostra &lt;- list(\n  caso1 = round(rnorm(5, 0, 3), 1),\n  caso2 = round(rnorm(5, 0, 3), 1),\n  caso3 = round(rnorm(5, 1, 3), 1),\n  caso4 = round(rnorm(5, 1, 3), 1),\n  caso5 = round(rnorm(5, 2, 3), 1),\n  caso6 = round(rnorm(5, 2, 3, 1))\n)\nmedia &lt;- lapply(amostra,mean)\n```\n\n## Variante (`r VAR&lt;- 1`)\n\nConsidere a amostra: `r amostra[[VAR]]`.\n\nA média é {:NUMERICAL:=`r media[[VAR]]:0.05} (1 casa decimal).\n\n### Feedback\n\nConsulte a matéria do Capítulo 1.\n\n\n## Variante (`r VAR&lt;- 2`)\n\nConsidere a amostra: `r amostra[[VAR]]`.\n\nA média é {:NUMERICAL:=`r media[[VAR]]:0.05} (1 casa decimal).\n\n### Feedback\n\nConsulte a matéria do Capítulo 1.\n\n\nETC, para as restantes 6 variantes\nNeste exemplo, o autor “copia e cola” cada ## Variante o que pode ser aborrecido.\nPorém, se for usado o método na secção Base de Questões, essa duplicação é gerada automaticamente.\n\n\nQuestões aleatorizadas\nNesta modalidade, os valores, ou textos, a serem guardados são produzidos sem armazenamento, e usados no momento da sua geração.\nA vantagem é que não há perda de tempo a codificar o método de armazenamento.\nVale a pena especificar um valor para a “seed”, como set.seed(10), para que as questões sejam reproduzíveis.\n# Questão sobre um Capítulo 1 - CLOZE\n\n```{r}\nset.seed(10) #controlo pelo autor\n```\n\n## Variante 1\n\n```{r}\namostra &lt;- round(rnorm(5, 0, 3), 1)\n```\n\nConsidere a amostra: `r  amostra`.\n\nA média é {:NUMERICAL:=`r mean(amostra)`:0.05} (1 casa decimal).\n\n### Feedback\n\nConsulte a matéria do Capítulo 1.\n\n\n## Variante 2\n\n```{r}\namostra &lt;- round(rnorm(5, 0, 3), 1)\n```\n\nConsidere a amostra: `r  amostra`.\n\nA média é {:NUMERICAL:=`r mean(amostra)`:0.05} (1 casa decimal).\n\n### Feedback\n\nConsulte a matéria do Capítulo 1.\n\n\nETC, copiando o número de questões desejadas para exportação para o Moodle.\nNeste exemplo, o autor “copia e cola” cada ## Variante o que pode ser aborrecido.\nPorém, se for usado o método na secção Base de Questões, essa duplicação é gerada automaticamente até um número especificado de “réplicas”.\n\n\nParametrização externa\nOs valores para os parâmetros podem ser criados com um mecanismo externo. Para a produção dos testes Moodle, tais valores podem ser colocados manualmente num ficheiro R Markdown seguindo o formato da secção Teste Moodle ou através de um mecanismo de templating para substituição programática."
+    "text": "Ideia\n\n\n\nAs variantes, de uma “Questão aleatória”, podem ser obtidas por parametrização recorrendo ao R para cálculos parciais"
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "rmdmoodle",
     "section": "",
-    "text": "Ideia\n\n\n\nTornar a criação de exercícios mais amiga do autor.\n\n\nContacto: Pedro Cruz ( pedrocruz at ua.pt )"
+    "text": "Ideia\n\n\n\nUsar o R Markdown e Knitr para a criação de “Questões Aleatórias” no Moodle.\nContacto: Pedro Cruz (pedrocruz@ua.pt)\nEsta biblioteca R recorre a um pequeno subconjunto das potencialidades do sistema Moodle."
   },
   {
     "objectID": "debug.html",
@@ -81,7 +81,7 @@
     "href": "base.html",
     "title": "Base de Questões",
     "section": "",
-    "text": "Ideia\n\n\n\nUsufruir de uma base de questões, com alíneas, para criar um novo teste, escolhendo questões e que alíneas vão estar no teste.\n\n\nNa montagem do teste são escolhidas as questões e que alíneas dentro dessas questões vão fazer parte do teste.\nHá duas maneiras de pensar na aleatoriedade:\n\nquestões planeadas (pq())\nquestões aleatórias (rq())\n\n\nUma questão planeada\nNuma “questão planeada” todas as variantes são pré-calculadas, são pensadas no momento de criação do teste e, como tal, em número finito sendo este sempre indicado na variável VARCOUNT &lt;- 6 (neste exemplo, podem ser produzidas 6 variantes). Uma questão planeada obriga ao uso de listas ou vetores onde se armazenam valores e textos necessários a cada variante. Por hábito, usa-se esta variável VAR &lt;- 1 para especificar qual é a variante a ser produzida quando se faz o “knitr”.\nO R Mardkown seguinte é um modelo de questão planeada.\n---\ntitle: \"c1-descritiva-planeada\"\nauthor: \"rmdmoodle\"\ndate: \"2024/05/21\"\noutput: html_document\n---\n\nObjetivo de avaliação: Capítulo 1 - Estatística Descritiva\n\nQuestão de variantes planeadas: predefinem-se\ntodos os casos a serem sorteados pelos estudantes \nno momento do teste.\n\n\n# código\n\n\n\"\"\"{r echo=FALSE, results=FALSE}\n\n# Obrigatório no método de variantes planeadas\nVAR         = 1  # Faz knitr com a variante escolhida em VAR\nVARCOUNT    = 3  # Total de variantes\n\n# Avoid scientific notation in all document\noptions(scipen = 999)\n\n# No geral, não mostra \"code chunks\"\nknitr::opts_chunk$set(echo = FALSE) \n\n# Fixar as variantes produzidas\nset.seed(11)\n\n# Dimensão das amostras (quantidade em VARCOUNT)\ndimX &lt;- c(4, 5, 6)\n\n# Inventa amostras (quantidade em VARCOUNT)\namostra &lt;- list(\n  round(rnorm(dimX[1], 8, 2),1),\n  round(rnorm(dimX[2], 10, 2),1),\n  round(rnorm(dimX[3], 12, 2),1)\n)\n\n\n# Tabelas e matrizes bem expostas no Moodle\nlibrary(kableExtra)\n\n\n# Produz uma \"R matrix\" para ficar bem no Moodle\ncreate_matrix &lt;- function(v) {\n  # \"v\" é a variante 1, 2, 3, \n  \n  matriz_linha &lt;- matrix(amostra[[v]], ncol = dimX[v])\n  \n  rownames(matriz_linha) &lt;- \"volume (em m3)\"\n  \n  # Não é necessário\n  #colnames(matriz_linha) &lt;- as.character(seq(1,dimX[v]))\n  \n  return(matriz_linha)\n}\n\"\"\"\n\n\n\n# enredo \n\n\nConsidere a seguinte variável aleatória:\n\n**X** : Volume (em \\(m^3\\)) ocupado por uma acácia com 50cm de altura\n\ne a amostra\n\n\"\"\"{r echo=F}\ncreate_matrix(VAR) %&gt;%\n  kbl() %&gt;%\n  kable_styling() %&gt;%\n  kable_paper(full_width = FALSE)\n\"\"\"\n\n\n# Pedir a média (Variante `r VAR`) - \"média\"\n\nA média amostra é: {:NUMERICAL:=`r mean(amostra[[VAR]])`:0.1} (1 casa decimal)\n\n\n\n# Pedir o desvio-padrão (Variante `r VAR`) - \"desvio-padrão\"\n\nO desvio padrão corrigido é: {:NUMERICAL:=`r sd(amostra[[VAR]])`:0.1} (1 casa decimal)\n\n\n\n# Pedir a dimensão da amostra  (Variante `r VAR`) - \"dimensão\"\n\nA dimnensão da amostra é: {:NUMERICAL:=`r dimX[[VAR]]`:0}\n\n\n# \"conceito1\"\n\nA média amostral é uma medida de {:MULTICHOICE_S:=localização central\\~%-25%dispersão central\\~%-25%localização relativa\\~%-25%dispersão relativa} (desconta 25% do valor se errar).\n\n\n\nUma questão aleatória\nNuma “questão aleatória” não ocorre pré-calculo. Cada nova variante pedida, em número ilimitado, tem um gerador aleatório a produzir valores.\nO R Mardkown seguinte é um modelo de questão aleatória.\n---\ntitle: \"c1-descritiva-aleatoria\"\nauthor: \"rmdmoodle\"\ndate: \"2024/05/21\"\noutput: html_document\n---\n\nObjetivo de avaliação: Capítulo 1 - Estatística Descritiva\n\nQuestão de variantes aleatórias.\n\n\n# código\n\n\n\"\"\"{r echo=FALSE, results=FALSE}\n\n# Avoid scientific notation in all document\noptions(scipen = 999)\n\n# No geral, não mostra \"code chunks\"\nknitr::opts_chunk$set(echo = FALSE) \n\n# Fixar as variantes produzidas\n# em número infinito.\nset.seed(11)\n\n# Dimensão das amostras (quantidade em VARCOUNT)\ndimX &lt;- sample(x = c(4, 5, 6), size = 1)\n\n# Inventa amostras (quantidade em VARCOUNT)\namostra &lt;- round(rnorm(dimX, 8, 2), 1)\n\n# Tabelas e matrizes bem expostas no Moodle\nlibrary(kableExtra)\n\n# Produz uma \"R matrix\" para ficar bem no Moodle\ncreate_matrix &lt;- function() {\n\n  matriz_linha &lt;- matrix(amostra, ncol = dimX)\n  \n  rownames(matriz_linha) &lt;- \"volume (em m3)\"\n  \n  # Não é necessário\n  #colnames(matriz_linha) &lt;- as.character(seq(1,dimX))\n  \n  return(matriz_linha)\n}\n\"\"\"\n\n\n\n# enredo \n\n\nConsidere a seguinte variável aleatória:\n\n**X** : Volume (em \\(m^3\\)) ocupado por uma acácia com 50cm de altura\n\ne a amostra\n\n\"\"\"{r echo=F}\ncreate_matrix() %&gt;%\n  kbl() %&gt;%\n  kable_styling() %&gt;%\n  kable_paper(full_width = FALSE)\n\"\"\"\n\n\n# Pedir a média - \"média\"\n\nA média amostra é: {:NUMERICAL:=`r mean(amostra)`:0.1} (1 casa decimal)\n\n\n\n# Pedir o desvio-padrão - \"desvio-padrão\"\n\nO desvio padrão corrigido é: {:NUMERICAL:=`r sd(amostra)`:0.1} (1 casa decimal)\n\n\n\n# Pedir a dimensão da amostra  - \"dimensão\"\n\nA dimnensão da amostra é: {:NUMERICAL:=`r dimX`:0}\n\n\n# \"conceito1\"\n\nA média amostral é uma medida de {:MULTICHOICE_S:=localização central\\~%-25%dispersão central\\~%-25%localização relativa\\~%-25%dispersão relativa} (desconta 25% do valor se errar).\n\n\n\nOrganização\nÉ frequente uma questão ser composta de um enredo e alíneas sobre esse enredo. Esta base de questões segue esse esquema com uma condição: as alíneas serem independentes, ou de algum modo, grupos de alíneas serem independentes entre si.\nA estrutura de ficheiros, que segue a ideia da imagem, baseia-se numa pasta raiz e subpastas com questões por capítulos:\n\nem que\n\nCada ficheiro R Markdown, por exemplo “c4-anova-1fator-com-dados.Rmd”, tem uma questão definida por um enredo e alíneas.\nCada alínea tem um nome que a identifica. No caso de questão mencionada, o RSTudio mostra as alíneas no “outline” do ficheiro Rmd:\n\n\nPode ser usado um sistema de controlo de versões (por exemplo, github) tornando a gestão acessível aos autores.\n\n\nCriar um teste\nNum pasta de testes proceder assim:\n#install.packages(\"rmdmoodle\")\n\nlibrary(rmdmoodle)\n\n# Indica onde está a base de questões com alíneas\nset_exercise_root( \"~/banco_de_questoes\")\n\n# Create an exam from exercises.\nrmdexam(\"exame-para-amanha.Rmd\",\n        pq(\"cap3/c3-estimativa.Rmd\", \"alinea01\", \"alinea04\"),\n        pq(\"cap4/c4-anova-1fator-com-dados.Rmd\", \"id01\", \"concept01\") )\nNeste código o novo teste, desigando por exame-de-amanha.Rmd, contém duas questões. Uma sobre estimativa e outra sobre anova, e respectivas alíneas selecionadas.\n\npq(...) designa “planned question” (ver )"
+    "text": "Ideia\n\n\n\nUsufruir de uma base de questões, com alíneas, para criar um novo teste, escolhendo questões e que alíneas vão estar no teste.\n\n\nDuas maneiras de pensar na aleatoriedade :\n\nquestões planeadas (pq())\nquestões aleatórias (rq())\n\n\nUma questão planeada\nNuma “questão planeada” todas as variantes são pré-calculadas, são pensadas no momento de criação do teste e, como tal, em número finito sendo este sempre indicado na variável VARCOUNT &lt;- 6 (neste exemplo, podem ser produzidas 6 variantes). Uma questão planeada obriga ao uso de listas ou vetores onde se armazenam valores e textos necessários a cada variante. Por hábito, usa-se esta variável VAR &lt;- 1 para especificar qual é a variante a ser produzida quando se faz o “knitr”.\nO R Mardkown seguinte é um modelo de questão planeada.\n---\ntitle: \"c1-descritiva-planeada\"\nauthor: \"rmdmoodle\"\ndate: \"2024/05/21\"\noutput: html_document\n---\n\nObjetivo de avaliação: Capítulo 1 - Estatística Descritiva\n\nQuestão de variantes planeadas: predefinem-se\ntodos os casos a serem sorteados pelos estudantes \nno momento do teste.\n\n\n# código\n\n\n\"\"\"{r echo=FALSE, results=FALSE}\n\n# Obrigatório no método de variantes planeadas\nVAR         = 1  # Faz knitr com a variante escolhida em VAR\nVARCOUNT    = 3  # Total de variantes\n\n# Avoid scientific notation in all document\noptions(scipen = 999)\n\n# No geral, não mostra \"code chunks\"\nknitr::opts_chunk$set(echo = FALSE) \n\n# Fixar as variantes produzidas\nset.seed(11)\n\n# Dimensão das amostras (quantidade em VARCOUNT)\ndimX &lt;- c(4, 5, 6)\n\n# Inventa amostras (quantidade em VARCOUNT)\namostra &lt;- list(\n  round(rnorm(dimX[1], 8, 2),1),\n  round(rnorm(dimX[2], 10, 2),1),\n  round(rnorm(dimX[3], 12, 2),1)\n)\n\n\n# Tabelas e matrizes bem expostas no Moodle\nlibrary(kableExtra)\n\n\n# Produz uma \"R matrix\" para ficar bem no Moodle\ncreate_matrix &lt;- function(v) {\n  # \"v\" é a variante 1, 2, 3, \n  \n  matriz_linha &lt;- matrix(amostra[[v]], ncol = dimX[v])\n  \n  rownames(matriz_linha) &lt;- \"volume (em m3)\"\n  \n  # Não é necessário\n  #colnames(matriz_linha) &lt;- as.character(seq(1,dimX[v]))\n  \n  return(matriz_linha)\n}\n\"\"\"\n\n\n\n# enredo \n\n\nConsidere a seguinte variável aleatória:\n\n**X** : Volume (em \\(m^3\\)) ocupado por uma acácia com 50cm de altura\n\ne a amostra\n\n\"\"\"{r echo=F}\ncreate_matrix(VAR) %&gt;%\n  kbl() %&gt;%\n  kable_styling() %&gt;%\n  kable_paper(full_width = FALSE)\n\"\"\"\n\n\n# Pedir a média (Variante `r VAR`) - \"média\"\n\nA média amostra é: {:NUMERICAL:=`r mean(amostra[[VAR]])`:0.1} (1 casa decimal)\n\n\n\n# Pedir o desvio-padrão (Variante `r VAR`) - \"desvio-padrão\"\n\nO desvio padrão corrigido é: {:NUMERICAL:=`r sd(amostra[[VAR]])`:0.1} (1 casa decimal)\n\n\n\n# Pedir a dimensão da amostra  (Variante `r VAR`) - \"dimensão\"\n\nA dimnensão da amostra é: {:NUMERICAL:=`r dimX[[VAR]]`:0}\n\n\n# \"conceito1\"\n\nA média amostral é uma medida de {:MULTICHOICE_S:=localização central\\~%-25%dispersão central\\~%-25%localização relativa\\~%-25%dispersão relativa} (desconta 25% do valor se errar).\n\n\n\nUma questão aleatória\nNuma “questão aleatória” não ocorre pré-calculo. Cada nova variante pedida, em número ilimitado, tem um gerador aleatório a produzir valores.\nO R Mardkown seguinte é um modelo de questão aleatória.\n---\ntitle: \"c1-descritiva-aleatoria\"\nauthor: \"rmdmoodle\"\ndate: \"2024/05/21\"\noutput: html_document\n---\n\nObjetivo de avaliação: Capítulo 1 - Estatística Descritiva\n\nQuestão de variantes aleatórias.\n\n\n# código\n\n\n\"\"\"{r echo=FALSE, results=FALSE}\n\n# Avoid scientific notation in all document\noptions(scipen = 999)\n\n# No geral, não mostra \"code chunks\"\nknitr::opts_chunk$set(echo = FALSE) \n\n# Fixar as variantes produzidas\n# em número infinito.\nset.seed(11)\n\n# Dimensão das amostras (quantidade em VARCOUNT)\ndimX &lt;- sample(x = c(4, 5, 6), size = 1)\n\n# Inventa amostras (quantidade em VARCOUNT)\namostra &lt;- round(rnorm(dimX, 8, 2), 1)\n\n# Tabelas e matrizes bem expostas no Moodle\nlibrary(kableExtra)\n\n# Produz uma \"R matrix\" para ficar bem no Moodle\ncreate_matrix &lt;- function() {\n\n  matriz_linha &lt;- matrix(amostra, ncol = dimX)\n  \n  rownames(matriz_linha) &lt;- \"volume (em m3)\"\n  \n  # Não é necessário\n  #colnames(matriz_linha) &lt;- as.character(seq(1,dimX))\n  \n  return(matriz_linha)\n}\n\"\"\"\n\n\n\n# enredo \n\n\nConsidere a seguinte variável aleatória:\n\n**X** : Volume (em \\(m^3\\)) ocupado por uma acácia com 50cm de altura\n\ne a amostra\n\n\"\"\"{r echo=F}\ncreate_matrix() %&gt;%\n  kbl() %&gt;%\n  kable_styling() %&gt;%\n  kable_paper(full_width = FALSE)\n\"\"\"\n\n\n# Pedir a média - \"média\"\n\nA média amostra é: {:NUMERICAL:=`r mean(amostra)`:0.1} (1 casa decimal)\n\n\n\n# Pedir o desvio-padrão - \"desvio-padrão\"\n\nO desvio padrão corrigido é: {:NUMERICAL:=`r sd(amostra)`:0.1} (1 casa decimal)\n\n\n\n# Pedir a dimensão da amostra  - \"dimensão\"\n\nA dimnensão da amostra é: {:NUMERICAL:=`r dimX`:0}\n\n\n# \"conceito1\"\n\nA média amostral é uma medida de {:MULTICHOICE_S:=localização central\\~%-25%dispersão central\\~%-25%localização relativa\\~%-25%dispersão relativa} (desconta 25% do valor se errar).\n\n\n\nOrganização\nÉ frequente uma questão ser composta de um enredo e alíneas sobre esse enredo. Esta base de questões segue esse esquema com uma condição: as alíneas serem independentes, ou de algum modo, grupos de alíneas serem independentes entre si.\nA estrutura de ficheiros, que segue a ideia da imagem, baseia-se numa pasta raiz e subpastas com questões por capítulos:\n\nem que\n\nCada ficheiro R Markdown, por exemplo “c4-anova-1fator-com-dados.Rmd”, tem uma questão definida por um enredo e alíneas.\nCada alínea tem um nome que a identifica. No caso de questão mencionada, o RSTudio mostra as alíneas no “outline” do ficheiro Rmd:\n\n\nPode ser usado um sistema de controlo de versões (por exemplo, github) tornando a gestão acessível aos autores.\n\n\nCriar um teste\nNum pasta de testes procede-se assim:\n#install.packages(\"rmdmoodle\")\n\nlibrary(rmdmoodle)\n\n# Indica onde está a base de questões com alíneas\nset_exercise_root( \"~/banco_de_questoes\")\n\n# Create an exam from exercises.\nrmdexam(\"exame-para-amanha.Rmd\",\n        pq(\"cap3/c3-estimativa.Rmd\", \"alinea01\", \"alinea04\"),\n        pq(\"cap4/c4-anova-1fator-com-dados.Rmd\", \"id01\", \"concept01\") )\nNeste código o novo teste, desigando por exame-de-amanha.Rmd, contém duas questões. Uma sobre estimativa e outra sobre anova, e respectivas alíneas selecionadas.\n\npq(...) designa “planned question” (ver )"
   },
   {
     "objectID": "base.html#criar-um-teste",
@@ -95,7 +95,7 @@
     "href": "examples.html",
     "title": "Exemplos",
     "section": "",
-    "text": "Baixe pasta zip com exemplos\nconsulte github"
+    "text": "Os mesmos exemplos nestas vias:\n\nPasta zip com exemplos;\nFicheiros individuais em github.com/jpcaveiro/rmdmoodle."
   },
   {
     "objectID": "moodle.html",
@@ -116,6 +116,125 @@
     "href": "sobre.html",
     "title": "Sobre",
     "section": "",
-    "text": "Sobre este website:\n\n1 + 1\n\n[1] 2\n\n\nAutores:\n\nPedro Cruz\nAdelaide Freitas"
+    "text": "Páginas realizadas com quarto.org recorrendo ao RStudio.\nAutores iniciais:\n\nJoão Pedro Cruz\nAdelaide Freitas"
+  },
+  {
+    "objectID": "index.html#tipodes-de-questões-moodle",
+    "href": "index.html#tipodes-de-questões-moodle",
+    "title": "rmdmoodle",
+    "section": "Tipodes de questões Moodle",
+    "text": "Tipodes de questões Moodle\nTrês tipos: CLOZE, MULTICHOICE, ESSAY."
+  },
+  {
+    "objectID": "index.html#moodle-e-notação-matemática",
+    "href": "index.html#moodle-e-notação-matemática",
+    "title": "rmdmoodle",
+    "section": "Moodle e notação matemática",
+    "text": "Moodle e notação matemática\nA notação matemática, a usar no ficheiro Rmd, é assim \\(\\bar x\\) (\\(\\bar x\\)) para fórmulas em linha e com:\n\n\\[\\frac{\\bar X - \\mu}{\\sigma/\\sqrt{n}}\\]\n\npara equações centradas:\n\\[\n\\frac{\\bar X - \\mu}{\\sigma/\\sqrt{n}}\n\\]"
+  },
+  {
+    "objectID": "index.html#moodle-cloze-e-r-markdown",
+    "href": "index.html#moodle-cloze-e-r-markdown",
+    "title": "rmdmoodle",
+    "section": "Moodle CLOZE e R Markdown",
+    "text": "Moodle CLOZE e R Markdown\nPermite que uma única questão seja dividida em alíneas (ou itens) de tipos diversificados.\nResultado numérico arredondado a 4 casas decimais (x) :\n{1:NUMERICAL:=`r round(uma_var, 4)`:0.0001}\n(use 4 casas decimais)\nUtilização de shortanswer. A sintaxe é:\n{1:SHORTANSWER:=alguma palavra ou frase corret\\~%75%frase parcialmente correta}\n\nnão usar LaTeX na shortanswer;\no Moodle permite facilmente que o professor corrija e adapte a classificação lendo cada resposta de cada aluno.\n\nExemplo de “shortanswer” com parametrização:\n{1:SHORTANSWER:=`r FRASE_CORRETA`=`r OUTRA_FRASE_CORRETA`}\nNa escolha múltipla sorteada (pósfixo _S), o Moodle baralha a ordem pela qual as opções surgem a cada estudante. A versão parametrizada com R pode ser:\n{1:MULTICHOICE_S:=`r OPCAOCORRETA`\\~`r OPCAOERRADA1`\\~`r OPCAOERRADA2`\\~`r OPCAOERRADA3`}\nou sem ser parametrizada:\n{1:MULTICHOICE_S:=opção correta\\~opção incorreta 1\\~opção incorreta 2\\~opção incorreta 3}\ne há lugar a cotações parciais\n{1:MULTICHOICE_S:=opção correta\\~%25%opção incorreta 1\\~opção incorreta 2\\~opção incorreta 3}\nmas tendo em conta que se o estudante “jogar à sorte” pode sempre obter pontos."
+  },
+  {
+    "objectID": "index.html#moodle-e-mostrar-código-r",
+    "href": "index.html#moodle-e-mostrar-código-r",
+    "title": "rmdmoodle",
+    "section": "Moodle e mostrar código R",
+    "text": "Moodle e mostrar código R\nPara mostrar código R, sem executar, pode-se colocar três plicas e a letra “r” sem a envolver em chavetas ({r}):\n```r\n&gt; x = matrix( c(A,B,C,D), nrow = 2)\n```"
+  },
+  {
+    "objectID": "index.html#moodle-e-multichoice",
+    "href": "index.html#moodle-e-multichoice",
+    "title": "rmdmoodle",
+    "section": "Moodle e MULTICHOICE",
+    "text": "Moodle e MULTICHOICE\nPermite que a questão seja só focada na seleção de uma opção correta."
+  },
+  {
+    "objectID": "index.html#moodle-e-numerical",
+    "href": "index.html#moodle-e-numerical",
+    "title": "rmdmoodle",
+    "section": "Moodle e NUMERICAL",
+    "text": "Moodle e NUMERICAL\nPermite que a questão seja só focada num campo numérico."
+  },
+  {
+    "objectID": "index.html#moodle-e-essay",
+    "href": "index.html#moodle-e-essay",
+    "title": "rmdmoodle",
+    "section": "Moodle e ESSAY",
+    "text": "Moodle e ESSAY\nPermite que a questão receba a resposta textual (via teclado) de um estudante."
+  },
+  {
+    "objectID": "index.html#moodle-multichoice",
+    "href": "index.html#moodle-multichoice",
+    "title": "rmdmoodle",
+    "section": "Moodle MULTICHOICE",
+    "text": "Moodle MULTICHOICE\nPermite que a questão seja só focada na seleção de uma opção correta.\n(em breve)"
+  },
+  {
+    "objectID": "index.html#moodle-numerical",
+    "href": "index.html#moodle-numerical",
+    "title": "rmdmoodle",
+    "section": "Moodle NUMERICAL",
+    "text": "Moodle NUMERICAL\nPermite que a questão seja só focada num campo numérico.\n(Mais texto para breve.)"
+  },
+  {
+    "objectID": "index.html#moodle-essay",
+    "href": "index.html#moodle-essay",
+    "title": "rmdmoodle",
+    "section": "Moodle ESSAY",
+    "text": "Moodle ESSAY\nPermite que a questão receba a resposta textual (via teclado) de um estudante.\n(Mais texto para breve.)"
+  },
+  {
+    "objectID": "index.html#moodle-multichoice_s",
+    "href": "index.html#moodle-multichoice_s",
+    "title": "rmdmoodle",
+    "section": "Moodle MULTICHOICE_S",
+    "text": "Moodle MULTICHOICE_S\nPermite que a questão seja só focada na seleção de uma opção correta.\n(Mais texto para breve.)"
+  },
+  {
+    "objectID": "param.html#exemplo-de-variante-parametrizada",
+    "href": "param.html#exemplo-de-variante-parametrizada",
+    "title": "Parametrização",
+    "section": "Exemplo de variante parametrizada",
+    "text": "Exemplo de variante parametrizada\nQuestão cloze A média amostral \\(\\bar x\\) da amostra\n```{r}\nset.seed(90)\namostra &lt;- round(rnorm(5,8,1), 1)\namostra\n```\né: {:NUMERICAL:=r mean(amostra):0.01} (use 2 casas decimais)."
+  },
+  {
+    "objectID": "param.html#estilos-de-parametrização",
+    "href": "param.html#estilos-de-parametrização",
+    "title": "Parametrização",
+    "section": "Estilos de parametrização",
+    "text": "Estilos de parametrização\nConsideram-se três estilos de parametrização pensados para o rmdmoodle:\n\nplaneadas (ou pré-calculadas, ou vectorizadas): todas as variantes são guardadas em listas ou vectores.\naleatorizadas: não se calculam previamente todas as variantes.\nParametrização R Markdown (via params): usa-se o sistema de parametrização do R Markdown.\nParametrização externa: de algum modo as variantes são construídas fora do R."
+  },
+  {
+    "objectID": "param.html#sec-plannedquestions",
+    "href": "param.html#sec-plannedquestions",
+    "title": "Parametrização",
+    "section": "Questões planeadas",
+    "text": "Questões planeadas\nO autor usa “code chunks” para produzir valores pré-preparados para serem usados nas questões. Estes valores são armazenados em vetores, arrays, listas, ou algo que permita um acesso por índice inteiro.\nO objetivo, e vantagem principal, é que há um “controlo” de todas as situações que chegam aos estudantes num momento de avaliação.\nNeste exemplo, o autor pretende controlar a criação de 6 variantes de uma mesma questão usando 6 vetores pre definidos e visualizados para um eventual objetivo:\n# Questão sobre um Capítulo 1 - CLOZE\n\n```{r}\nset.seed(10) #controlo pelo autor\namostra &lt;- list(\n  caso1 = round(rnorm(5, 0, 3), 1),\n  caso2 = round(rnorm(5, 0, 3), 1),\n  caso3 = round(rnorm(5, 1, 3), 1),\n  caso4 = round(rnorm(5, 1, 3), 1),\n  caso5 = round(rnorm(5, 2, 3), 1),\n  caso6 = round(rnorm(5, 2, 3, 1))\n)\nmedia &lt;- lapply(amostra,mean)\n```\n\n## Variante (`r VAR&lt;- 1`)\n\nConsidere a amostra: `r amostra[[VAR]]`.\n\nA média é {:NUMERICAL:=`r media[[VAR]]:0.05} (1 casa decimal).\n\n### Feedback\n\nConsulte a matéria do Capítulo 1.\n\n\n## Variante (`r VAR&lt;- 2`)\n\nConsidere a amostra: `r amostra[[VAR]]`.\n\nA média é {:NUMERICAL:=`r media[[VAR]]:0.05} (1 casa decimal).\n\n### Feedback\n\nConsulte a matéria do Capítulo 1.\n\n\nETC, para as restantes 6 variantes\nNeste exemplo, o autor “copia e cola” cada ## Variante o que pode ser aborrecido.\nPorém, se for usado o método na secção Base de Questões, essa duplicação é gerada automaticamente."
+  },
+  {
+    "objectID": "param.html#questões-aleatorizadas",
+    "href": "param.html#questões-aleatorizadas",
+    "title": "Parametrização",
+    "section": "Questões aleatorizadas",
+    "text": "Questões aleatorizadas\nNesta modalidade, os valores, ou textos, a serem guardados são produzidos sem armazenamento, e usados no momento da sua geração.\nA vantagem é que não há perda de tempo a codificar o método de armazenamento.\nVale a pena especificar um valor para a “seed”, como set.seed(10), para que as questões sejam reproduzíveis.\n# Questão sobre um Capítulo 1 - CLOZE\n\n```{r}\nset.seed(10) #controlo pelo autor\n```\n\n## Variante 1\n\n```{r}\namostra &lt;- round(rnorm(5, 0, 3), 1)\n```\n\nConsidere a amostra: `r  amostra`.\n\nA média é {:NUMERICAL:=`r mean(amostra)`:0.05} (1 casa decimal).\n\n### Feedback\n\nConsulte a matéria do Capítulo 1.\n\n\n## Variante 2\n\n```{r}\namostra &lt;- round(rnorm(5, 0, 3), 1)\n```\n\nConsidere a amostra: `r  amostra`.\n\nA média é {:NUMERICAL:=`r mean(amostra)`:0.05} (1 casa decimal).\n\n### Feedback\n\nConsulte a matéria do Capítulo 1.\n\n\nETC, copiando o número de questões desejadas para exportação para o Moodle."
+  },
+  {
+    "objectID": "param.html#parametrização-via-params",
+    "href": "param.html#parametrização-via-params",
+    "title": "Parametrização",
+    "section": "Parametrização via params",
+    "text": "Parametrização via params\nEsta forma de parametrização usando o mecanismo params do R Markdown pode ser misturada com as demais abordagens acima. Ao fazer “knitr” podem-se passar parâmetros que vão ser substituídos e modelar o resultado final do ficheiro R Markdown.\nAssim, no momento da construção do ficheiro XML Moodle, podem passar-se parâmetros e estes vão produzir diferentes variantes sendo que este mecanismo pode ser misturado com as “questões planeadas” ou com as “questões aleatorizadas”.\n(Mais texto para breve.)"
+  },
+  {
+    "objectID": "param.html#parametrização-externa",
+    "href": "param.html#parametrização-externa",
+    "title": "Parametrização",
+    "section": "Parametrização externa",
+    "text": "Parametrização externa\nOs valores para os parâmetros podem ser criados com um mecanismo externo. Para a produção dos testes Moodle, tais valores podem ser colocados manualmente num ficheiro R Markdown seguindo o formato da secção Teste Moodle ou através de um mecanismo de templating para substituição programática."
   }
 ]

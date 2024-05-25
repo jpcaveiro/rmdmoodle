@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt" xml:lang="pt"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.4.553">
@@ -87,17 +87,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
     "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
   }
 }</script>
 
@@ -116,31 +116,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <span class="navbar-title">rmdmoodle</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Procurar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Alternar de navegação" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link" href="./index.html"> 
-<span class="menu-text">Principal</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./moodle.html"> 
-<span class="menu-text">Moodle</span></a>
+<span class="menu-text">Início</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./unico.html"> 
 <span class="menu-text">Teste Moodle</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./base.html" aria-current="page"> 
-<span class="menu-text">Base de Questões</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link" href="./param.html"> 
 <span class="menu-text">Parametrização</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./base.html" aria-current="page"> 
+<span class="menu-text">Base de Questões</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./examples.html"> 
@@ -167,7 +163,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+    <h2 id="toc-title">Nesta página</h2>
    
   <ul>
   <li><a href="#uma-questão-planeada" id="toc-uma-questão-planeada" class="nav-link active" data-scroll-target="#uma-questão-planeada">Uma questão planeada</a></li>
@@ -212,8 +208,7 @@ Ideia
 <p>Usufruir de uma base de questões, com alíneas, para criar um novo teste, escolhendo questões e que alíneas vão estar no teste.</p>
 </div>
 </div>
-<p>Na montagem do teste são escolhidas as questões e que alíneas dentro dessas questões vão fazer parte do teste.</p>
-<p>Há duas maneiras de pensar na aleatoriedade:</p>
+<p>Duas maneiras de pensar na aleatoriedade :</p>
 <ul>
 <li>questões planeadas (<code>pq()</code>)</li>
 <li>questões aleatórias (<code>rq()</code>)</li>
@@ -435,7 +430,7 @@ A média amostral é uma medida de {:MULTICHOICE_S:=localização central\~%-25%
 </section>
 <section id="criar-um-teste" class="level1">
 <h1>Criar um teste</h1>
-<p>Num pasta de testes proceder assim:</p>
+<p>Num pasta de testes procede-se assim:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("rmdmoodle")</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmdmoodle)</span>
@@ -446,7 +441,7 @@ A média amostral é uma medida de {:MULTICHOICE_S:=localização central\~%-25%
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an exam from exercises.</span></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rmdexam</span>(<span class="st">"exame-para-amanha.Rmd"</span>,</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pq</span>(<span class="st">"cap3/c3-estimativa.Rmd"</span>, <span class="st">"alinea01"</span>, <span class="st">"alinea04"</span>),</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pq</span>(<span class="st">"cap4/c4-anova-1fator-com-dados.Rmd"</span>, <span class="st">"id01"</span>, <span class="st">"concept01"</span>) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pq</span>(<span class="st">"cap4/c4-anova-1fator-com-dados.Rmd"</span>, <span class="st">"id01"</span>, <span class="st">"concept01"</span>) )</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Neste código o novo teste, desigando por <code>exame-de-amanha.Rmd</code>, contém duas questões. Uma sobre estimativa e outra sobre anova, e respectivas alíneas selecionadas.</p>
 <ul>
 <li><code>pq(...)</code> designa “planned question” (ver )</li>
@@ -510,12 +505,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // flash "checked"
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
+    button.setAttribute("title", "Copiada");
     let tooltip;
     if (window.bootstrap) {
       button.setAttribute("data-bs-toggle", "tooltip");
       button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
+      button.setAttribute("data-bs-title", "Copiada");
       tooltip = new bootstrap.Tooltip(button, 
         { trigger: "manual", 
           customClass: "code-copy-button-tooltip",

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt" xml:lang="pt"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.4.553">
@@ -87,17 +87,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "No results",
-    "search-matching-documents-text": "matching documents",
-    "search-copy-link-title": "Copy link to search",
-    "search-hide-matches-text": "Hide additional matches",
-    "search-more-match-text": "more match in this document",
-    "search-more-matches-text": "more matches in this document",
-    "search-clear-button-title": "Clear",
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
     "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancel",
-    "search-submit-button-title": "Submit",
-    "search-label": "Search"
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
   }
 }</script>
 
@@ -116,31 +116,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <span class="navbar-title">rmdmoodle</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Procurar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Alternar de navegação" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link" href="./index.html"> 
-<span class="menu-text">Principal</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./moodle.html"> 
-<span class="menu-text">Moodle</span></a>
+<span class="menu-text">Início</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./unico.html"> 
 <span class="menu-text">Teste Moodle</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./base.html"> 
-<span class="menu-text">Base de Questões</span></a>
-  </li>  
-  <li class="nav-item">
     <a class="nav-link active" href="./param.html" aria-current="page"> 
 <span class="menu-text">Parametrização</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./base.html"> 
+<span class="menu-text">Base de Questões</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./examples.html"> 
@@ -167,11 +163,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">On this page</h2>
+    <h2 id="toc-title">Nesta página</h2>
    
   <ul>
-  <li><a href="#sec-plannedquestions" id="toc-sec-plannedquestions" class="nav-link active" data-scroll-target="#sec-plannedquestions">Questões planeadas</a></li>
+  <li><a href="#exemplo-de-variante-parametrizada" id="toc-exemplo-de-variante-parametrizada" class="nav-link active" data-scroll-target="#exemplo-de-variante-parametrizada">Exemplo de variante parametrizada</a></li>
+  <li><a href="#estilos-de-parametrização" id="toc-estilos-de-parametrização" class="nav-link" data-scroll-target="#estilos-de-parametrização">Estilos de parametrização</a></li>
+  <li><a href="#sec-plannedquestions" id="toc-sec-plannedquestions" class="nav-link" data-scroll-target="#sec-plannedquestions">Questões planeadas</a></li>
   <li><a href="#questões-aleatorizadas" id="toc-questões-aleatorizadas" class="nav-link" data-scroll-target="#questões-aleatorizadas">Questões aleatorizadas</a></li>
+  <li><a href="#parametrização-via-params" id="toc-parametrização-via-params" class="nav-link" data-scroll-target="#parametrização-via-params">Parametrização via <code>params</code></a></li>
   <li><a href="#parametrização-externa" id="toc-parametrização-externa" class="nav-link" data-scroll-target="#parametrização-externa">Parametrização externa</a></li>
   </ul>
 </nav>
@@ -208,113 +207,126 @@ Ideia
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Chama-se “questão parametrizada” quando “espaços reservados” (os parâmetros) numa “questão modelo” são substituídos por valores, ou texto, formando uma questão concreta. Como exemplo: “A soma de `r a` + `r b` é?” requer valores para <code>a</code> e <code>b</code> que são os parâmetros.</p>
-<p>Consideram-se três estilos de parametrização:</p>
-<ul>
-<li>planeadas (ou pré-calculadas) usando “code chunks”;</li>
-<li>aleatorizadas usando “code chunks”;</li>
-<li>parametrização externa (sem recurso a “code chunks”).</li>
-</ul>
+<p>As variantes, de uma “Questão aleatória”, podem ser obtidas por parametrização recorrendo ao R para cálculos parciais</p>
 </div>
 </div>
-<p>As questões podem ser:</p>
+<section id="exemplo-de-variante-parametrizada" class="level2">
+<h2 class="anchored" data-anchor-id="exemplo-de-variante-parametrizada">Exemplo de variante parametrizada</h2>
+<p><strong>Questão cloze</strong> A média amostral <code>\(\bar x\)</code> da amostra</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="in">set.seed(90)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="in">amostra &lt;- round(rnorm(5,8,1), 1)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="in">amostra</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>é: {:NUMERICAL:=<code>r mean(amostra):0.01</code>} (use 2 casas decimais).</p>
+</section>
+<section id="estilos-de-parametrização" class="level2">
+<h2 class="anchored" data-anchor-id="estilos-de-parametrização">Estilos de parametrização</h2>
+<p>Consideram-se três estilos de parametrização pensados para o <code>rmdmoodle</code>:</p>
 <ul>
-<li>planeadas: é calculado um vetor (ou vários) com os valores e textos a serem usados em cada variante.</li>
-<li>aleatorizadas.</li>
+<li>planeadas (ou pré-calculadas, ou vectorizadas): todas as variantes são guardadas em listas ou vectores.</li>
+<li>aleatorizadas: não se calculam previamente todas as variantes.</li>
+<li>Parametrização R Markdown (via <code>params</code>): usa-se o sistema de parametrização do R Markdown.</li>
+<li>Parametrização externa: de algum modo as variantes são construídas fora do R.</li>
 </ul>
-<section id="sec-plannedquestions" class="level1">
-<h1>Questões planeadas</h1>
+</section>
+<section id="sec-plannedquestions" class="level2">
+<h2 class="anchored" data-anchor-id="sec-plannedquestions">Questões planeadas</h2>
 <p>O autor usa “code chunks” para produzir valores pré-preparados para serem usados nas questões. Estes valores são armazenados em vetores, arrays, listas, ou algo que permita um acesso por índice inteiro.</p>
 <p>O objetivo, e vantagem principal, é que há um “controlo” de todas as situações que chegam aos estudantes num momento de avaliação.</p>
 <p>Neste exemplo, o autor pretende controlar a criação de 6 variantes de uma mesma questão usando 6 vetores pre definidos e visualizados para um eventual objetivo:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Questão sobre um Capítulo 1 - CLOZE</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="in">set.seed(10) #controlo pelo autor</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="in">amostra &lt;- list(</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="in">  caso1 = round(rnorm(5, 0, 3), 1),</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="in">  caso2 = round(rnorm(5, 0, 3), 1),</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="in">  caso3 = round(rnorm(5, 1, 3), 1),</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="in">  caso4 = round(rnorm(5, 1, 3), 1),</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="in">  caso5 = round(rnorm(5, 2, 3), 1),</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="in">  caso6 = round(rnorm(5, 2, 3, 1))</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="in">)</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="in">media &lt;- lapply(amostra,mean)</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variante (`r VAR&lt;- 1`)</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>Considere a amostra: <span class="in">`r amostra[[VAR]]`</span>.</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>A média é {:NUMERICAL:=`r media[<span class="co">[</span><span class="ot">VAR</span><span class="co">]</span>]:0.05} (1 casa decimal).</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">### Feedback</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>Consulte a matéria do Capítulo 1.</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variante (`r VAR&lt;- 2`)</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>Considere a amostra: <span class="in">`r amostra[[VAR]]`</span>.</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>A média é {:NUMERICAL:=`r media[<span class="co">[</span><span class="ot">VAR</span><span class="co">]</span>]:0.05} (1 casa decimal).</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">### Feedback</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>Consulte a matéria do Capítulo 1.</span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>ETC, para as restantes 6 variantes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Neste exemplo, o autor “copia e cola” cada <code>## Variante</code> o que pode ser aborrecido.<br>
-Porém, se for usado o método na secção <a href="./base.html">Base de Questões</a>, essa duplicação é gerada automaticamente.</p>
-</section>
-<section id="questões-aleatorizadas" class="level1">
-<h1>Questões aleatorizadas</h1>
-<p>Nesta modalidade, os valores, ou textos, a serem guardados são produzidos sem armazenamento, e usados no momento da sua geração.</p>
-<p>A vantagem é que não há perda de tempo a codificar o método de armazenamento.</p>
-<p>Vale a pena especificar um valor para a “seed”, como <code>set.seed(10)</code>, para que as questões sejam reproduzíveis.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Questão sobre um Capítulo 1 - CLOZE</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="in">set.seed(10) #controlo pelo autor</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variante 1</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="in">amostra &lt;- round(rnorm(5, 0, 3), 1)</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>Considere a amostra: <span class="in">`r  amostra`</span>.</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>A média é {:NUMERICAL:=<span class="in">`r mean(amostra)`</span>:0.05} (1 casa decimal).</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="fu">### Feedback</span></span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>Consulte a matéria do Capítulo 1.</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="in">amostra &lt;- list(</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="in">  caso1 = round(rnorm(5, 0, 3), 1),</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="in">  caso2 = round(rnorm(5, 0, 3), 1),</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="in">  caso3 = round(rnorm(5, 1, 3), 1),</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="in">  caso4 = round(rnorm(5, 1, 3), 1),</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="in">  caso5 = round(rnorm(5, 2, 3), 1),</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="in">  caso6 = round(rnorm(5, 2, 3, 1))</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="in">)</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="in">media &lt;- lapply(amostra,mean)</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variante (`r VAR&lt;- 1`)</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>Considere a amostra: <span class="in">`r amostra[[VAR]]`</span>.</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>A média é {:NUMERICAL:=`r media[<span class="co">[</span><span class="ot">VAR</span><span class="co">]</span>]:0.05} (1 casa decimal).</span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variante 2</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">### Feedback</span></span>
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="in">amostra &lt;- round(rnorm(5, 0, 3), 1)</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>Considere a amostra: <span class="in">`r  amostra`</span>.</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>A média é {:NUMERICAL:=<span class="in">`r mean(amostra)`</span>:0.05} (1 casa decimal).</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="fu">### Feedback</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>Consulte a matéria do Capítulo 1.</span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>Consulte a matéria do Capítulo 1.</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variante (`r VAR&lt;- 2`)</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>Considere a amostra: <span class="in">`r amostra[[VAR]]`</span>.</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>A média é {:NUMERICAL:=`r media[<span class="co">[</span><span class="ot">VAR</span><span class="co">]</span>]:0.05} (1 casa decimal).</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="fu">### Feedback</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>Consulte a matéria do Capítulo 1.</span>
 <span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>ETC, copiando o número de questões desejadas para exportação para o Moodle.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>ETC, para as restantes 6 variantes</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>Neste exemplo, o autor “copia e cola” cada <code>## Variante</code> o que pode ser aborrecido.<br>
-Porém, se for usado o método na secção <a href="./base.html">Base de Questões</a>, essa duplicação é gerada automaticamente até um número especificado de “réplicas”.</p>
+Porém, se for usado o método na secção <a href="./base.html">Base de Questões</a>, essa duplicação é gerada automaticamente.</p>
 </section>
-<section id="parametrização-externa" class="level1">
-<h1>Parametrização externa</h1>
+<section id="questões-aleatorizadas" class="level2">
+<h2 class="anchored" data-anchor-id="questões-aleatorizadas">Questões aleatorizadas</h2>
+<p>Nesta modalidade, os valores, ou textos, a serem guardados são produzidos sem armazenamento, e usados no momento da sua geração.</p>
+<p>A vantagem é que não há perda de tempo a codificar o método de armazenamento.</p>
+<p>Vale a pena especificar um valor para a “seed”, como <code>set.seed(10)</code>, para que as questões sejam reproduzíveis.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># Questão sobre um Capítulo 1 - CLOZE</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="in">set.seed(10) #controlo pelo autor</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variante 1</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="in">amostra &lt;- round(rnorm(5, 0, 3), 1)</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>Considere a amostra: <span class="in">`r  amostra`</span>.</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>A média é {:NUMERICAL:=<span class="in">`r mean(amostra)`</span>:0.05} (1 casa decimal).</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="fu">### Feedback</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>Consulte a matéria do Capítulo 1.</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="fu">## Variante 2</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="in">amostra &lt;- round(rnorm(5, 0, 3), 1)</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>Considere a amostra: <span class="in">`r  amostra`</span>.</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>A média é {:NUMERICAL:=<span class="in">`r mean(amostra)`</span>:0.05} (1 casa decimal).</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="fu">### Feedback</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>Consulte a matéria do Capítulo 1.</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>ETC, copiando o número de questões desejadas para exportação para o Moodle.</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="parametrização-via-params" class="level2">
+<h2 class="anchored" data-anchor-id="parametrização-via-params">Parametrização via <code>params</code></h2>
+<p>Esta forma de parametrização usando o mecanismo <code>params</code> do R Markdown pode ser misturada com as demais abordagens acima. Ao fazer “knitr” podem-se passar parâmetros que vão ser substituídos e modelar o resultado final do ficheiro R Markdown.</p>
+<p>Assim, no momento da construção do ficheiro XML Moodle, podem passar-se parâmetros e estes vão produzir diferentes variantes sendo que este mecanismo pode ser misturado com as “questões planeadas” ou com as “questões aleatorizadas”.</p>
+<p>(Mais texto para breve.)</p>
+</section>
+<section id="parametrização-externa" class="level2">
+<h2 class="anchored" data-anchor-id="parametrização-externa">Parametrização externa</h2>
 <p>Os valores para os parâmetros podem ser criados com um mecanismo externo. Para a produção dos testes Moodle, tais valores podem ser colocados manualmente num ficheiro R Markdown seguindo o formato da secção <a href="./unico.html">Teste Moodle</a> ou através de um mecanismo de <em>templating</em> para substituição programática.</p>
 
 
@@ -375,12 +387,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // flash "checked"
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
+    button.setAttribute("title", "Copiada");
     let tooltip;
     if (window.bootstrap) {
       button.setAttribute("data-bs-toggle", "tooltip");
       button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
+      button.setAttribute("data-bs-title", "Copiada");
       tooltip = new bootstrap.Tooltip(button, 
         { trigger: "manual", 
           customClass: "code-copy-button-tooltip",
