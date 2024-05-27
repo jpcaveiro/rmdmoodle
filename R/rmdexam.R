@@ -848,9 +848,9 @@ pq <- function(...) {
 #' @export
 #'
 #' @examples
-#' \dontrun{make_rmdmoodle("my-new-moodle-exam.Rmd",
-#'                c("cap1/c1-estimation.Rmd","est-mean","est-var"),
-#'                c("cap2/c2-normalprob.Rmd","prob-less", "prob-greater", "prob-between"))}
+#' \dontrun{rmdexam("my-new-moodle-exam.Rmd",
+#'                pq("cap1/c1-estimation.Rmd", "est-mean", "est-var"),
+#'                rq("cap2/c2-normalprob.Rmd", "prob-less", "prob-greater", "prob-between"))}
 rmdexam <- function(rmdfilename, ...) {
 
 
