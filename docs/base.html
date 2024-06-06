@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>rmdmoodle</title>
+<title>rmdmoodle - Base de Questões</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -67,35 +101,6 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -118,7 +123,7 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Início</span></a>
   </li>  
   <li class="nav-item">
@@ -130,7 +135,7 @@ window.Quarto = {
 <span class="menu-text">Parametrização</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./base.html"> 
+    <a class="nav-link active" href="./base.html" aria-current="page"> 
 <span class="menu-text">Base de Questões</span></a>
   </li>  
   <li class="nav-item">
@@ -161,12 +166,10 @@ window.Quarto = {
     <h2 id="toc-title">Nesta página</h2>
    
   <ul>
-  <li><a href="#moodle-e-notação-matemática" id="toc-moodle-e-notação-matemática" class="nav-link active" data-scroll-target="#moodle-e-notação-matemática">Moodle e notação matemática</a></li>
-  <li><a href="#moodle-e-mostrar-código-r" id="toc-moodle-e-mostrar-código-r" class="nav-link" data-scroll-target="#moodle-e-mostrar-código-r">Moodle e mostrar código R</a></li>
-  <li><a href="#moodle-cloze-e-r-markdown" id="toc-moodle-cloze-e-r-markdown" class="nav-link" data-scroll-target="#moodle-cloze-e-r-markdown">Moodle CLOZE e R Markdown</a></li>
-  <li><a href="#moodle-multichoice_s" id="toc-moodle-multichoice_s" class="nav-link" data-scroll-target="#moodle-multichoice_s">Moodle MULTICHOICE_S</a></li>
-  <li><a href="#moodle-numerical" id="toc-moodle-numerical" class="nav-link" data-scroll-target="#moodle-numerical">Moodle NUMERICAL</a></li>
-  <li><a href="#moodle-essay" id="toc-moodle-essay" class="nav-link" data-scroll-target="#moodle-essay">Moodle ESSAY</a></li>
+  <li><a href="#uma-questão-planeada" id="toc-uma-questão-planeada" class="nav-link active" data-scroll-target="#uma-questão-planeada">Uma questão planeada</a></li>
+  <li><a href="#uma-questão-aleatória" id="toc-uma-questão-aleatória" class="nav-link" data-scroll-target="#uma-questão-aleatória">Uma questão aleatória</a></li>
+  <li><a href="#organização" id="toc-organização" class="nav-link" data-scroll-target="#organização">Organização</a></li>
+  <li><a href="#criar-um-teste" id="toc-criar-um-teste" class="nav-link" data-scroll-target="#criar-um-teste">Criar um teste</a></li>
   </ul>
 </nav>
     </div>
@@ -175,7 +178,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">rmdmoodle</h1>
+<h1 class="title">Base de Questões</h1>
 </div>
 
 
@@ -202,66 +205,247 @@ Ideia
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Usar o R Markdown e Knitr para a criação de “Questões Aleatórias” no Moodle.</p>
+<p>Usufruir de uma base de questões, com alíneas, para criar um novo teste, escolhendo questões e que alíneas vão estar no teste.</p>
 </div>
 </div>
-<p>Contacto: Pedro Cruz (<code>pedrocruz@ua.pt</code>)</p>
-<p>Esta biblioteca R recorre a um pequeno subconjunto das potencialidades do sistema Moodle.</p>
-<section id="moodle-e-notação-matemática" class="level2">
-<h2 class="anchored" data-anchor-id="moodle-e-notação-matemática">Moodle e notação matemática</h2>
-<p>A notação matemática, a usar no ficheiro Rmd, é assim <code>\(\bar x\)</code> (<span class="math inline">\(\bar x\)</span>) para fórmulas em linha e com:</p>
-<blockquote class="blockquote">
-<p><code>\[\frac{\bar X - \mu}{\sigma/\sqrt{n}}\]</code></p>
-</blockquote>
-<p>para equações centradas:</p>
-<p><span class="math display">\[
-\frac{\bar X - \mu}{\sigma/\sqrt{n}}
-\]</span></p>
-</section>
-<section id="moodle-e-mostrar-código-r" class="level2">
-<h2 class="anchored" data-anchor-id="moodle-e-mostrar-código-r">Moodle e mostrar código R</h2>
-<p>Para mostrar código R, <strong>sem executar</strong>, pode-se colocar três plicas e a letra “r” sem a envolver em chavetas (<code>{r}</code>):</p>
-<pre>```r
-&gt; x = matrix( c(A,B,C,D), nrow = 2)
-```
-</pre>
-</section>
-<section id="moodle-cloze-e-r-markdown" class="level2">
-<h2 class="anchored" data-anchor-id="moodle-cloze-e-r-markdown">Moodle CLOZE e R Markdown</h2>
-<p>Permite que uma única questão seja dividida em alíneas (ou itens) de tipos diversificados.</p>
-<p>Resultado <strong>numérico</strong> arredondado a 4 casas decimais (x) :</p>
-<pre>{1:NUMERICAL:=`r round(uma_var, 4)`:0.0001}</pre>
-<p>(use 4 casas decimais)</p>
-<p>Utilização de <strong>shortanswer</strong>. A sintaxe é:</p>
-<pre>{1:SHORTANSWER:=alguma palavra ou frase corret\~%75%frase parcialmente correta}</pre>
+<p>Duas maneiras de pensar na aleatoriedade :</p>
 <ul>
-<li>não usar LaTeX na shortanswer;</li>
-<li>o Moodle permite facilmente que o professor corrija e adapte a classificação lendo cada resposta de cada aluno.</li>
+<li>questões planeadas (<code>pq()</code>)</li>
+<li>questões aleatórias (<code>rq()</code>)</li>
 </ul>
-<p>Exemplo de “shortanswer” com parametrização:</p>
-<pre>{1:SHORTANSWER:=`r FRASE_CORRETA`=`r OUTRA_FRASE_CORRETA`}</pre>
-<p>Na <strong>escolha múltipla</strong> sorteada (pósfixo <code>_S</code>), o Moodle baralha a ordem pela qual as opções surgem a cada estudante. A versão parametrizada com R pode ser:</p>
-<pre>{1:MULTICHOICE_S:=`r OPCAOCORRETA`\~`r OPCAOERRADA1`\~`r OPCAOERRADA2`\~`r OPCAOERRADA3`}</pre>
-<p>ou sem ser parametrizada:</p>
-<pre>{1:MULTICHOICE_S:=opção correta\~opção incorreta 1\~opção incorreta 2\~opção incorreta 3}</pre>
-<p>e há lugar a cotações parciais</p>
-<pre>{1:MULTICHOICE_S:=opção correta\~%25%opção incorreta 1\~opção incorreta 2\~opção incorreta 3}</pre>
-<p>mas tendo em conta que se o estudante “jogar à sorte” pode sempre obter pontos.</p>
+<section id="uma-questão-planeada" class="level1">
+<h1>Uma questão planeada</h1>
+<p>Numa “questão planeada” todas as variantes são pré-calculadas, são pensadas no momento de criação do teste e, como tal, em número finito sendo este sempre indicado na variável <code>VARCOUNT &lt;- 6</code> (neste exemplo, podem ser produzidas 6 variantes). Uma questão planeada obriga ao uso de listas ou vetores onde se armazenam valores e textos necessários a cada variante. Por hábito, usa-se esta variável <code>VAR &lt;- 1</code> para especificar qual é a variante a ser produzida quando se faz o “knitr”.</p>
+<p>O R Mardkown seguinte é um modelo de questão planeada.</p>
+<pre><code>---
+title: "c1-descritiva-planeada"
+author: "rmdmoodle"
+date: "2024/05/21"
+output: html_document
+---
+
+Objetivo de avaliação: Capítulo 1 - Estatística Descritiva
+
+Questão de variantes planeadas: predefinem-se
+todos os casos a serem sorteados pelos estudantes 
+no momento do teste.
+
+
+# código
+
+
+"""{r echo=FALSE, results=FALSE}
+
+# Obrigatório no método de variantes planeadas
+VAR         = 1  # Faz knitr com a variante escolhida em VAR
+VARCOUNT    = 3  # Total de variantes
+
+# Avoid scientific notation in all document
+options(scipen = 999)
+
+# No geral, não mostra "code chunks"
+knitr::opts_chunk$set(echo = FALSE) 
+
+# Fixar as variantes produzidas
+set.seed(11)
+
+# Dimensão das amostras (quantidade em VARCOUNT)
+dimX &lt;- c(4, 5, 6)
+
+# Inventa amostras (quantidade em VARCOUNT)
+amostra &lt;- list(
+  round(rnorm(dimX[1], 8, 2),1),
+  round(rnorm(dimX[2], 10, 2),1),
+  round(rnorm(dimX[3], 12, 2),1)
+)
+
+
+# Tabelas e matrizes bem expostas no Moodle
+library(kableExtra)
+
+
+# Produz uma "R matrix" para ficar bem no Moodle
+create_matrix &lt;- function(v) {
+  # "v" é a variante 1, 2, 3, 
+  
+  matriz_linha &lt;- matrix(amostra[[v]], ncol = dimX[v])
+  
+  rownames(matriz_linha) &lt;- "volume (em m3)"
+  
+  # Não é necessário
+  #colnames(matriz_linha) &lt;- as.character(seq(1,dimX[v]))
+  
+  return(matriz_linha)
+}
+"""
+
+
+
+# enredo 
+
+
+Considere a seguinte variável aleatória:
+
+**X** : Volume (em \(m^3\)) ocupado por uma acácia com 50cm de altura
+
+e a amostra
+
+"""{r echo=F}
+create_matrix(VAR) %&gt;%
+  kbl() %&gt;%
+  kable_styling() %&gt;%
+  kable_paper(full_width = FALSE)
+"""
+
+
+# Pedir a média (Variante `r VAR`) - "média"
+
+A média amostra é: {:NUMERICAL:=`r mean(amostra[[VAR]])`:0.1} (1 casa decimal)
+
+
+
+# Pedir o desvio-padrão (Variante `r VAR`) - "desvio-padrão"
+
+O desvio padrão corrigido é: {:NUMERICAL:=`r sd(amostra[[VAR]])`:0.1} (1 casa decimal)
+
+
+
+# Pedir a dimensão da amostra  (Variante `r VAR`) - "dimensão"
+
+A dimnensão da amostra é: {:NUMERICAL:=`r dimX[[VAR]]`:0}
+
+
+# "conceito1"
+
+A média amostral é uma medida de {:MULTICHOICE_S:=localização central\~%-25%dispersão central\~%-25%localização relativa\~%-25%dispersão relativa} (desconta 25% do valor se errar).
+</code></pre>
 </section>
-<section id="moodle-multichoice_s" class="level2">
-<h2 class="anchored" data-anchor-id="moodle-multichoice_s">Moodle MULTICHOICE_S</h2>
-<p>Permite que a questão seja só focada na seleção de uma opção correta.</p>
-<p>(Mais texto para breve.)</p>
+<section id="uma-questão-aleatória" class="level1">
+<h1>Uma questão aleatória</h1>
+<p>Numa “questão aleatória” não ocorre pré-calculo. Cada nova variante pedida, em número ilimitado, tem um gerador aleatório a produzir valores.</p>
+<p>O R Mardkown seguinte é um modelo de questão aleatória.</p>
+<pre><code>---
+title: "c1-descritiva-aleatoria"
+author: "rmdmoodle"
+date: "2024/05/21"
+output: html_document
+---
+
+Objetivo de avaliação: Capítulo 1 - Estatística Descritiva
+
+Questão de variantes aleatórias.
+
+
+# código
+
+
+"""{r echo=FALSE, results=FALSE}
+
+# Avoid scientific notation in all document
+options(scipen = 999)
+
+# No geral, não mostra "code chunks"
+knitr::opts_chunk$set(echo = FALSE) 
+
+# Fixar as variantes produzidas
+# em número infinito.
+set.seed(11)
+
+# Dimensão das amostras (quantidade em VARCOUNT)
+dimX &lt;- sample(x = c(4, 5, 6), size = 1)
+
+# Inventa amostras (quantidade em VARCOUNT)
+amostra &lt;- round(rnorm(dimX, 8, 2), 1)
+
+# Tabelas e matrizes bem expostas no Moodle
+library(kableExtra)
+
+# Produz uma "R matrix" para ficar bem no Moodle
+create_matrix &lt;- function() {
+
+  matriz_linha &lt;- matrix(amostra, ncol = dimX)
+  
+  rownames(matriz_linha) &lt;- "volume (em m3)"
+  
+  # Não é necessário
+  #colnames(matriz_linha) &lt;- as.character(seq(1,dimX))
+  
+  return(matriz_linha)
+}
+"""
+
+
+
+# enredo 
+
+
+Considere a seguinte variável aleatória:
+
+**X** : Volume (em \(m^3\)) ocupado por uma acácia com 50cm de altura
+
+e a amostra
+
+"""{r echo=F}
+create_matrix() %&gt;%
+  kbl() %&gt;%
+  kable_styling() %&gt;%
+  kable_paper(full_width = FALSE)
+"""
+
+
+# Pedir a média - "média"
+
+A média amostra é: {:NUMERICAL:=`r mean(amostra)`:0.1} (1 casa decimal)
+
+
+
+# Pedir o desvio-padrão - "desvio-padrão"
+
+O desvio padrão corrigido é: {:NUMERICAL:=`r sd(amostra)`:0.1} (1 casa decimal)
+
+
+
+# Pedir a dimensão da amostra  - "dimensão"
+
+A dimnensão da amostra é: {:NUMERICAL:=`r dimX`:0}
+
+
+# "conceito1"
+
+A média amostral é uma medida de {:MULTICHOICE_S:=localização central\~%-25%dispersão central\~%-25%localização relativa\~%-25%dispersão relativa} (desconta 25% do valor se errar).
+</code></pre>
 </section>
-<section id="moodle-numerical" class="level2">
-<h2 class="anchored" data-anchor-id="moodle-numerical">Moodle NUMERICAL</h2>
-<p>Permite que a questão seja só focada num campo numérico.</p>
-<p>(Mais texto para breve.)</p>
+<section id="organização" class="level1">
+<h1>Organização</h1>
+<p>É frequente uma questão ser composta de um enredo e alíneas sobre esse enredo. Esta base de questões segue esse esquema com uma condição: as alíneas serem independentes, ou de algum modo, grupos de alíneas serem independentes entre si.</p>
+<p>A estrutura de ficheiros, que segue a ideia da imagem, baseia-se numa pasta raiz e subpastas com questões por capítulos:</p>
+<p><img src="img/questions-folder-structure.png" class="img-fluid"></p>
+<p>em que</p>
+<ol type="1">
+<li>Cada ficheiro R Markdown, por exemplo “c4-anova-1fator-com-dados.Rmd”, tem uma questão definida por um enredo e alíneas.</li>
+<li>Cada alínea tem um nome que a identifica. No caso de questão mencionada, o RSTudio mostra as alíneas no “outline” do ficheiro Rmd:</li>
+</ol>
+<p><img src="img/questions-with-items.png" class="img-fluid"></p>
+<p>Pode ser usado um sistema de controlo de versões (por exemplo, github) tornando a gestão acessível aos autores.</p>
 </section>
-<section id="moodle-essay" class="level2">
-<h2 class="anchored" data-anchor-id="moodle-essay">Moodle ESSAY</h2>
-<p>Permite que a questão receba a resposta textual (via teclado) de um estudante.</p>
-<p>(Mais texto para breve.)</p>
+<section id="criar-um-teste" class="level1">
+<h1>Criar um teste</h1>
+<p>Num pasta de testes procede-se assim:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#install.packages("rmdmoodle")</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rmdmoodle)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Indica onde está a base de questões com alíneas</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set_exercise_root</span>( <span class="st">"~/banco_de_questoes"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an exam from exercises.</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rmdexam</span>(<span class="st">"exame-para-amanha.Rmd"</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pq</span>(<span class="st">"cap3/c3-estimativa.Rmd"</span>, <span class="st">"alinea01"</span>, <span class="st">"alinea04"</span>),</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">pq</span>(<span class="st">"cap4/c4-anova-1fator-com-dados.Rmd"</span>, <span class="st">"id01"</span>, <span class="st">"concept01"</span>) )</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Neste código o novo teste, desigando por <code>exame-de-amanha.Rmd</code>, contém duas questões. Uma sobre estimativa e outra sobre anova, e respectivas alíneas selecionadas.</p>
+<ul>
+<li><code>pq(...)</code> designa “planned question” (ver )</li>
+</ul>
 
 
 </section>

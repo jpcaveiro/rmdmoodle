@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="pt" xml:lang="pt"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.4.553">
@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>rmdmoodle</title>
+<title>rmdmoodle - Debug</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -53,49 +53,20 @@ ul.task-list li input[type="checkbox"] {
   ],
   "show-item-context": false,
   "language": {
-    "search-no-results-text": "Nenhum resultado",
-    "search-matching-documents-text": "documentos correspondentes",
-    "search-copy-link-title": "Copiar link para a busca",
-    "search-hide-matches-text": "Esconder correspondências adicionais",
-    "search-more-match-text": "mais correspondência neste documento",
-    "search-more-matches-text": "mais correspondências neste documento",
-    "search-clear-button-title": "Limpar",
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
     "search-text-placeholder": "",
-    "search-detached-cancel-button-title": "Cancelar",
-    "search-submit-button-title": "Enviar",
-    "search-label": "Procurar"
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
   }
 }</script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
-
-<script type="text/javascript">
-const typesetMath = (el) => {
-  if (window.MathJax) {
-    // MathJax Typeset
-    window.MathJax.typeset([el]);
-  } else if (window.katex) {
-    // KaTeX Render
-    var mathElements = el.getElementsByClassName("math");
-    var macros = [];
-    for (var i = 0; i < mathElements.length; i++) {
-      var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
-        window.katex.render(texText.data, mathElements[i], {
-          displayMode: mathElements[i].classList.contains('display'),
-          throwOnError: false,
-          macros: macros,
-          fleqn: false
-        });
-      }
-    }
-  }
-}
-window.Quarto = {
-  typesetMath
-};
-</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -111,14 +82,14 @@ window.Quarto = {
     <span class="navbar-title">rmdmoodle</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Procurar"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Alternar de navegação" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="./index.html"> 
 <span class="menu-text">Início</span></a>
   </li>  
   <li class="nav-item">
@@ -138,7 +109,7 @@ window.Quarto = {
 <span class="menu-text">Exemplos</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./debug.html"> 
+    <a class="nav-link active" href="./debug.html" aria-current="page"> 
 <span class="menu-text">Debug</span></a>
   </li>  
   <li class="nav-item">
@@ -158,15 +129,11 @@ window.Quarto = {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Nesta página</h2>
+    <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#moodle-e-notação-matemática" id="toc-moodle-e-notação-matemática" class="nav-link active" data-scroll-target="#moodle-e-notação-matemática">Moodle e notação matemática</a></li>
-  <li><a href="#moodle-e-mostrar-código-r" id="toc-moodle-e-mostrar-código-r" class="nav-link" data-scroll-target="#moodle-e-mostrar-código-r">Moodle e mostrar código R</a></li>
-  <li><a href="#moodle-cloze-e-r-markdown" id="toc-moodle-cloze-e-r-markdown" class="nav-link" data-scroll-target="#moodle-cloze-e-r-markdown">Moodle CLOZE e R Markdown</a></li>
-  <li><a href="#moodle-multichoice_s" id="toc-moodle-multichoice_s" class="nav-link" data-scroll-target="#moodle-multichoice_s">Moodle MULTICHOICE_S</a></li>
-  <li><a href="#moodle-numerical" id="toc-moodle-numerical" class="nav-link" data-scroll-target="#moodle-numerical">Moodle NUMERICAL</a></li>
-  <li><a href="#moodle-essay" id="toc-moodle-essay" class="nav-link" data-scroll-target="#moodle-essay">Moodle ESSAY</a></li>
+  <li><a href="#etapa-execução-de-xmlmoodleficheiro" id="toc-etapa-execução-de-xmlmoodleficheiro" class="nav-link active" data-scroll-target="#etapa-execução-de-xmlmoodleficheiro">Etapa: execução de xmlmoodle(“ficheiro”)`</a></li>
+  <li><a href="#etapa-durante-a-importação-do-xml-para-o-moodle" id="toc-etapa-durante-a-importação-do-xml-para-o-moodle" class="nav-link" data-scroll-target="#etapa-durante-a-importação-do-xml-para-o-moodle">Etapa: durante a importação do xml para o moodle</a></li>
   </ul>
 </nav>
     </div>
@@ -175,7 +142,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">rmdmoodle</h1>
+<h1 class="title">Debug</h1>
 </div>
 
 
@@ -192,76 +159,45 @@ window.Quarto = {
 </header>
 
 
-<div class="callout callout-style-default callout-tip callout-titled">
+<section id="etapa-execução-de-xmlmoodleficheiro" class="level2">
+<h2 class="anchored" data-anchor-id="etapa-execução-de-xmlmoodleficheiro">Etapa: execução de xmlmoodle(“ficheiro”)`</h2>
+<p>Nota: “ficheiro” é um “ficheiro.Rmd”.</p>
+<p>Situação 01: <code>Error, please check :MULTICHOICE:=L</code></p>
+</section>
+<section id="etapa-durante-a-importação-do-xml-para-o-moodle" class="level2">
+<h2 class="anchored" data-anchor-id="etapa-durante-a-importação-do-xml-para-o-moodle">Etapa: durante a importação do xml para o moodle</h2>
+<div class="callout callout-style-default callout-caution callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Ideia
+códigos como <code>&lt;0112&gt;</code>
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Usar o R Markdown e Knitr para a criação de “Questões Aleatórias” no Moodle.</p>
+<p>Surgem códigos como <code>&lt;0112&gt;</code> no xml em lugar das usuais letras portuguesas acentuadas.</p>
 </div>
 </div>
-<p>Contacto: Pedro Cruz (<code>pedrocruz@ua.pt</code>)</p>
-<p>Esta biblioteca R recorre a um pequeno subconjunto das potencialidades do sistema Moodle.</p>
-<section id="moodle-e-notação-matemática" class="level2">
-<h2 class="anchored" data-anchor-id="moodle-e-notação-matemática">Moodle e notação matemática</h2>
-<p>A notação matemática, a usar no ficheiro Rmd, é assim <code>\(\bar x\)</code> (<span class="math inline">\(\bar x\)</span>) para fórmulas em linha e com:</p>
-<blockquote class="blockquote">
-<p><code>\[\frac{\bar X - \mu}{\sigma/\sqrt{n}}\]</code></p>
-</blockquote>
-<p>para equações centradas:</p>
-<p><span class="math display">\[
-\frac{\bar X - \mu}{\sigma/\sqrt{n}}
-\]</span></p>
-</section>
-<section id="moodle-e-mostrar-código-r" class="level2">
-<h2 class="anchored" data-anchor-id="moodle-e-mostrar-código-r">Moodle e mostrar código R</h2>
-<p>Para mostrar código R, <strong>sem executar</strong>, pode-se colocar três plicas e a letra “r” sem a envolver em chavetas (<code>{r}</code>):</p>
-<pre>```r
-&gt; x = matrix( c(A,B,C,D), nrow = 2)
-```
-</pre>
-</section>
-<section id="moodle-cloze-e-r-markdown" class="level2">
-<h2 class="anchored" data-anchor-id="moodle-cloze-e-r-markdown">Moodle CLOZE e R Markdown</h2>
-<p>Permite que uma única questão seja dividida em alíneas (ou itens) de tipos diversificados.</p>
-<p>Resultado <strong>numérico</strong> arredondado a 4 casas decimais (x) :</p>
-<pre>{1:NUMERICAL:=`r round(uma_var, 4)`:0.0001}</pre>
-<p>(use 4 casas decimais)</p>
-<p>Utilização de <strong>shortanswer</strong>. A sintaxe é:</p>
-<pre>{1:SHORTANSWER:=alguma palavra ou frase corret\~%75%frase parcialmente correta}</pre>
+<p>A solução foi fazer um “restart R”!</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Pergunta de respostas incorporadas (Cloze) inválida
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A importação resulta em:</p>
+<p>Erro ao importar pergunta. Pergunta de respostas incorporadas (Cloze) inválida (A resposta deve ser um número. Exemplo: -1234 ou 3e8 ou ‘<em>’. A resposta deve ser um número. Exemplo: -1234 ou 3e8 ou ’</em>’.).”</p>
+</div>
+</div>
+<p>O erro deve estar num NUMERICAL. Exemplos:</p>
 <ul>
-<li>não usar LaTeX na shortanswer;</li>
-<li>o Moodle permite facilmente que o professor corrija e adapte a classificação lendo cada resposta de cada aluno.</li>
+<li><code>{2:NUMERICAL:=1.6927875^{-196}}</code></li>
 </ul>
-<p>Exemplo de “shortanswer” com parametrização:</p>
-<pre>{1:SHORTANSWER:=`r FRASE_CORRETA`=`r OUTRA_FRASE_CORRETA`}</pre>
-<p>Na <strong>escolha múltipla</strong> sorteada (pósfixo <code>_S</code>), o Moodle baralha a ordem pela qual as opções surgem a cada estudante. A versão parametrizada com R pode ser:</p>
-<pre>{1:MULTICHOICE_S:=`r OPCAOCORRETA`\~`r OPCAOERRADA1`\~`r OPCAOERRADA2`\~`r OPCAOERRADA3`}</pre>
-<p>ou sem ser parametrizada:</p>
-<pre>{1:MULTICHOICE_S:=opção correta\~opção incorreta 1\~opção incorreta 2\~opção incorreta 3}</pre>
-<p>e há lugar a cotações parciais</p>
-<pre>{1:MULTICHOICE_S:=opção correta\~%25%opção incorreta 1\~opção incorreta 2\~opção incorreta 3}</pre>
-<p>mas tendo em conta que se o estudante “jogar à sorte” pode sempre obter pontos.</p>
-</section>
-<section id="moodle-multichoice_s" class="level2">
-<h2 class="anchored" data-anchor-id="moodle-multichoice_s">Moodle MULTICHOICE_S</h2>
-<p>Permite que a questão seja só focada na seleção de uma opção correta.</p>
-<p>(Mais texto para breve.)</p>
-</section>
-<section id="moodle-numerical" class="level2">
-<h2 class="anchored" data-anchor-id="moodle-numerical">Moodle NUMERICAL</h2>
-<p>Permite que a questão seja só focada num campo numérico.</p>
-<p>(Mais texto para breve.)</p>
-</section>
-<section id="moodle-essay" class="level2">
-<h2 class="anchored" data-anchor-id="moodle-essay">Moodle ESSAY</h2>
-<p>Permite que a questão receba a resposta textual (via teclado) de um estudante.</p>
-<p>(Mais texto para breve.)</p>
 
 
 </section>
@@ -321,12 +257,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // flash "checked"
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copiada");
+    button.setAttribute("title", "Copied!");
     let tooltip;
     if (window.bootstrap) {
       button.setAttribute("data-bs-toggle", "tooltip");
       button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copiada");
+      button.setAttribute("data-bs-title", "Copied!");
       tooltip = new bootstrap.Tooltip(button, 
         { trigger: "manual", 
           customClass: "code-copy-button-tooltip",
