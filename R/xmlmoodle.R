@@ -1095,6 +1095,9 @@ xmlmoodle <- function(filename_no_extension, params = NULL) {
         #debug
         #cat("rmarkdown::render without params\n")
 
+        rm(params) #necessário tirar params do environment
+                   #porque params pode estar no ".Rmd" e
+                   #dá conflito
         rmarkdown::render(paste0(filename_no_extension, ".Rmd"),
                           output_format = "html_document",
                           quiet = TRUE)
@@ -1103,7 +1106,6 @@ xmlmoodle <- function(filename_no_extension, params = NULL) {
         #debug
         #cat("rmarkdown::render WITH params\n")
 
-        rm(params)
         cat(paste0("File ", filename_no_extension, ".Rmd has params.\n"))
         rmarkdown::render(paste0(filename_no_extension, ".Rmd"),
                           params = params,

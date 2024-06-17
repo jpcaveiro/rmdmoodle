@@ -23,9 +23,9 @@ the xml file. Importing to moodle has its own
 "tricks" to be described elsewhere.
 }
 \examples{
-\dontrun{make_rmdmoodle("my-new-moodle-exam.Rmd",
-               c("cap1/c1-estimation.Rmd","est-mean","est-var"),
-               c("cap2/c2-normalprob.Rmd","prob-less", "prob-greater", "prob-between"))}
+\dontrun{rmdexam("my-new-moodle-exam.Rmd",
+               pq("cap1/c1-estimation.Rmd", "est-mean", "est-var"),
+               rq("cap2/c2-normalprob.Rmd", "prob-less", "prob-greater", "prob-between"))}
 Remove 6 from rmdexam(6, "2022-2023-exame.Rmd",...)
 TODO: maybe remove after all testing on new exams.
 "arg" is like list(rmdtext="...", params=...)

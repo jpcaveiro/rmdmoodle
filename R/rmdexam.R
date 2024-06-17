@@ -13,7 +13,7 @@
 DBG_rmdexam <- F
 
 
-library(yaml) #use yaml::as.yaml
+#library(yaml) #use yaml::as.yaml
 
 # functions ====
 
@@ -917,7 +917,7 @@ rmdexam <- function(rmdfilename, ...) {
                          paste(argslist, collapse = ", \n"))
 
   if (length(all_params)>0) {
-    paramsstr <- as.yaml(list(params = all_params), indent = 4, indent.mapping.sequence = TRUE)
+    paramsstr <- yaml::as.yaml(list(params = all_params), indent = 4, indent.mapping.sequence = TRUE)
 
     head_txt <- paste0(
       "---\n",
