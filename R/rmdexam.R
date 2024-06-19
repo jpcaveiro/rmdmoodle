@@ -18,6 +18,39 @@ DBG_rmdexam <- F
 # functions ====
 
 
+
+#' Extract the last word using substr
+#'
+#' @return char
+get_lastword <- function(my_string) {
+
+  #debug
+  #print(my_string)
+
+  ssplit = strsplit(my_string, " ")[[1]]
+
+  # Only keep non empty words
+  ssplit_new <- c()
+  for (j in seq_along(ssplit)) {
+    if (nchar(ssplit[j])>0) {
+      ssplit_new <- c(ssplit_new, ssplit[j])
+    }
+  }
+
+  # Reverse
+  rev_ssplit_new <- rev(ssplit_new)
+
+  # Extract the last word using substr
+  last_word <- rev_ssplit_new[1]
+
+  #debug
+  #print(last_word)
+
+  return(last_word)
+}
+
+
+
 #' Get VARCOUNT <- 6 or VARCOUNT = 6.
 #' Search in the line for that pattern.
 #'
@@ -207,7 +240,19 @@ get_ex_type <- function(curr_line) {
 #' @return list(ex_title, ex_type, code, enredo, alineas, alineas_title)
 #'
 #' @examples
-parse_exrmdfile <- function(rmdfilename, varcount = NULL, number = 1) { # nolint: cyclocomp_linter.
+parse_exrmdfile <- function(ex_path,
+                            rmdfilename,
+                            ex_params=NULL, #for moodle title
+                            varcount = NULL, #WHAT?
+                            number = 1) { #usado para o return de ex$number
+
+  if (is.null(ex_params)) {
+
+    # Read params of the rmd file.
+    # if they exist there.
+    ex_yaml <- rmarkdown::yaml_front_matter(ex_path)
+    ex_params <- ex_yaml$params
+  }
 
 
   # inside no code yet
@@ -241,7 +286,9 @@ parse_exrmdfile <- function(rmdfilename, varcount = NULL, number = 1) { # nolint
   #   close(fileConn)
   # })
 
-  all_lines <- readLines(rmdfilename, encoding = "UTF-8", warn=FALSE)
+
+  #Read all lines from path/some_question.Rmd.
+  all_lines <- readLines(ex_path, encoding = "UTF-8", warn=FALSE)
 
 
 
@@ -297,16 +344,35 @@ parse_exrmdfile <- function(rmdfilename, varcount = NULL, number = 1) { # nolint
     #to avoid infinite loops
     protect_counter <- curr_lineno
 
+    # https://www.statology.org/r-date-format/
 
     if (curr_state == S_BEFORECODE) {
 
-      if (grepl("^title:", curr_line)) {
+      if (grepl("^author:", curr_line)) {
         if (DBG_rmdexam) {
           cat("DBG_rmdexam: entou na linha 'title' do ficheiro *.Rmd\n")
         }
-        ex_title <- substr(curr_line, start = 8, stop = nchar(curr_line))
-        ex_title <- gsub('"', ' ', ex_title) # nolint
-        ex_title <- trimws(ex_title)
+        inside_author <- substr(curr_line, start = 8, stop = nchar(curr_line))
+        inside_author <- gsub('"', ' ', inside_author)
+        inside_author <- trimws(inside_author)
+        if (is.null(ex_params)) {
+          ex_title <- paste0(rmdfilename, ", ",
+                             inside_author, ", ",
+                             paste0(format(Sys.Date(),"%y-%m-%d"), " ",
+                                    format(Sys.time(),"%H:%M"))
+          )
+        } else {
+          ex_title <- paste0(rmdfilename, " ",
+                           paste(names(ex_params), ex_params, collapse = ","), ", ",
+                           inside_author, ", ",
+                           paste0(format(Sys.Date(),"%y-%m-%d"), " ",
+                                  format(Sys.time(),"%H:%M"))
+                           )
+        }
+
+        #debug
+        cat("ex_title: ", ex_title, "\n")
+
         curr_lineno <- next_line(curr_lineno, all_lines)
       } else if (grepl("^# ", curr_line) ) {
                  # &&
@@ -444,6 +510,7 @@ parse_exrmdfile <- function(rmdfilename, varcount = NULL, number = 1) { # nolint
               enredo  = paste0(all_lines[line_start_enredo:line_end_enredo], collapse = "\n"),
               alineas = list_of_alineas,
               alineas_title = list_of_alineas_title,
+              ex_params = ex_params,
               filename = rmdfilename))
 
 }
@@ -568,8 +635,13 @@ rq <- function(...) {
   #            code    = paste0(all_lines[line_start_code:line_end_code], collapse="\n"),
   #            enredo  = paste0(all_lines[line_start_enredo:line_end_enredo], collapse="\n"),
   #            alineas = list_of_alineas,
-  #            alineas_title = list_of_alineas_title))
-  ex <- parse_exrmdfile(question_path, varcount = number, number = number)
+  #            alineas_title = list_of_alineas_title,
+  #            params  )
+  ex <- parse_exrmdfile(question_path,
+                        rmdfilename = rmdfilename, #for title
+                        ex_params=ex_params, #If ex_params is null it can be read from question_path, if exists there
+                        varcount = number,
+                        number = number)
 
 
   # output string containing Rmd (headerless) to be joint with other exercises
@@ -579,7 +651,8 @@ rq <- function(...) {
   # A # section is an exercise in Rmd.
   # antes: ex_header  <- paste0("# ", ex$title, "-", toupper(ex$type), collapse = " ")
   #now:
-  ex_header  <- paste0("# ", slugify(ex$title), "-", toupper(ex$type), "\n\n")
+  #slugex_header  <- paste0("# ", slugify(ex$title), "-", toupper(ex$type), "\n\n")
+  ex_header  <- paste0("# ", ex$title, "-", toupper(ex$type), "\n\n")
   ex_seed <- paste0("```{r}\nset.seed(", seed, ")\n```\n\n")
   ex_rmdtext <- paste0(ex_rmdtext, ex_header, ex_seed, "\n\n")
 
@@ -632,7 +705,7 @@ rq <- function(...) {
   }
 
 
-  return(list(rmdtext = ex_rmdtext, params = ex_params))
+  return(list(rmdtext = ex_rmdtext, params = ex$ex_params))
 }
 
 
@@ -663,13 +736,13 @@ pq <- function(...) {
 
   arglist <- list(...)
 
-
-  if (length(arglist)==1) {
-    # Happens when c("Question.Rmd", "Items1", "Item2") is
-    # used instead of pq("Question.Rmd", "Items1", "Item2")
-    # for convenience of the first rmdexam version
-    arglist <- as.list(arglist[[1]])
-  }
+  #TALVEZ NÃO SEJA PRECISO
+  #if (length(arglist)==1) {
+  #  # Happens when c("Question.Rmd", "Items1", "Item2") is
+  #  # used instead of pq("Question.Rmd", "Items1", "Item2")
+  #  # for convenience of the first rmdexam version
+  #  arglist <- as.list(arglist[[1]])
+  #}
 
   #Debug
   #cat("pq(...)\n")
@@ -717,6 +790,10 @@ pq <- function(...) {
   #rmdfilename_no_ext <- remove_extension(arglist[[1]][1], "Rmd")
   rmdfilename <- add_extension(arglist[[1]][1], "Rmd")
 
+  ex_path <- file.path(pkg_env$EXERCISE_ROOT, rmdfilename)
+  #debug
+  #print(ex_path)
+
 
   #ex is a list:
   # list(title = ex_title,
@@ -725,13 +802,12 @@ pq <- function(...) {
   #            code    = paste0(all_lines[line_start_code:line_end_code], collapse="\n"),
   #            enredo  = paste0(all_lines[line_start_enredo:line_end_enredo], collapse="\n"),
   #            alineas = list_of_alineas,
-  #            alineas_title = list_of_alineas_title))
-
-  ex_path <- file.path(pkg_env$EXERCISE_ROOT, rmdfilename)
-
-  #debug
-  #print(ex_path)
-  ex <- parse_exrmdfile(ex_path, number = number) #number will be put on ex$number
+  #            alineas_title = list_of_alineas_title,
+  #            params  )
+  ex <- parse_exrmdfile(ex_path,
+                        rmdfilename = rmdfilename, #for title
+                        ex_params=ex_params, #If ex_params is null it can be read from question_path, if exists there
+                        number = number) #number will be put on ex$number
 
 
   # output string containing Rmd (headerless) to be joint with other exercises
@@ -742,7 +818,8 @@ pq <- function(...) {
   # A # section is an exercise in Rmd.
   # antes: ex_header  <- paste0("# ", ex$title, "-", toupper(ex$type), collapse = " ")
   #now:
-  ex_header  <- paste0("# ", slugify(ex$title), "-", toupper(ex$type), collapse = " ")
+  #slug ex_header  <- paste0("# ", slugify(ex$title), "-", toupper(ex$type), collapse = " ")
+  ex_header  <- paste0("# ", ex$title, "-", toupper(ex$type), collapse = " ")
 
 
   if (!is.null(seed)) {
@@ -770,6 +847,19 @@ pq <- function(...) {
 
   #alíneas
   al_request_number <- length(exrequest) - 1 #sem o rmdfilename
+
+  # Add all items if none is supplied.
+  if (al_request_number==0) {
+
+    #Get all items from the question
+    for (i in seq_along(ex$alineas_title)) {
+      items_id <- get_lastword(ex$alineas_title[[i]])
+      exrequest <- c(exrequest, items_id)
+    }
+
+    al_request_number <- length(exrequest) - 1
+  }
+
   #al_total <- length(ex$alineas) #not used
   al_string <- ""
 
@@ -827,7 +917,7 @@ pq <- function(...) {
   }
 
 
-  return(list(rmdtext = ex_rmdtext, params = ex_params))
+  return(list(rmdtext = ex_rmdtext, params = ex$ex_params)) #TODO: vou aqui np pq()
 }
 
 
