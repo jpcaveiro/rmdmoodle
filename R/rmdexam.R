@@ -321,7 +321,7 @@ parse_exrmdfile <- function(ex_path,
 
 
 
-
+  inside_author <- NULL
 
 
   #This "while()" it's a state machine whose states are:
@@ -355,6 +355,20 @@ parse_exrmdfile <- function(ex_path,
         inside_author <- substr(curr_line, start = 8, stop = nchar(curr_line))
         inside_author <- gsub('"', ' ', inside_author)
         inside_author <- trimws(inside_author)
+
+
+        curr_lineno <- next_line(curr_lineno, all_lines)
+      } else if (grepl("^# ", curr_line) ) {
+                 # &&
+                 # ( grepl("código", tolower(curr_line)) || grepl("codigo", tolower(curr_line)) ) ) { # nolint
+
+
+        # With information from "author:" line, if exists,
+        # it will built the "moodle random question" title:
+        if (is.null(inside_author)) {
+          inside_author <- "author"
+          cat(paste0("In Rmd file header put an author line: 'author: ", '"..."', "'.\n"))
+        }
         if (is.null(ex_params)) {
           ex_title <- paste0(rmdfilename, ", ",
                              inside_author, ", ",
@@ -363,20 +377,18 @@ parse_exrmdfile <- function(ex_path,
           )
         } else {
           ex_title <- paste0(rmdfilename, " ",
-                           paste(names(ex_params), ex_params, collapse = ","), ", ",
-                           inside_author, ", ",
-                           paste0(format(Sys.Date(),"%y-%m-%d"), " ",
-                                  format(Sys.time(),"%H:%M"))
-                           )
+                             paste(names(ex_params), ex_params, collapse = ","), ", ",
+                             inside_author, ", ",
+                             paste0(format(Sys.Date(),"%y-%m-%d"), " ",
+                                    format(Sys.time(),"%H:%M"))
+          )
         }
 
         #debug
-        cat("ex_title: ", ex_title, "\n")
+        #cat("ex_title: ", ex_title, "\n")
 
-        curr_lineno <- next_line(curr_lineno, all_lines)
-      } else if (grepl("^# ", curr_line) ) {
-                 # &&
-                 # ( grepl("código", tolower(curr_line)) || grepl("codigo", tolower(curr_line)) ) ) { # nolint
+
+
         curr_state <- change_state(S_CODE, "S_CODE")
         curr_lineno <- next_line(curr_lineno, all_lines)
         line_start_code <- curr_lineno
