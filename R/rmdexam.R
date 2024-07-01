@@ -370,18 +370,21 @@ parse_exrmdfile <- function(ex_path,
           cat(paste0("In Rmd file header put an author line: 'author: ", '"..."', "'.\n"))
         }
         if (is.null(ex_params)) {
+          #Não dá jeito colocar timestamps
+          #porque no moodle o nome da subcategoria nao 
+          #pode mudar
+          #ex_title <- paste0(rmdfilename, ", ",
+          #                   inside_author, ", ",
+          #                   paste0(format(Sys.Date(),"%y-%m-%d"), " ",
+          #                          format(Sys.time(),"%H:%M"))
+          #)
           ex_title <- paste0(rmdfilename, ", ",
-                             inside_author, ", ",
-                             paste0(format(Sys.Date(),"%y-%m-%d"), " ",
-                                    format(Sys.time(),"%H:%M"))
+                             inside_author
           )
         } else {
           ex_title <- paste0(rmdfilename, " ",
                              paste(names(ex_params), ex_params, collapse = ","), ", ",
-                             inside_author, ", ",
-                             paste0(format(Sys.Date(),"%y-%m-%d"), " ",
-                                    format(Sys.time(),"%H:%M"))
-          )
+                             inside_author)
         }
 
         #debug
