@@ -457,10 +457,39 @@ question_with_variants <- function(question_title, question_html, main_question_
     stop("A question with variants is expected: a section defined by '##' must have the syntax '## variant <and some text>'.\nOr this Rmd file is not an isolated test but is part of a question base (rmdmoodle format).")
   }
 
+  #Warns author if "enunciado" is the same in all variants
+  #because that can happen in question there is lack
+  #of variability (coding problems or other reason)
+  if (equal_variants(variants)) {
+    cat("====\n")
+    cat("Variants: there are equal variants, please check text and code.\n")
+    cat("====\n")
+  }
+
   return(list(question_title = question_title,
               variants = variants))
 }
 
+
+equal_variants <- function(variants) {
+
+  eq_variants <- 0
+
+  vlen <- length(variants)
+
+  #c <- length(variants)
+  for (i in seq(from=1, to=(vlen - 1))) {
+    for (j in seq(from=(i + 1), to=vlen)) {
+      if (variants[[i]]$enunciado == variants[[j]]$enunciado) {
+        eq_variants <- eq_variants + 1
+        cat(paste0("Variants ", i, " and ", j, " are equal.\n"))
+        break
+      }
+    }
+  }
+
+  return(eq_variants>0)
+}
 
 
 numerical <- function(variant_title, variant_contents) {
