@@ -24,7 +24,7 @@
 #    a célula  n tem o feeback
 
 # if (question_type == "MULTICHOICE") {
-#     question_tuple <- moodle_question_multichoice(question_name, partes_da_questao)
+#     question_tuple <- moodle_question_multichoice(question_name, partes_da_questao) #nolint
 # } else if (question_type == "NUMERICAL") {
 #     question_tuple <- moodle_question_numerical(question_name, partes_da_questao)
 # } else if (question_type == "CLOZE") {
