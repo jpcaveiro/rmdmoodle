@@ -1,15 +1,15 @@
+# nolint
 
 
-
-#library(stringdist) -afind
+# library(stringdist) -afind
 
 
 
 # algoritmo ====
 
-#' Notes:
-#' - module xmlmoodle.R calls verifycloze() defined n this file.
-#' - see test04-regex.R in WorkPackages/2020-rmdmoodle for experiences
+# Notes:
+# 1. module xmlmoodle.R calls verifycloze() defined in this file.
+# 2. See test04-regex.R in WorkPackages/2020-rmdmoodle for experiences
 
 
 #' 1. limpar 0D 0D 0A para espaço
@@ -35,7 +35,7 @@
 
 
 
-AFIND_MAX_DISTANCE <- 4
+AFIND_MAX_DISTANCE <- 4 # nolint
 # TODO:
 #
 # número versus NUMERICAL com "AFIND_MAX_DISTANCE <- 6" dispara a situação
@@ -59,7 +59,8 @@ maybe_pattern <- function(uclozetext) {
 
   # MAYBE a :MULTICHOICE_S:
   afind_result <- stringdist::afind(toupper(uclozetext), ":MULTICHOICE_S:")
-  if (afind_result$distance <= AFIND_MAX_DISTANCE) { #TODO: tune this 6
+  if (afind_result$distance <= AFIND_MAX_DISTANCE &&
+      grepl("[\\{\\}=~]", uclozetext)) { #TODO: tune this 6
     return(list(pattern = "[^{^}]{\\d*:MULTICHOICE_S:=(?<inside>[^}]*)}",
                 afind = afind_result))
   }
@@ -67,7 +68,8 @@ maybe_pattern <- function(uclozetext) {
 
   # MAYBE a :NUMERICAL:
   afind_result <- stringdist::afind(toupper(uclozetext), ":NUMERICAL:")
-  if (afind_result$distance <= AFIND_MAX_DISTANCE) { #TODO: tune this 6
+  if (afind_result$distance <= AFIND_MAX_DISTANCE &&
+      grepl("[\\{\\}=~]", uclozetext)) { #TODO: tune this 6
     return(list(pattern = "[^{^}]{\\d*:NUMERICAL:=(?<inside>[^}]*)}",
                 afind = afind_result))
   }
@@ -131,13 +133,18 @@ validate_pattern <- function(uclozetext, resultofmaybe) {
 
   # MULTICHOICE_S or NUMERICAL options situations
   if (grepl("<SUB>", options, ignore.case = TRUE)) {
-    cat("    Error: use '\\~' instead of only '~' in RMarkdown file to avoid produce '<sub>' tag.\n")
+    cat("    Use '\\~' instead of only '~' in RMarkdown file. An isolated ~, in Rmd, means italic and not a false answer.\n")
   }
   options_list <- strsplit(options, "~")
 
   # NUMERICAL options situations
   if (grepl("\\^", options, ignore.case = TRUE) && grepl("NUMERICAL", resultofmaybe$pattern, ignore.case = TRUE) ) {
-    cat(paste0("    Error: moodle does not support curly braces in numbers like 10^{2}. Use `options(scipen = 999)` in code. See '", options, "' in XML moodle file.\n"))
+    cat(paste0("    Error: moodle does not support curly braces in numbers like 10^{2}. Suggested use of `options(scipen = 999)` in code. See '", options, "' in XML moodle file.\n"))
+  }
+
+  # NUMERICAL options situations
+  if (grepl(" ", options, ignore.case = TRUE) && grepl("NUMERICAL", resultofmaybe$pattern, ignore.case = TRUE) ) {
+    cat(paste0("    Error: there is a space in a {:NUMERICAL:=...}.  See '", options, "' in XML moodle file.\n"))
   }
 
 
@@ -271,7 +278,7 @@ verifycloze <- function(clozetext, showprogress = FALSE) {
         cat("\n")
 
         #build new uclozetext from "resultofmaybe"
-        uclozetext <- gsub(resultofmaybe$afind$match,
+        uclozetext <- gsub(stringr::str_escape(resultofmaybe$afind$match),
                            "REMOVED-POSSIBLEINSTRUCTION",
                            uclozetext,
                            ignore.case = TRUE)
