@@ -79,7 +79,7 @@ MULTICHOICE_template4 <- '/
     <generalfeedback format="html">
       <text><![CDATA[{{{feedbackglobal}}}]]></text>
     </generalfeedback>
-    <defaultgrade>1.0000000</defaultgrade>
+    <defaultgrade>{{defaultgrade}}</defaultgrade>
     <penalty>0.3333333</penalty>
     <hidden>0</hidden>
     <idnumber></idnumber>
@@ -102,19 +102,19 @@ MULTICHOICE_template4 <- '/
         <text></text>
       </feedback>
     </answer>
-    <answer fraction="0" format="html">
+    <answer fraction="{{em_fraction}}" format="html">
       <text><![CDATA[{{{answer_incorrect1}}}]]></text>
       <feedback format="html">
         <text></text>
       </feedback>
     </answer>
-    <answer fraction="0" format="html">
+    <answer fraction="{{em_fraction}}" format="html">
       <text><![CDATA[{{{answer_incorrect2}}}]]></text>
       <feedback format="html">
         <text></text>
       </feedback>
     </answer>
-    <answer fraction="0" format="html">
+    <answer fraction="{{em_fraction}}" format="html">
       <text><![CDATA[{{{answer_incorrect3}}}]]></text>
       <feedback format="html">
         <text></text>
@@ -145,7 +145,7 @@ MULTICHOICE_template5 <- '
     <generalfeedback format="html">
       <text><![CDATA[{{{feedbackglobal}}}]]></text>
     </generalfeedback>
-    <defaultgrade>1.0000000</defaultgrade>
+    <defaultgrade>{{defaultgrade}}</defaultgrade>
     <penalty>0.3333333</penalty>
     <hidden>0</hidden>
     <idnumber></idnumber>
@@ -168,25 +168,25 @@ MULTICHOICE_template5 <- '
         <text></text>
       </feedback>
     </answer>
-    <answer fraction="0" format="html">
+    <answer fraction="{{em_fraction}}" format="html">
       <text><![CDATA[{{{answer_incorrect1}}}]]></text>
       <feedback format="html">
         <text></text>
       </feedback>
     </answer>
-    <answer fraction="0" format="html">
+    <answer fraction="{{em_fraction}}" format="html">
       <text><![CDATA[{{{answer_incorrect2}}}]]></text>
       <feedback format="html">
         <text></text>
       </feedback>
     </answer>
-    <answer fraction="0" format="html">
+    <answer fraction="{{em_fraction}}" format="html">
       <text><![CDATA[{{{answer_incorrect3}}}]]></text>
       <feedback format="html">
         <text></text>
       </feedback>
     </answer>
-    <answer fraction="0" format="html">
+    <answer fraction="{{em_fraction}}" format="html">
       <text><![CDATA[{{{answer_incorrect4}}}]]></text>
       <feedback format="html">
         <text></text>
@@ -733,7 +733,16 @@ essay <- function(variant_title, variant_contents) {
 #' @param all_questions - a list
 #'
 #' @return - a saved file in system
-saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions) {
+saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions, em_fraction, defaultgrade) {
+
+
+  # multichoice
+  if (is.null(em_fraction)) {
+    em_fraction = "0"
+  }
+  if (is.null(defaultgrade)) {
+    defaultgrade = "1.0000000"
+  }
 
 
   #<?xml version="1.0" encoding="UTF-8"?>
@@ -780,7 +789,9 @@ saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions) {
                             answer_incorrect1 = variant$respostas[2], #"incorreta 1",
                             answer_incorrect2 = variant$respostas[3], #"incorreta 2",
                             answer_incorrect3 = variant$respostas[4], #"incorreta 3",
-                            feedbackglobal    = variant$feedbackglobal)
+                            feedbackglobal    = variant$feedbackglobal,
+                            em_fraction       = em_fraction,
+                            defaultgrade      = defaultgrade)
                           ),
                           sep = "\n"
           )
@@ -796,8 +807,10 @@ saveto_xmlmoodle <- function(filename_no_extension, exam_title, all_questions) {
                             answer_incorrect2 = variant$respostas[3], #"incorreta 2",
                             answer_incorrect3 = variant$respostas[4], #"incorreta 3",
                             answer_incorrect4 = variant$respostas[5], #"incorreta 4",
-                            feedbackglobal    = variant$feedbackglobal)
-                          ),
+                            feedbackglobal    = variant$feedbackglobal,
+                            em_fraction       = em_fraction,
+                            defaultgrade      = defaultgrade)
+                           ),
                           sep = "\n"
           )
         }
@@ -1083,6 +1096,8 @@ html_to_json_protected <- function(html_code) {
 #'
 #' @param filename_no_extension file where an exam in Rmd is stored
 #' @param params list with same yaml params at top of R Markdown file
+#' @param em_fraction string for multichoice questions ("-30", "-50", check Moodle because not all values are allowed)
+#' @param defaultgrade string for multichoice questions  (1.0, 1.2, 2.5, 25, 50, etc, any positive value)
 #'
 #' @return A xml file to be imported in moodle.
 #' @export
@@ -1090,7 +1105,7 @@ html_to_json_protected <- function(html_code) {
 #' @examples
 #' \dontrun{xmlmoodle("my_exam.Rmd")}
 #' \dontrun{xmlmoodle("my_exam")}
-xmlmoodle <- function(filename_no_extension, params = NULL) {
+xmlmoodle <- function(filename_no_extension, params = NULL, em_fraction=NULL, defaultgrade=NULL) {
 
   if (grepl("\\.", filename_no_extension)) {
     filename_no_extension <- tools::file_path_sans_ext(filename_no_extension)
@@ -1211,7 +1226,7 @@ xmlmoodle <- function(filename_no_extension, params = NULL) {
 
   slug_exam_title <- slugify(q_t$exam_title, space_replace = " ") #espaços ok!
 
-  saveto_xmlmoodle(filename_no_extension, slug_exam_title, q_t$all_questions)
+  saveto_xmlmoodle(filename_no_extension, slug_exam_title, q_t$all_questions, em_fraction, defaultgrade)
 
 
 
