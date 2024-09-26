@@ -4,7 +4,13 @@
 \alias{saveto_xmlmoodle}
 \title{From a list of questions produce a xml file}
 \usage{
-saveto_xmlmoodle(filename_no_extension, exam_title, all_questions)
+saveto_xmlmoodle(
+  filename_no_extension,
+  exam_title,
+  all_questions,
+  em_fraction,
+  defaultgrade
+)
 }
 \arguments{
 \item{exam_title}{\itemize{

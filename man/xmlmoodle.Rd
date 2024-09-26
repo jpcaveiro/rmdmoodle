@@ -4,12 +4,16 @@
 \alias{xmlmoodle}
 \title{Exam in R Markdown to XML Moodle exam.}
 \usage{
-xmlmoodle(filename_no_extension, params = NULL)
+xmlmoodle(filename, params = NULL, em_fraction = NULL, defaultgrade = NULL)
 }
 \arguments{
-\item{filename_no_extension}{file where an exam in Rmd is stored}
+\item{filename}{file where an exam in Rmd is stored}
 
 \item{params}{list with same yaml params at top of R Markdown file}
+
+\item{em_fraction}{string for multichoice questions ("-30", "-50", check Moodle because not all values are allowed)}
+
+\item{defaultgrade}{string for multichoice questions  (1.0, 1.2, 2.5, 25, 50, etc, any positive value)}
 }
 \value{
 A xml file to be imported in moodle.

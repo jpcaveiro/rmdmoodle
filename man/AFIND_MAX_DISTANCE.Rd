@@ -3,12 +3,7 @@
 \docType{data}
 \name{AFIND_MAX_DISTANCE}
 \alias{AFIND_MAX_DISTANCE}
-\title{Notes:
-\itemize{
-\item module xmlmoodle.R calls verifycloze() defined n this file.
-\item see test04-regex.R in WorkPackages/2020-rmdmoodle for experiences
-}
-\enumerate{
+\title{\enumerate{
 \item limpar 0D 0D 0A para espaço
 \item 
 }

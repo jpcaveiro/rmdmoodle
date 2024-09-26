@@ -1094,7 +1094,7 @@ html_to_json_protected <- function(html_code) {
 #' to xml moodle file to be imported for the "exam" tool
 #' in moodle.
 #'
-#' @param filename_no_extension file where an exam in Rmd is stored
+#' @param filename file where an exam in Rmd is stored
 #' @param params list with same yaml params at top of R Markdown file
 #' @param em_fraction string for multichoice questions ("-30", "-50", check Moodle because not all values are allowed)
 #' @param defaultgrade string for multichoice questions  (1.0, 1.2, 2.5, 25, 50, etc, any positive value)
@@ -1105,7 +1105,7 @@ html_to_json_protected <- function(html_code) {
 #' @examples
 #' \dontrun{xmlmoodle("my_exam.Rmd")}
 #' \dontrun{xmlmoodle("my_exam")}
-xmlmoodle <- function(filename_no_extension, params = NULL, em_fraction=NULL, defaultgrade=NULL) {
+xmlmoodle <- function(filename, params = NULL, em_fraction=NULL, defaultgrade=NULL) {
 
   if (grepl("\\.", filename_no_extension)) {
     filename_no_extension <- tools::file_path_sans_ext(filename_no_extension)

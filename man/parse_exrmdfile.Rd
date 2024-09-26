@@ -4,7 +4,13 @@
 \alias{parse_exrmdfile}
 \title{Parse an Rmd file containing an exercise}
 \usage{
-parse_exrmdfile(rmdfilename, varcount = NULL, number = 1)
+parse_exrmdfile(
+  ex_path,
+  rmdfilename,
+  ex_params = NULL,
+  varcount = NULL,
+  number = 1
+)
 }
 \arguments{
 \item{rmdfilename}{R Markdown file name.}
