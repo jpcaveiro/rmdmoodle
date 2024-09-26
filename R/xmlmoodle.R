@@ -1108,7 +1108,7 @@ html_to_json_protected <- function(html_code) {
 xmlmoodle <- function(filename, params = NULL, em_fraction=NULL, defaultgrade=NULL) {
 
   if (grepl("\\.", filename)) {
-    filename_no_extension <- tools::file_path_sans_ext(filename_no_extension)
+    filename_no_extension <- tools::file_path_sans_ext(filename)
   } else {
     filename_no_extension <- filename
   }
