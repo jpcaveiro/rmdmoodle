@@ -322,6 +322,10 @@ is_level <- function(html_part, str_level, keyword) {
   # )
   #stop()
 
+  #Browse[3]> rvest::html_attrs(html_part)[[1]]["class"]
+  #class
+  #"section level2"
+
   return(rvest::html_name(html_part) == "div" &&
          grepl(keyword, html_part, ignore.case = TRUE) &&
          rvest::html_attrs(html_part)[2] == str_level)
@@ -394,7 +398,7 @@ question_with_variants <- function(question_title, question_html, main_question_
     question_part <- question_html[node]
 
 
-    if (is_level(question_part, "section level2", "variante") == TRUE) {
+    if (is_level(question_part, "section level2", "V") == TRUE) {
       #mesmo que: if (html_name(question_part)=='div' && html_attrs(question_part)[[2]] == "section level2") {
       # Se <div variante ....class = "section level2":
 
@@ -476,6 +480,10 @@ equal_variants <- function(variants) {
   eq_variants <- 0
 
   vlen <- length(variants)
+
+  if (vlen==1) {
+    return(FALSE)
+  }
 
   #c <- length(variants)
   for (i in seq(from=1, to=(vlen - 1))) {
