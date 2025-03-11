@@ -199,9 +199,9 @@ parse_one_option <- function(opt_text) {
 #' and breaks them into its parts.
 #'
 #' @param cloze_instruction - instructions has here ...moodle cloze page....
-#' @param output - see line: `if (output=="cloze") {``
+#' @param output - see line: if (output=="cloze")
 #'
-#' @returns
+#' @returns a list (cloze question parts)
 #' @export
 #'
 #' @examples
@@ -303,13 +303,12 @@ parse_one_cloze_instruction <- function(cloze_instruction, output="originalcloze
 #' Transform text written in cloze format intro something else.
 #'
 #'
-#' @param cloze_text
-#' @param output
+#' @param cloze_text text
+#' @param output "I" (put "III") TODO...
 #'
-#' @returns
+#' @returns a list (cloze text parts)
 #' @export
 #'
-#' @examples
 cloze_transform <- function(cloze_text, output = "originalcloze") {
   matches_info <- gregexpr(CLOZE_PATTERN, cloze_text, perl = TRUE)[[1]]
 

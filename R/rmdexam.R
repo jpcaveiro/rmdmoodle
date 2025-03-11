@@ -371,7 +371,7 @@ parse_exrmdfile <- function(ex_path,
         }
         if (is.null(ex_params)) {
           #Não dá jeito colocar timestamps
-          #porque no moodle o nome da subcategoria nao 
+          #porque no moodle o nome da subcategoria nao
           #pode mudar
           #ex_title <- paste0(rmdfilename, ", ",
           #                   inside_author, ", ",
@@ -1010,8 +1010,10 @@ rmdexam <- function(rmdfilename, ...) {
 
 
   if (length( unique( names(all_params) ) ) < length( all_params )) {
+    cat("ERROR.\nThere are yaml parameters with same names in different R Markdown files.\n")
+    cat("Please note that each R Markdown file is an exercise possible parameterized but using same parameter name in different exercises (same name, but different values is problem).\n")
     print(all_params)
-    stop("There are yaml params with same names in different R Markdown files.")
+    stop("There are yaml parameters with same names in different R Markdown files.")
   }
 
   #' Reproduce the instruction that

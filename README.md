@@ -1,7 +1,7 @@
 # rmdmoodle
 
-Tornar a criação de exercícios mais amiga do autor.
+Making exercise creation more author-friendly.
 
-[página de documentação](https://jpcaveiro.github.io/rmdmoodle/)
+[Documentation webpages](https://jpcaveiro.github.io/rmdmoodle/)
 
 
