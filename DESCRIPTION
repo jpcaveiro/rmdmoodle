@@ -16,4 +16,5 @@ Imports:
     stringdist,
     whisker,
     xml2,
-    yaml
+    yaml,
+    stringr
