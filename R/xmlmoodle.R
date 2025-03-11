@@ -1173,6 +1173,45 @@ xmlmoodle <- function(filename, params = NULL, em_fraction=NULL, defaultgrade=NU
       # You don't need to state the return value via `return()` as code
       # in the "try" part is not wrapped inside a function (unlike that
       # for the condition handlers for warnings and error below)
+
+
+
+      # Remove \r\n from pandoc
+      filename_html <- paste0(filename_no_extension, ".html")
+      file_content <- readLines(filename_html, encoding = "UTF-8", warn = FALSE)
+
+      #Debug
+      #cat("xmlmoodle function: html com ", length(file_content), "linhas.\n")
+
+      line_body_start <- 0
+      line_body_ends <- 0
+
+      for (lineno in 1:length(file_content)) {
+
+        if (grepl("<body>", file_content[lineno])) {
+          line_body_start <- lineno
+        } else if (grepl("</body>", file_content[lineno])) {
+          line_body_ends <- lineno
+        }
+
+      }
+
+      # Combine all lines into a single string
+      body_before  <- paste(file_content[1:line_body_start])
+      body_content <- paste(file_content[(line_body_start+1):(line_body_ends-1)], collapse = " ")
+      body_after   <- paste(file_content[line_body_ends:length(file_content)])
+      #Concatnate
+      cleaned_content <- c(body_before, body_content, body_after)
+
+      #Debug
+      #cat("xmlmoodle function: html limpo com ", length(cleaned_content), "linhas.\n")
+
+      # Remove \n and \r characters
+      #cleaned_content <- gsub("[\n\r]", "", file_content)
+
+      # Write the cleaned content back to a new file
+      writeLines(cleaned_content, filename_html, useBytes = TRUE)
+
     },
     error = function(cond) {
 
