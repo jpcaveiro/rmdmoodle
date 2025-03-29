@@ -59,7 +59,7 @@
 #  {{{answer_incorrect1}}}, {{{answer_incorrect2}}}, {{{answer_incorrect3}}}
 
 
-MULTICHOICE_template4 <- '/
+MULTICHOICE_template4 <- '
   <question type="category">
     <category>
       <text>$course$/top/importados/{{exam_title}}/{{question_title}}</text>
@@ -122,7 +122,7 @@ MULTICHOICE_template4 <- '/
     </answer>
   </question>
 
-  '
+'
 
 
 MULTICHOICE_template5 <- '
