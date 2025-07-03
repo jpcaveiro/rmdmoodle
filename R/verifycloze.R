@@ -278,10 +278,21 @@ parse_one_cloze_instruction <- function(cloze_instruction, output="originalcloze
     next
   }
 
+
+  #Verifica se há uma  opção grande demais (por falta de chaveta no final).
+  for(o in list_options) {
+    if (grepl("<", o$answer)) {
+      cat("An option cannot have math tex notation or html:\n   ", o$answer,"\n")
+    }
+    if (nchar(o$answer)>100) {
+      cat("Option size >100 chars:\n   ", o$answer,"\n")
+    }
+
+  }
+
   cloze_question_parts <- list("points"=question_points, "type"=question_type, "options"=list_options)
   #Debug
   #print(q)
-
 
 
   if (output=="originalcloze") {
