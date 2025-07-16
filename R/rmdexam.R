@@ -111,11 +111,6 @@ get_varcount <- function(all_lines, rmdfilename) {
 
   }
 
-  if (!varcount) {
-    stop(paste0("If using `pq()`, add VARCOUNT <- 6 (or other number of variants) to the '# code' section in file:\n",
-                rmdfilename,"\nOtherwise use `rq(number=6,...)` (or other number of variants) when building the exam.\n"))
-  }
-
   return(varcount)
 }
 
@@ -226,6 +221,7 @@ get_ex_type <- function(curr_line) {
 
 
 #' Parse an Rmd file containing an exercise
+#' (called by pq() and rq())
 #'
 #' `varcount` is the number of variants of a question
 #' from which a random one is selected to be presented to student.
@@ -242,9 +238,7 @@ get_ex_type <- function(curr_line) {
 #' @examples
 parse_exrmdfile <- function(ex_path,
                             rmdfilename,
-                            ex_params=NULL, #for moodle title
-                            varcount = NULL, #WHAT?
-                            number = 1) { #usado para o return de ex$number
+                            ex_params=NULL) { #for moodle title
 
   if (is.null(ex_params)) {
 
@@ -298,7 +292,6 @@ parse_exrmdfile <- function(ex_path,
 
 
   #variáveis resultantes do parse
-  #varcount <- FALSE
   line_start_code <- NULL
   line_end_code <- NULL
   #ex_type <- NULL #not yet used
@@ -310,15 +303,8 @@ parse_exrmdfile <- function(ex_path,
   no_of_alineas <- 0
 
 
-  #' varcount is the number of
-  #' repetitions of a question
-  if (is.null(varcount)) {
-    varcount <- get_varcount(all_lines, rmdfilename)
-    if (is.null(number)) {
-      number <- varcount
-    }
-  }
-
+  # if exists
+  varcount <- get_varcount(all_lines, rmdfilename)
 
 
   inside_author <- NULL
@@ -401,13 +387,6 @@ parse_exrmdfile <- function(ex_path,
 
     } else if (curr_state == S_CODE) {
 
-      #if (grepl("VARCOUNT",curr_line)) {
-      #
-      #  varcount <- get_varcount(curr_line)
-      #  curr_lineno <- next_line(curr_lineno,all_lines)
-      #
-      #} else
-
       if (grepl("^# ", curr_line) ) {
             # && #line # enredo
             # grepl("enredo", tolower(curr_line))) {
@@ -419,13 +398,6 @@ parse_exrmdfile <- function(ex_path,
         curr_state  <- change_state(S_ENREDO, "S_ENREDO")
         curr_lineno <- next_line(curr_lineno, all_lines)
         line_start_enredo <- curr_lineno
-
-        #if (!varcount) {
-        #  #improve this message
-        #  #paste() is used to break into smaller all_lines
-        #  stop(paste0("Missing chunk with 'VARCOUNT = 6' ",
-        #              "or any other value."))
-        #}
 
 
       } else {
@@ -518,8 +490,7 @@ parse_exrmdfile <- function(ex_path,
   }
 
   return(list(title = ex_title,
-              varcount = varcount, #available number of variants
-              number = number, #request number of variants
+              varcount = varcount, # pq() questions have a varcount
               type = "cloze", #TODO: e se o autor quiser um ESSAY sem alíneas?
               code    = paste0(all_lines[line_start_code:line_end_code], collapse = "\n"),
               enredo  = paste0(all_lines[line_start_enredo:line_end_enredo], collapse = "\n"),
@@ -588,25 +559,25 @@ find_alinea <- function(alinea_tag, ex_struct) {
 #' @export
 #'
 #' @examples
-#' \dontrun{rq(seed = 90, number = 10, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
-#' \dontrun{rq(number = 10, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
+#' \dontrun{rq(seed = 90, quantity = 10, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
+#' \dontrun{rq(quantity = 10, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
 #' \dontrun{rq(seed = 90, "cap3/c3-estimate.Rmd", "mean-item", "var-item")}
 #' \dontrun{rq("cap3/c3-estimate.Rmd", "mean-item", "var-item")}
 rq <- function(...) {
 
   arglist <- list(...)
 
-  # varcount
-  if (is.null(arglist$number)) {
-    number <- 10
+
+  # quantity
+  if (is.null(arglist$quantity)) {
+    quantity <- NULL
   } else {
     #store
-    number <- arglist$number
+    quantity <- arglist$quantity
 
-    #delete varcount
-    arglist["number"] <- NULL
+    #delete number
+    arglist["quantity"] <- NULL
   }
-
 
   # seed
   if (is.null(arglist$seed)) {
@@ -654,9 +625,7 @@ rq <- function(...) {
   #            params  )
   ex <- parse_exrmdfile(question_path,
                         rmdfilename = rmdfilename, #for title
-                        ex_params=ex_params, #If ex_params is null it can be read from question_path, if exists there
-                        varcount = number,
-                        number = number)
+                        ex_params=ex_params) #If ex_params is null it can be read from question_path, if exists there
 
 
   # output string containing Rmd (headerless) to be joint with other exercises
@@ -699,7 +668,7 @@ rq <- function(...) {
                       collapse = "\n\n")
 
 
-  for (v in seq_len(ex$number)) {
+  for (v in seq_len(quantity)) {
 
     #section ## Variante `r VAR<- v;VAR`
 
@@ -764,17 +733,24 @@ pq <- function(...) {
   #print(arglist)
 
 
-  # number
-  if (is.null(arglist$number)) {
-    number <- NULL
+
+  # selectvariants
+  if (is.null(arglist$variants)) {
+    variants <- NULL
   } else {
+
     #store
-    number <- arglist$number
+    variants <- arglist$variants
+    # can be "selectvariants=5" or "selectvariants=list(3,4,5)"
+    if (is.numeric(variants)) {
+      # if "variants=5" then
+      # variants=list(1,2,3,4,5)
+      variants <- as.list(seq_len(variants))
+    }
 
     #delete number
-    arglist["number"] <- NULL
+    arglist["variants"] <- NULL
   }
-
 
   # seed
   if (is.null(arglist$seed)) {
@@ -820,9 +796,16 @@ pq <- function(...) {
   #            alineas_title = list_of_alineas_title,
   #            params  )
   ex <- parse_exrmdfile(ex_path,
-                        rmdfilename = rmdfilename, #for title
-                        ex_params=ex_params, #If ex_params is null it can be read from question_path, if exists there
-                        number = number) #number will be put on ex$number
+                        rmdfilename = rmdfilename, # for title
+                        ex_params   = ex_params)   # if ex_params is null it can
+                                                   # be read from question_path, if exists there
+
+
+  if (!ex$varcount) {
+    stop(paste0("In `pq()` questions add VARCOUNT <- 6 (or other quantity of variants) to the '# code' section in file:\n"))
+  }
+
+
 
 
   # output string containing Rmd (headerless) to be joint with other exercises
@@ -900,7 +883,21 @@ pq <- function(...) {
   #dentro de cada exercício numa
   #linha: VARCOUNT <- 6 ou VARCOUNT = 6
 
-  for (v in seq_len(ex$number)) {
+  if (is.null(variants)) {
+    # user did not give variants=list(2,3)
+
+    # make 1, 2, ..., VARCOUNT
+    selected_variants = seq_len(ex$varcount)
+
+  } else {
+    # user give variants=list(2,3)
+
+    # Convert list of integers to numeric vector
+    selected_variants = unlist(variants)
+
+  }
+
+  for (v in selected_variants) {
 
     #section ## Variante `r VAR<- v;VAR`
 
@@ -909,18 +906,25 @@ pq <- function(...) {
 
     #sec_text <- sprintf("\n## variante `r VAR <- %d; VAR`\n\n", v)
 
-    if (ex$number <= ex$varcount) {
-      # Se forem pedidas igual ou menos que as variantes
-      VAR_is <- v  #v in 1 ... ex$number
-    } else {
-      # Se forem pedidas mais questões que as ex$varcount variantes
-      VAR_is <- (v %% ex$varcount)  #v in 1 ... ex$number
-      if (VAR_is == 0) {
-        VAR_is <- ex$varcount
-      }
+    #used when ex$number
+    #if (ex$number <= ex$varcount) {
+    #  # Se forem pedidas igual ou menos que as variantes
+    #  VAR_is <- v  #v in 1 ... ex$number
+    #} else {
+    #  # Se forem pedidas mais questões que as ex$varcount variantes
+    #  VAR_is <- (v %% ex$varcount)  #v in 1 ... ex$number
+    #  if (VAR_is == 0) {
+    #    VAR_is <- ex$varcount
+    #  }
+    #}
+
+    if (v > ex$varcount) {
+      stop(paste0("Selected variant ", v, " does not exist in exercise ",rmdfilename, ".\n"))
     }
 
-    sec_text <- sprintf("\n## variante `r (VAR <- %d)`\n\n", VAR_is)
+
+    # make replica withe variante number v:
+    sec_text <- sprintf("\n## variante `r (VAR <- %d)`\n\n", v)
 
     #generate variant `r (VAR <- VAR_is)`
     ex_rmdtext <- paste0(ex_rmdtext,
