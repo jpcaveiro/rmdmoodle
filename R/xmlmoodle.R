@@ -666,6 +666,7 @@ cloze <- function(variant_title, variant_contents) {
 
   enunciado <- paste0(variant_contents[2:(n - 1)], collapse = "\n")
   enunciado <- gsub("\x0D\x0D\x0A", "", enunciado)
+  #same as: enunciado <- gsub("\r\r\n", "", enunciado)
   #debug
   #cat("enunciado:\n",enunciado,"\n")
 
@@ -1198,10 +1199,15 @@ xmlmoodle <- function(filename, params = NULL, em_fraction=NULL, defaultgrade=NU
 
       # Combine all lines into a single string
       body_before  <- paste(file_content[1:line_body_start])
-      body_content <- paste(file_content[(line_body_start+1):(line_body_ends-1)], collapse = " ")
+      body_content <- paste(file_content[(line_body_start+1):(line_body_ends-1)], collapse = "\r") # LER em baixo
       body_after   <- paste(file_content[line_body_ends:length(file_content)])
-      #Concatnate
+      #Concatenate
       cleaned_content <- c(body_before, body_content, body_after)
+
+      # "\r" é necessário porque:
+      # - evita \r\n que causa uma mudança de linha, seguida de linha branca, no xml que causa problemas os {:NUMERICAL:...}  E MULTICHOICE
+      #- por outro lado "\r" é necessário porque as tag <code> requerem mudanças de linha em cada linha, isto é, 
+      # a mudança de linha não pode ser substituída por " "
 
       #Debug
       #cat("xmlmoodle function: html limpo com ", length(cleaned_content), "linhas.\n")
